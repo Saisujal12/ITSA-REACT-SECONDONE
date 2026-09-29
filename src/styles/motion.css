@@ -1,0 +1,36 @@
+/*
+  Scroll reveal (used by the useReveal hook).
+  Content stays visible by default; it is only hidden once JavaScript has
+  attached the observer (data-reveal="pending"), so nothing disappears if
+  scripting fails or the user prefers reduced motion.
+*/
+
+[data-reveal="pending"] {
+  opacity: 0;
+  transform: translateY(30px);
+}
+
+[data-reveal] {
+  transition:
+    opacity 0.7s ease,
+    transform 0.7s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+[data-reveal="shown"] {
+  opacity: 1;
+  transform: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}

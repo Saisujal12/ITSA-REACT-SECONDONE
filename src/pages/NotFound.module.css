@@ -1,0 +1,47 @@
+.page {
+  padding: 110px 0 120px;
+  overflow: hidden;
+}
+
+.inner {
+  position: relative;
+  width: var(--container);
+  margin: 0 auto;
+}
+
+.code {
+  position: absolute;
+  z-index: -1;
+  top: -70px;
+  right: 0;
+  color: rgba(146, 23, 47, 0.06);
+  font-size: clamp(140px, 24vw, 320px);
+  font-weight: 900;
+  line-height: 1;
+  letter-spacing: -0.06em;
+}
+
+.inner h1 {
+  max-width: 760px;
+  font-size: clamp(42px, 6vw, 76px);
+  line-height: 0.98;
+  letter-spacing: -0.05em;
+}
+
+.inner h1 span {
+  color: var(--primary);
+}
+
+.text {
+  max-width: 540px;
+  margin-top: 20px;
+  font-size: 15px;
+  line-height: 1.8;
+}
+
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-top: 30px;
+}

@@ -1,0 +1,64 @@
+/* Design tokens — cream / burgundy / gold identity from the legacy style.css */
+
+:root {
+  --bg-main: #faf9f4;
+  --bg-soft: #f4f1e9;
+  --bg-white: #ffffff;
+  --bg-paper: #faf8f2;
+
+  --text-main: #272522;
+  --text-dark: #1d1b19;
+  --text-muted: #77716a;
+  --text-light: #a19b93;
+
+  --primary: #92172f;
+  --primary-dark: #731124;
+  --primary-light: #b52c47;
+
+  /* Gold accent used by events, workshops and registration. */
+  --gold: #d8b978;
+  /* Darker gold for text on cream backgrounds (meets 4.5:1 contrast). */
+  --gold-text: #7a5d1f;
+
+  --border: rgba(39, 37, 34, 0.1);
+  --border-light: rgba(39, 37, 34, 0.06);
+
+  --shadow-small: 0 6px 20px rgba(30, 25, 20, 0.06);
+  --shadow-medium: 0 14px 40px rgba(30, 25, 20, 0.1);
+  --shadow-large: 0 25px 70px rgba(30, 25, 20, 0.14);
+
+  --radius-small: 10px;
+  --radius-medium: 18px;
+  --radius-large: 28px;
+
+  --font-sans: Inter, Arial, Helvetica, sans-serif;
+  --font-outfit: "Outfit", Inter, Arial, sans-serif;
+  --font-serif: Georgia, "Times New Roman", serif;
+  --font-display: "DM Serif Display", Georgia, serif;
+
+  --container: min(1380px, calc(100% - 100px));
+  --transition: 0.25s ease;
+
+  --nav-height: 78px;
+  --focus-ring: 0 0 0 3px rgba(146, 23, 47, 0.35);
+}
+
+@media (max-width: 1200px) {
+  :root {
+    --container: min(1100px, calc(100% - 70px));
+  }
+}
+
+@media (max-width: 900px) {
+  :root {
+    --container: calc(100% - 40px);
+    --nav-height: 70px;
+  }
+}
+
+@media (max-width: 600px) {
+  :root {
+    --container: calc(100% - 30px);
+    --nav-height: 66px;
+  }
+}

@@ -1,0 +1,256 @@
+/* 3D ID card (legacy style.css §11–16). */
+
+.area {
+  position: relative;
+  min-height: 500px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  perspective: 1400px;
+  perspective-origin: center;
+}
+
+.scene {
+  --scene-scale: 1;
+  position: relative;
+  width: 340px;
+  height: 490px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transform: scale(var(--scene-scale));
+  transform-style: preserve-3d;
+  will-change: transform;
+}
+
+.card {
+  --pointer-x: 50%;
+  --pointer-y: 35%;
+  position: relative;
+  width: 300px;
+  height: 470px;
+  overflow: hidden;
+  border-radius: 24px;
+  background: linear-gradient(145deg, #ffffff 0%, #f8f5ed 100%);
+  border: 1px solid rgba(255, 255, 255, 0.85);
+  box-shadow:
+    0 30px 65px rgba(35, 27, 23, 0.2),
+    0 8px 20px rgba(35, 27, 23, 0.08);
+  transform-style: preserve-3d;
+  will-change: transform;
+  transition: box-shadow 0.35s ease;
+}
+
+.card::before {
+  content: "";
+  position: absolute;
+  z-index: 20;
+  inset: 0;
+  pointer-events: none;
+  background: radial-gradient(
+    circle at var(--pointer-x) var(--pointer-y),
+    rgba(255, 255, 255, 0.45),
+    rgba(255, 255, 255, 0.1) 18%,
+    transparent 45%
+  );
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.is-hovering .card {
+  box-shadow:
+    0 38px 75px rgba(35, 27, 23, 0.23),
+    0 12px 28px rgba(35, 27, 23, 0.1);
+}
+
+.is-hovering .card::before {
+  opacity: 1;
+}
+
+.header {
+  position: relative;
+  z-index: 2;
+  height: 115px;
+  padding: 22px;
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  background: linear-gradient(135deg, var(--primary-dark), var(--primary));
+  color: white;
+}
+
+.header::after {
+  content: "";
+  position: absolute;
+  width: 140px;
+  height: 140px;
+  right: -55px;
+  top: -70px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.07);
+}
+
+.brand {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.brand strong {
+  font-size: 12px;
+  font-weight: 900;
+  letter-spacing: 0.5px;
+}
+
+.brand span {
+  font-size: 7px;
+  font-weight: 700;
+  letter-spacing: 3px;
+  opacity: 0.75;
+}
+
+.year {
+  position: relative;
+  z-index: 2;
+  font-size: 9px;
+  font-weight: 800;
+  opacity: 0.75;
+}
+
+.photo-area {
+  position: relative;
+  z-index: 5;
+  margin-top: -45px;
+  display: flex;
+  justify-content: center;
+}
+
+.photo {
+  width: 120px;
+  height: 145px;
+  overflow: hidden;
+  border-radius: 14px;
+  border: 6px solid rgba(255, 255, 255, 0.95);
+  background: #e9e5dc;
+  box-shadow: 0 12px 25px rgba(0, 0, 0, 0.13);
+}
+
+.photo img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.info {
+  padding: 18px 25px 0;
+  text-align: center;
+}
+
+.info h3 {
+  font-size: 20px;
+  line-height: 1.2;
+  color: var(--text-dark);
+}
+
+.info p {
+  margin-top: 5px;
+  color: var(--primary);
+  font-size: 9px;
+  font-weight: 900;
+  letter-spacing: 1.8px;
+  text-transform: uppercase;
+}
+
+.divider {
+  width: 45px;
+  height: 2px;
+  margin: 14px auto;
+  border-radius: 999px;
+  background: var(--primary);
+}
+
+.details {
+  padding: 0 28px;
+  display: flex;
+  flex-direction: column;
+  gap: 9px;
+}
+
+.detail {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  font-size: 9px;
+  border-bottom: 1px solid var(--border-light);
+  padding-bottom: 7px;
+}
+
+.detail span:first-child {
+  color: var(--text-light);
+  font-weight: 700;
+}
+
+.detail span:last-child {
+  color: var(--text-dark);
+  font-weight: 800;
+  text-align: right;
+}
+
+.footer {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 45px;
+  padding: 0 22px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: #f1eee6;
+  border-top: 1px solid var(--border-light);
+}
+
+.footer span {
+  color: var(--text-muted);
+  font-size: 7px;
+  font-weight: 800;
+  letter-spacing: 1px;
+}
+
+.footer strong {
+  color: var(--primary);
+  font-size: 8px;
+  font-weight: 900;
+}
+
+@media (max-width: 1200px) {
+  .scene {
+    --scene-scale: 0.94;
+  }
+}
+
+@media (max-width: 900px) {
+  .area {
+    min-height: 540px;
+  }
+}
+
+@media (max-width: 600px) {
+  .area {
+    min-height: 430px;
+  }
+
+  .scene {
+    --scene-scale: 0.82;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .scene,
+  .card {
+    transition: none !important;
+  }
+}

@@ -1,0 +1,110 @@
+/* Site footer (legacy home footer, style.css §25). */
+
+.footer {
+  padding: 65px 0 25px;
+  background: #211e1b;
+  color: white;
+}
+
+.inner {
+  width: var(--container);
+  margin: 0 auto;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: 1.5fr 1fr 1fr;
+  gap: 50px;
+  padding-bottom: 45px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.brand {
+  max-width: 400px;
+}
+
+.brand-title {
+  display: flex;
+  font-weight: 800;
+  letter-spacing: -0.025em;
+  align-items: center;
+  gap: 12px;
+  color: white;
+  font-size: 20px;
+}
+
+.brand-title img {
+  width: 44px;
+  height: 44px;
+  object-fit: contain;
+}
+
+.brand p {
+  margin-top: 12px;
+  color: rgba(255, 255, 255, 0.62);
+  font-size: 13px;
+  line-height: 1.8;
+}
+
+.column h2 {
+  margin-bottom: 15px;
+  color: white;
+  font-size: 11px;
+  font-weight: 900;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+}
+
+.column a {
+  display: block;
+  width: fit-content;
+  margin-bottom: 9px;
+  color: rgba(255, 255, 255, 0.62);
+  font-size: 12px;
+  transition: color var(--transition);
+}
+
+.column a:hover {
+  color: white;
+}
+
+.column a:focus-visible,
+.brand a:focus-visible {
+  outline-color: white;
+}
+
+.bottom {
+  padding-top: 22px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+}
+
+.bottom p {
+  color: rgba(255, 255, 255, 0.55);
+  font-size: 10px;
+}
+
+@media (max-width: 900px) {
+  .grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .brand {
+    grid-column: 1 / -1;
+  }
+}
+
+@media (max-width: 480px) {
+  .grid {
+    grid-template-columns: 1fr;
+    gap: 35px;
+  }
+
+  .bottom {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 6px;
+  }
+}

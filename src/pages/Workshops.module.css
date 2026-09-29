@@ -1,0 +1,542 @@
+/* Workshops page (ported from legacy css/workshop.css). */
+
+.page {
+  --w-bg: #faf8f2;
+  --w-paper: #ffffff;
+  --w-ink: #29231f;
+  --w-muted: #746e67;
+  --w-red: #94182f;
+  --w-red-dark: #701225;
+  --w-gold: #b88a3d;
+  --w-line: rgba(42,35,31,.11);
+  background: var(--w-bg);
+  color: var(--w-ink);
+  overflow-x: hidden;
+}
+
+.workshop-hero {
+  position: relative;
+  overflow: hidden;
+  padding: 75px 0 85px;
+  background: radial-gradient(circle at 82% 40%, rgba(148,24,47,.10), transparent 28%), linear-gradient(135deg,#fcfbf7,#f0e9df);
+}
+
+.workshop-hero::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  opacity: .32;
+  background-image: linear-gradient(rgba(40,34,31,.025) 1px, transparent 1px), linear-gradient(90deg, rgba(40,34,31,.025) 1px, transparent 1px);
+  background-size: 70px 70px;
+}
+
+.workshop-hero-inner,
+.section-shell {
+  width: min(1280px, calc(100% - 90px));
+  margin: 0 auto;
+  position: relative;
+}
+
+.workshop-kicker {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  color: var(--w-red);
+  font-size: 9px;
+  font-weight: 900;
+  letter-spacing: .23em;
+}
+
+.workshop-kicker span {
+  width: 42px;
+  height: 1px;
+  background: var(--w-gold);
+}
+
+.workshop-hero-grid {
+  display: grid;
+  grid-template-columns: 1.15fr .85fr;
+  gap: 70px;
+  align-items: center;
+  margin-top: 35px;
+}
+
+.workshop-index {
+  color: rgba(148,24,47,.14);
+  font-size: 100px;
+  font-weight: 900;
+  line-height: .7;
+  letter-spacing: -.08em;
+}
+
+.workshop-hero h1 {
+  margin-top: 25px;
+  font-family: Georgia,"Times New Roman",serif;
+  font-size: clamp(58px,7vw,100px);
+  line-height: .82;
+  letter-spacing: -.07em;
+}
+
+.workshop-hero h1 em {
+  display: block;
+  color: var(--w-red);
+  font-style: normal;
+}
+
+.workshop-hero p {
+  max-width: 620px;
+  margin-top: 27px;
+  color: var(--w-muted);
+  font-size: 14px;
+  line-height: 1.85;
+}
+
+.workshop-hero-card {
+  min-height: 290px;
+  padding: 34px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  border-radius: 24px;
+  color: white;
+  background: radial-gradient(circle at 60% 20%,#56343a,#281a1d 65%,#191415);
+  box-shadow: 0 30px 70px rgba(45,24,28,.20);
+}
+
+.hero-card-label {
+  font-size: 9px;
+  font-weight: 900;
+  letter-spacing: .2em;
+  color: #d8b978;
+}
+
+.workshop-hero-card strong {
+  display: block;
+  color: #fff;
+}
+
+.workshop-hero-card strong {
+  margin-top: 35px;
+  font-family: Georgia,"Times New Roman",serif;
+  font-size: clamp(35px,4vw,55px);
+  line-height: .92;
+  letter-spacing: -.055em;
+}
+
+.hero-card-meta {
+  display: flex;
+  gap: 20px;
+  flex-wrap: wrap;
+  color: rgba(255,255,255,.65);
+  font-size: 8px;
+  font-weight: 900;
+  letter-spacing: .12em;
+}
+
+.hero-card-meta svg {
+  color: #d8b978;
+  margin-right: 6px;
+}
+
+.workshop-current {
+  padding: 105px 0 55px;
+}
+
+.section-eyebrow {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  color: #8a6526;
+  font-size: 9px;
+  font-weight: 900;
+  letter-spacing: .22em;
+}
+
+.section-eyebrow span {
+  color: var(--w-red);
+}
+
+.current-workshop-card {
+  position: relative;
+  margin-top: 22px;
+  min-height: 300px;
+  padding: 38px 42px;
+  display: grid;
+  grid-template-columns: 60px 1fr 250px;
+  gap: 25px;
+  align-items: center;
+  border: 1px solid rgba(148,24,47,.14);
+  border-radius: 24px;
+  background: rgba(255,255,255,.72);
+  box-shadow: 0 20px 60px rgba(40,30,25,.07);
+  overflow: hidden;
+}
+
+.current-number {
+  color: rgba(148,24,47,.22);
+  font-size: 40px;
+  font-weight: 900;
+}
+
+.status-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--w-red);
+  font-size: 8px;
+  font-weight: 900;
+  letter-spacing: .16em;
+}
+
+.status-pill span {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #5a9c66;
+  box-shadow: 0 0 0 5px rgba(90,156,102,.10);
+}
+
+.current-main h2 {
+  margin-top: 12px;
+  font-family: Georgia,"Times New Roman",serif;
+  font-size: clamp(40px,5vw,66px);
+  line-height: .9;
+  letter-spacing: -.065em;
+}
+
+.current-main h2 strong {
+  color: var(--w-red);
+}
+
+.current-main p {
+  max-width: 680px;
+  margin-top: 18px;
+  color: var(--w-muted);
+  font-size: 12px;
+  line-height: 1.8;
+}
+
+.workshop-meta-grid {
+  display: flex;
+  gap: 35px;
+  flex-wrap: wrap;
+  margin-top: 24px;
+}
+
+.workshop-meta-grid div {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.workshop-meta-grid span {
+  color: #756f68;
+  font-size: 8px;
+  font-weight: 900;
+  letter-spacing: .18em;
+}
+
+.workshop-meta-grid strong {
+  font-size: 11px;
+}
+
+.current-side {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: stretch;
+  gap: 22px;
+}
+
+.due-tab {
+  padding: 22px;
+  border-radius: 16px;
+  background: #f0e7d8;
+  border: 1px solid rgba(184,138,61,.25);
+}
+
+.due-tab span {
+  display: block;
+  color: #7a5d1f;
+  font-size: 8px;
+  font-weight: 900;
+  letter-spacing: .18em;
+}
+
+.due-tab strong {
+  display: block;
+  margin-top: 7px;
+  font-family: Georgia,"Times New Roman",serif;
+  font-size: 34px;
+}
+
+.due-tab small {
+  display: block;
+  margin-top: 5px;
+  color: var(--w-muted);
+  font-size: 9px;
+  line-height: 1.5;
+}
+
+.workshop-register-btn {
+  min-height: 54px;
+  padding: 0 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-radius: 9px;
+  background: var(--w-red);
+  color: white;
+  text-decoration: none;
+  font-size: 9px;
+  font-weight: 900;
+  letter-spacing: .14em;
+  transition: transform .35s ease, background .35s ease, box-shadow .35s ease;
+}
+
+.workshop-register-btn:hover {
+  transform: translateY(-4px);
+  background: var(--w-red-dark);
+  box-shadow: 0 16px 35px rgba(148,24,47,.22);
+}
+
+.workshop-history {
+  padding: 65px 0 115px;
+}
+
+.history-heading {
+  display: grid;
+  grid-template-columns: 1fr 350px;
+  gap: 60px;
+  align-items: end;
+  margin-bottom: 30px;
+}
+
+.history-heading h2 {
+  margin-top: 13px;
+  font-family: Georgia,"Times New Roman",serif;
+  font-size: clamp(42px,5vw,68px);
+  line-height: .9;
+  letter-spacing: -.065em;
+}
+
+.history-heading h2 strong {
+  color: var(--w-red);
+}
+
+.history-heading p {
+  color: var(--w-muted);
+  font-size: 12px;
+  line-height: 1.8;
+}
+
+.completed-list {
+  display: grid;
+  gap: 13px;
+}
+
+.completed-workshop {
+  min-height: 130px;
+  padding: 22px 27px;
+  display: grid;
+  grid-template-columns: 65px 1fr 180px;
+  gap: 25px;
+  align-items: center;
+  border: 1px solid var(--w-line);
+  border-radius: 17px;
+  background: rgba(255,255,255,.68);
+  transition: transform .35s ease, box-shadow .35s ease, border-color .35s ease;
+}
+
+.completed-workshop:hover {
+  transform: translateX(6px);
+  border-color: rgba(148,24,47,.20);
+  box-shadow: 0 15px 40px rgba(40,30,25,.07);
+}
+
+.completed-number {
+  color: rgba(148,24,47,.30);
+  font-size: 17px;
+  font-weight: 900;
+}
+
+.completed-info > span {
+  color: var(--w-red);
+  font-size: 8px;
+  font-weight: 900;
+  letter-spacing: .16em;
+}
+
+.completed-info h3 {
+  margin-top: 7px;
+  font-size: 23px;
+  letter-spacing: -.04em;
+}
+
+.completed-info p {
+  margin-top: 6px;
+  color: var(--w-muted);
+  font-size: 10px;
+  line-height: 1.6;
+}
+
+.completed-status {
+  min-height: 62px;
+  padding: 12px 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  border-radius: 11px;
+  background: #f1eee8;
+  color: #77716b;
+  text-align: left;
+  font-size: 8px;
+  font-weight: 900;
+  line-height: 1.45;
+  letter-spacing: .09em;
+}
+
+.completed-status svg {
+  color: #5b8b67;
+}
+
+.workshop-cta {
+  width: min(1280px,calc(100% - 90px));
+  margin: 0 auto 90px;
+  padding: 55px 60px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 30px;
+  border-radius: 24px;
+  background: #2b2020;
+  color: white;
+}
+
+.workshop-cta > div > span {
+  color: #d8b978;
+  font-size: 8px;
+  font-weight: 900;
+  letter-spacing: .2em;
+}
+
+.workshop-cta h2 {
+  color: #fff;
+  margin-top: 12px;
+  font-family: Georgia,"Times New Roman",serif;
+  font-size: clamp(35px,4vw,52px);
+  line-height: .95;
+  letter-spacing: -.055em;
+}
+
+.workshop-cta h2 strong {
+  color: #d68b9b;
+}
+
+.workshop-cta a {
+  min-height: 50px;
+  padding: 0 20px;
+  display: inline-flex;
+  align-items: center;
+  gap: 13px;
+  border-radius: 7px;
+  background: white;
+  color: #2b2020;
+  text-decoration: none;
+  font-size: 9px;
+  font-weight: 900;
+  letter-spacing: .12em;
+  white-space: nowrap;
+}
+
+/* Placeholder marker for sample records (legacy content flagged in data/workshops.js) */
+
+.sample-note {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 14px;
+  padding: 6px 10px;
+  border: 1px dashed rgba(184, 138, 61, .55);
+  border-radius: 999px;
+  color: #7a5d1f;
+  font-size: 9px;
+  font-weight: 900;
+  letter-spacing: .14em;
+}
+
+.sample-badge {
+  display: inline-block;
+  margin-left: 10px;
+  padding: 3px 7px;
+  border: 1px dashed rgba(184, 138, 61, .6);
+  border-radius: 999px;
+  color: #7a5d1f;
+  font-size: 7px;
+  letter-spacing: .14em;
+  vertical-align: 1px;
+}
+
+@media (max-width: 900px) {
+  .workshop-hero-grid,
+  .history-heading {
+    grid-template-columns: 1fr;
+    gap: 35px;
+  }
+  .current-workshop-card {
+    grid-template-columns: 50px 1fr;
+  }
+  .current-side {
+    grid-column: 2;
+    height: auto;
+  }
+  .workshop-cta {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}
+
+@media (max-width: 650px) {
+  .workshop-hero-inner,
+  .section-shell,
+  .workshop-cta {
+    width: calc(100% - 30px);
+  }
+  .workshop-hero {
+    padding: 55px 0 65px;
+  }
+  .workshop-hero-grid {
+    margin-top: 25px;
+  }
+  .workshop-hero-card {
+    min-height: 240px;
+  }
+  .workshop-current {
+    padding-top: 70px;
+  }
+  .current-workshop-card {
+    grid-template-columns: 1fr;
+    padding: 27px;
+  }
+  .current-number {
+    display: none;
+  }
+  .current-side {
+    grid-column: 1;
+  }
+  .completed-workshop {
+    grid-template-columns: 45px 1fr;
+    padding: 20px;
+  }
+  .completed-status {
+    grid-column: 2;
+    justify-content: flex-start;
+    width: fit-content;
+  }
+  .workshop-cta {
+    padding: 40px 27px;
+    margin-bottom: 60px;
+  }
+}

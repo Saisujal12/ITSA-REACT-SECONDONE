@@ -1,0 +1,44 @@
+.message {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 14px 16px;
+  border: 1px solid;
+  font-size: 13px;
+  line-height: 1.65;
+  text-align: left;
+}
+
+.icon {
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+.title {
+  display: block;
+  margin-bottom: 2px;
+  font-size: 13px;
+  font-weight: 800;
+}
+
+.body {
+  color: inherit;
+}
+
+.success {
+  border-color: rgba(31, 122, 76, 0.25);
+  background: rgba(31, 122, 76, 0.07);
+  color: #1b5e3b;
+}
+
+.error {
+  border-color: rgba(146, 23, 47, 0.25);
+  background: rgba(146, 23, 47, 0.06);
+  color: var(--primary-dark);
+}
+
+.info {
+  border-color: rgba(122, 93, 31, 0.28);
+  background: rgba(216, 185, 120, 0.13);
+  color: #5a4516;
+}

@@ -1,0 +1,551 @@
+/* Association Body page (ported from legacy css/association.css). */
+/* GENERAL */
+
+.page {
+  background: #f5f0e8;
+  color: #241c18;
+  overflow: hidden;
+}
+
+.section-label {
+  margin: 0 0 18px;
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.22em;
+  color: #8c1d40;
+}
+
+.section-heading {
+  max-width: 760px;
+  margin-bottom: 70px;
+}
+
+.section-heading h2 {
+  margin: 0 0 20px;
+  font-family: "DM Serif Display", serif;
+  font-size: clamp(42px, 6vw, 82px);
+  font-weight: 400;
+  line-height: 0.95;
+  color: #241c18;
+}
+
+.section-heading p:not(.section-label) {
+  max-width: 650px;
+  font-size: 16px;
+  line-height: 1.8;
+  color: #6c625b;
+}
+/* HERO */
+
+.association-hero {
+  min-height: 78vh;
+  display: flex;
+  align-items: flex-end;
+  padding: 130px 7vw 100px;
+  background: radial-gradient(circle at 80% 20%, rgba(140, 29, 64, 0.12), transparent 30%), #f5f0e8;
+}
+
+.association-hero-content {
+  max-width: 1100px;
+}
+
+.association-hero h1 {
+  margin: 0;
+  font-family: "DM Serif Display", serif;
+  font-size: clamp(70px, 13vw, 190px);
+  font-weight: 400;
+  line-height: 0.78;
+  letter-spacing: -0.055em;
+  color: #241c18;
+}
+
+.association-hero h1 span {
+  color: #8c1d40;
+}
+
+.hero-description {
+  max-width: 650px;
+  margin-top: 55px;
+  font-size: 18px;
+  line-height: 1.8;
+  color: #6c625b;
+}
+/* FACULTY SECTION */
+
+.faculty-section {
+  padding: 120px 7vw;
+  background: #eee6dc;
+}
+
+.faculty-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 28px;
+}
+
+.faculty-card {
+  overflow: hidden;
+  background: #f8f4ee;
+  border: 1px solid rgba(36, 28, 24, 0.1);
+  transition: transform 0.35s ease, box-shadow 0.35s ease;
+}
+
+.faculty-card:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 25px 60px rgba(36, 28, 24, 0.12);
+}
+
+.person-image {
+  width: 100%;
+  aspect-ratio: 4 / 5;
+  overflow: hidden;
+  background: #d9d0c6;
+}
+
+.person-image img {
+  width: 100%;
+  height: 100%;
+  display: block;
+  object-fit: cover;
+  transition: transform 0.5s ease;
+}
+
+.faculty-card:hover .person-image img {
+  transform: scale(1.04);
+}
+
+.person-info {
+  padding: 28px;
+}
+
+.person-role {
+  display: block;
+  margin-bottom: 12px;
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 0.16em;
+  color: #8c1d40;
+}
+
+.person-info h3 {
+  margin: 0;
+  font-family: "DM Serif Display", serif;
+  font-size: 32px;
+  font-weight: 400;
+  color: #241c18;
+}
+/* STUDENT BODY */
+
+.student-body-section {
+  padding: 130px 7vw;
+  background: #f5f0e8;
+}
+
+.leadership-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 22px;
+}
+
+.student-card {
+  position: relative;
+  background: #e9e0d5;
+  border: 1px solid rgba(36, 28, 24, 0.1);
+  overflow: hidden;
+  transition: transform 0.35s ease, box-shadow 0.35s ease;
+}
+
+.student-card:hover {
+  transform: translateY(-7px);
+  box-shadow: 0 20px 45px rgba(36, 28, 24, 0.15);
+}
+/* First two cards slightly larger */
+
+.featured-card {
+  grid-column: span 2;
+}
+
+.student-photo {
+  width: 100%;
+  aspect-ratio: 3 / 4;
+  overflow: hidden;
+  background: #d2c8bc;
+}
+
+.student-photo img {
+  width: 100%;
+  height: 100%;
+  display: block;
+  object-fit: cover;
+  transition: transform 0.5s ease;
+}
+
+.student-card:hover .student-photo img {
+  transform: scale(1.035);
+}
+/* PAPER NAME IMAGE */
+
+.name-paper {
+  position: relative;
+  margin: -22px 18px 0;
+  z-index: 3;
+  display: flex;
+  justify-content: center;
+}
+
+.name-paper img {
+  display: block;
+  width: min(88%, 300px);
+  max-height: 90px;
+  object-fit: contain;
+  filter: drop-shadow(0 8px 10px rgba(36, 28, 24, 0.18));
+}
+/* ROLE */
+
+.student-role {
+  padding: 20px 24px 28px;
+  text-align: center;
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.16em;
+  color: #8c1d40;
+}
+/* YEAR SECTIONS */
+
+.year-section {
+  min-height: 55vh;
+  display: grid;
+  grid-template-columns: 35% 65%;
+  align-items: center;
+  padding: 100px 7vw;
+  background: #241c18;
+  color: #f5f0e8;
+}
+
+.year-section.second-year {
+  background: #8c1d40;
+}
+
+.year-number {
+  font-family: "DM Serif Display", serif;
+  font-size: clamp(130px, 20vw, 300px);
+  line-height: 0.8;
+  color: rgba(245, 240, 232, 0.12);
+}
+
+.year-content {
+  max-width: 700px;
+}
+
+.year-content .section-label {
+  color: #e8c6d2;
+}
+
+.year-content h2 {
+  margin: 0 0 25px;
+  font-family: "DM Serif Display", serif;
+  font-size: clamp(48px, 6vw, 90px);
+  font-weight: 400;
+  line-height: 0.95;
+  color: #f5f0e8;
+}
+
+.year-content p:not(.section-label) {
+  max-width: 620px;
+  font-size: 17px;
+  line-height: 1.85;
+  color: rgba(245, 240, 232, 0.75);
+}
+/* SENIOR JUNIOR INTERACTION */
+
+.interaction-section {
+  padding: 140px 7vw;
+  background: #eee6dc;
+}
+
+.interaction-content {
+  max-width: 1000px;
+}
+
+.interaction-content h2 {
+  margin: 0 0 30px;
+  font-family: "DM Serif Display", serif;
+  font-size: clamp(55px, 8vw, 115px);
+  font-weight: 400;
+  line-height: 0.9;
+  color: #241c18;
+}
+
+.interaction-content > p:not(.section-label) {
+  max-width: 700px;
+  font-size: 18px;
+  line-height: 1.85;
+  color: #6c625b;
+}
+
+.interaction-points {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 15px;
+  margin-top: 65px;
+}
+
+.interaction-points li {
+  padding: 25px;
+  border-top: 1px solid rgba(36, 28, 24, 0.2);
+}
+
+.interaction-points strong {
+  display: block;
+  margin-bottom: 18px;
+  font-family: "DM Serif Display", serif;
+  font-size: 38px;
+  font-weight: 400;
+  color: #8c1d40;
+}
+
+.interaction-points span {
+  font-size: 13px;
+  font-weight: 600;
+  line-height: 1.5;
+  color: #514842;
+}
+/* SAMSHODINI */
+
+.samshodini-section {
+  padding: 130px 7vw;
+  background: #f5f0e8;
+}
+
+.samshodini-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 25px;
+}
+
+.samshodini-card {
+  min-height: 400px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 45px;
+  background: #241c18;
+  color: #f5f0e8;
+  transition: transform 0.35s ease;
+}
+
+.samshodini-card:hover {
+  transform: translateY(-8px);
+}
+
+.samshodini-card:nth-child(2) {
+  background: #8c1d40;
+}
+
+.day-number {
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.2em;
+  color: #e8c6d2;
+}
+
+.samshodini-card h3 {
+  color: inherit;
+  margin: 40px 0 20px;
+  font-family: "DM Serif Display", serif;
+  font-size: clamp(42px, 5vw, 70px);
+  font-weight: 400;
+}
+
+.samshodini-card p {
+  max-width: 520px;
+  font-size: 15px;
+  line-height: 1.8;
+  color: rgba(245, 240, 232, 0.72);
+}
+
+.example {
+  margin-top: 30px;
+  padding-top: 20px;
+  border-top: 1px solid rgba(245, 240, 232, 0.2);
+}
+
+.example span {
+  display: block;
+  margin-bottom: 7px;
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 0.14em;
+  color: #e8c6d2;
+}
+
+.example strong {
+  font-size: 16px;
+}
+
+.samshodini-link {
+  display: inline-block;
+  margin-top: 35px;
+  color: #f5f0e8;
+  font-size: 13px;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-decoration: none;
+}
+
+.samshodini-link:hover {
+  text-decoration: underline;
+}
+/* CLOSING */
+
+.association-closing {
+  padding: 150px 7vw;
+  background: #8c1d40;
+  color: #f5f0e8;
+}
+
+.association-closing .section-label {
+  color: #e8c6d2;
+}
+
+.association-closing h2 {
+  color: inherit;
+  margin: 0;
+  font-family: "DM Serif Display", serif;
+  font-size: clamp(75px, 13vw, 180px);
+  font-weight: 400;
+  line-height: 0.8;
+  letter-spacing: -0.04em;
+}
+
+.association-closing > p:last-child {
+  max-width: 500px;
+  margin-top: 55px;
+  font-size: 18px;
+  line-height: 1.8;
+  color: rgba(245, 240, 232, 0.75);
+}
+/* RESPONSIVE — TABLET */
+
+@media (max-width: 1000px) {
+  .faculty-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  .leadership-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  .featured-card {
+    grid-column: span 1;
+  }
+  .interaction-points {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  .year-section {
+    grid-template-columns: 1fr;
+    gap: 40px;
+  }
+  .year-number {
+    font-size: 150px;
+  }
+}
+/* RESPONSIVE — MOBILE */
+
+@media (max-width: 650px) {
+  .association-hero {
+    min-height: 70vh;
+    padding: 120px 6vw 70px;
+  }
+  .association-hero h1 {
+    font-size: clamp(65px, 18vw, 110px);
+  }
+  .hero-description {
+    margin-top: 40px;
+    font-size: 15px;
+  }
+  .faculty-section,
+  .student-body-section,
+  .interaction-section,
+  .samshodini-section {
+    padding: 85px 6vw;
+  }
+  .section-heading {
+    margin-bottom: 45px;
+  }
+  .section-heading h2 {
+    font-size: 48px;
+  }
+  .faculty-grid {
+    grid-template-columns: 1fr;
+  }
+  .leadership-grid {
+    grid-template-columns: 1fr;
+  }
+  .student-card {
+    width: 100%;
+  }
+  .year-section {
+    min-height: auto;
+    padding: 80px 6vw;
+  }
+  .year-number {
+    font-size: 110px;
+  }
+  .year-content h2 {
+    font-size: 55px;
+  }
+  .interaction-content h2 {
+    font-size: 60px;
+  }
+  .interaction-points {
+    grid-template-columns: 1fr;
+  }
+  .samshodini-grid {
+    grid-template-columns: 1fr;
+  }
+  .samshodini-card {
+    min-height: 360px;
+    padding: 32px;
+  }
+  .association-closing {
+    padding: 100px 6vw;
+  }
+  .association-closing h2 {
+    font-size: 80px;
+  }
+}
+
+/* Designed fallbacks for photos and name images that have not been provided yet. */
+
+.photo-fallback {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  color: rgba(36, 28, 24, 0.42);
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 0.18em;
+}
+
+.photo-fallback svg {
+  width: 38px;
+  height: 38px;
+  stroke-width: 1.4;
+}
+
+.name-text {
+  padding: 8px 16px;
+  background: #fbf8f3;
+  color: #241c18;
+  font-family: "DM Serif Display", serif;
+  font-size: 22px;
+  box-shadow: 0 8px 18px rgba(36, 28, 24, 0.12);
+}
+
+[data-placeholder] {
+  color: #6c625b;
+  letter-spacing: 0.04em;
+}
