@@ -3,120 +3,513 @@ import nodemailer from "nodemailer";
 
 /*
 |--------------------------------------------------------------------------
-| Event email configuration
+| IT ASSOCIATION KITSW
+| EMAIL SERVICE
 |--------------------------------------------------------------------------
 |
-| TEST MODE:
-| Each event can have a different Gmail account.
+| Gmail SMTP configuration
 |
-| Later add:
+| IMPORTANT:
+| For Gmail, SMTP_PASS must be a GOOGLE APP PASSWORD.
+| Do NOT use the normal Gmail account password.
+|
+|--------------------------------------------------------------------------
+| GLOBAL SMTP VARIABLES
+|--------------------------------------------------------------------------
+|
+| Recommended Vercel configuration:
+|
+| SMTP_HOST=smtp.gmail.com
+| SMTP_PORT=465
+| SMTP_SECURE=true
+| SMTP_USER=yourgmail@gmail.com
+| SMTP_PASS=your16characterapppassword
+|
+|--------------------------------------------------------------------------
+| EVENT-SPECIFIC VARIABLES
+|--------------------------------------------------------------------------
+|
+| If you want different Gmail accounts for different events:
+|
+| EVENT_EMAIL_USER_LLM
+| EVENT_EMAIL_PASSWORD_LLM
+|
+| EVENT_EMAIL_USER_CODE_BUILD
+| EVENT_EMAIL_PASSWORD_CODE_BUILD
+|
+| EVENT_EMAIL_USER_INNOVATION
+| EVENT_EMAIL_PASSWORD_INNOVATION
+|
+| EVENT_EMAIL_USER_CYBER_QUEST
+| EVENT_EMAIL_PASSWORD_CYBER_QUEST
+|
 | EVENT_EMAIL_USER_DESIGN_DEPLOY
 | EVENT_EMAIL_PASSWORD_DESIGN_DEPLOY
+|
+| EVENT_EMAIL_USER_TECH_CONNECT
+| EVENT_EMAIL_PASSWORD_TECH_CONNECT
+|
+| EVENT_EMAIL_USER_EVENT6
+| EVENT_EMAIL_PASSWORD_EVENT6
 |
 |--------------------------------------------------------------------------
 */
 
+/*
+|--------------------------------------------------------------------------
+| Helper
+|--------------------------------------------------------------------------
+*/
+
+function cleanEnv(value) {
+  if (value === undefined || value === null) {
+    return "";
+  }
+
+  return String(value).trim();
+}
+
+/*
+|--------------------------------------------------------------------------
+| Global SMTP configuration
+|--------------------------------------------------------------------------
+*/
+
+const GLOBAL_EMAIL_USER =
+  cleanEnv(
+    process.env.SMTP_USER ||
+    process.env.EMAIL_USER ||
+    "",
+  );
+
+const GLOBAL_EMAIL_PASSWORD =
+  cleanEnv(
+    process.env.SMTP_PASS ||
+    process.env.EMAIL_APP_PASSWORD ||
+    "",
+  );
+
+const SMTP_HOST =
+  cleanEnv(
+    process.env.SMTP_HOST ||
+    "smtp.gmail.com",
+  );
+
+const SMTP_PORT =
+  Number(
+    process.env.SMTP_PORT ||
+    465,
+  );
+
+const SMTP_SECURE =
+  String(
+    process.env.SMTP_SECURE ??
+      "true",
+  ).toLowerCase() ===
+  "true";
+
+/*
+|--------------------------------------------------------------------------
+| Event-specific email configuration
+|--------------------------------------------------------------------------
+*/
+
 const EMAIL_CONFIG = {
+  /*
+  |--------------------------------------------------------------------------
+  | Workshop
+  |--------------------------------------------------------------------------
+  */
+
   llm: {
     user:
-      process.env.EVENT_EMAIL_USER_LLM ||
-      process.env.EMAIL_USER ||
-      "",
+      cleanEnv(
+        process.env.EVENT_EMAIL_USER_LLM,
+      ) ||
+      GLOBAL_EMAIL_USER,
 
     password:
-      process.env.EVENT_EMAIL_PASSWORD_LLM ||
-      process.env.EMAIL_APP_PASSWORD ||
-      "",
+      cleanEnv(
+        process.env.EVENT_EMAIL_PASSWORD_LLM,
+      ) ||
+      GLOBAL_EMAIL_PASSWORD,
   },
+
+  /*
+  |--------------------------------------------------------------------------
+  | Event 1
+  |--------------------------------------------------------------------------
+  */
 
   "code-build": {
     user:
-      process.env.EVENT_EMAIL_USER_CODE_BUILD ||
-      "",
+      cleanEnv(
+        process.env.EVENT_EMAIL_USER_CODE_BUILD,
+      ) ||
+      GLOBAL_EMAIL_USER,
 
     password:
-      process.env.EVENT_EMAIL_PASSWORD_CODE_BUILD ||
-      "",
+      cleanEnv(
+        process.env.EVENT_EMAIL_PASSWORD_CODE_BUILD,
+      ) ||
+      GLOBAL_EMAIL_PASSWORD,
   },
+
+  /*
+  |--------------------------------------------------------------------------
+  | Event 2
+  |--------------------------------------------------------------------------
+  */
 
   innovation: {
     user:
-      process.env.EVENT_EMAIL_USER_INNOVATION ||
-      "",
+      cleanEnv(
+        process.env.EVENT_EMAIL_USER_INNOVATION,
+      ) ||
+      GLOBAL_EMAIL_USER,
 
     password:
-      process.env.EVENT_EMAIL_PASSWORD_INNOVATION ||
-      "",
+      cleanEnv(
+        process.env.EVENT_EMAIL_PASSWORD_INNOVATION,
+      ) ||
+      GLOBAL_EMAIL_PASSWORD,
   },
+
+  /*
+  |--------------------------------------------------------------------------
+  | Event 3
+  |--------------------------------------------------------------------------
+  */
 
   "cyber-quest": {
     user:
-      process.env.EVENT_EMAIL_USER_CYBER_QUEST ||
-      "",
+      cleanEnv(
+        process.env.EVENT_EMAIL_USER_CYBER_QUEST,
+      ) ||
+      GLOBAL_EMAIL_USER,
 
     password:
-      process.env.EVENT_EMAIL_PASSWORD_CYBER_QUEST ||
-      "",
+      cleanEnv(
+        process.env.EVENT_EMAIL_PASSWORD_CYBER_QUEST,
+      ) ||
+      GLOBAL_EMAIL_PASSWORD,
   },
+
+  /*
+  |--------------------------------------------------------------------------
+  | Event 4
+  |--------------------------------------------------------------------------
+  */
 
   "design-deploy": {
     user:
-      process.env.EVENT_EMAIL_USER_DESIGN_DEPLOY ||
-      "",
+      cleanEnv(
+        process.env.EVENT_EMAIL_USER_DESIGN_DEPLOY,
+      ) ||
+      GLOBAL_EMAIL_USER,
 
     password:
-      process.env.EVENT_EMAIL_PASSWORD_DESIGN_DEPLOY ||
-      "",
+      cleanEnv(
+        process.env.EVENT_EMAIL_PASSWORD_DESIGN_DEPLOY,
+      ) ||
+      GLOBAL_EMAIL_PASSWORD,
   },
+
+  /*
+  |--------------------------------------------------------------------------
+  | Event 5
+  |--------------------------------------------------------------------------
+  */
 
   "tech-connect": {
     user:
-      process.env.EVENT_EMAIL_USER_TECH_CONNECT ||
-      "",
+      cleanEnv(
+        process.env.EVENT_EMAIL_USER_TECH_CONNECT,
+      ) ||
+      GLOBAL_EMAIL_USER,
 
     password:
-      process.env.EVENT_EMAIL_PASSWORD_TECH_CONNECT ||
-      "",
+      cleanEnv(
+        process.env.EVENT_EMAIL_PASSWORD_TECH_CONNECT,
+      ) ||
+      GLOBAL_EMAIL_PASSWORD,
+  },
+
+  /*
+  |--------------------------------------------------------------------------
+  | Event 6
+  |--------------------------------------------------------------------------
+  */
+
+  event6: {
+    user:
+      cleanEnv(
+        process.env.EVENT_EMAIL_USER_EVENT6,
+      ) ||
+      GLOBAL_EMAIL_USER,
+
+    password:
+      cleanEnv(
+        process.env.EVENT_EMAIL_PASSWORD_EVENT6,
+      ) ||
+      GLOBAL_EMAIL_PASSWORD,
   },
 };
+
+/*
+|--------------------------------------------------------------------------
+| Get email configuration
+|--------------------------------------------------------------------------
+*/
 
 function getEmailConfig(eventId) {
   const config =
     EMAIL_CONFIG[eventId];
 
+  if (!config) {
+    const error =
+      new Error(
+        `No email configuration exists for event "${eventId}".`,
+      );
+
+    error.code =
+      "EMAIL_EVENT_NOT_CONFIGURED";
+
+    throw error;
+  }
+
+  const user =
+    cleanEnv(config.user);
+
+  const password =
+    cleanEnv(config.password);
+
+  if (!user) {
+    const error =
+      new Error(
+        `Email sender address is not configured for event "${eventId}".`,
+      );
+
+    error.code =
+      "EMAIL_USER_NOT_CONFIGURED";
+
+    throw error;
+  }
+
+  if (!password) {
+    const error =
+      new Error(
+        `Email App Password is not configured for event "${eventId}".`,
+      );
+
+    error.code =
+      "EMAIL_PASSWORD_NOT_CONFIGURED";
+
+    throw error;
+  }
+
+  /*
+  |--------------------------------------------------------------------------
+  | Detect common mistakes
+  |--------------------------------------------------------------------------
+  */
+
   if (
-    !config?.user ||
-    !config?.password
+    password.includes(" ") &&
+    password.replace(/\s/g, "").length ===
+      16
   ) {
-    throw new Error(
-      `Email account is not configured for event "${eventId}".`,
+    /*
+     * Google displays App Passwords with spaces.
+     * Remove them automatically.
+     */
+    config.password =
+      password.replace(/\s/g, "");
+  }
+
+  /*
+  |--------------------------------------------------------------------------
+  | Detect obvious normal-password usage
+  |--------------------------------------------------------------------------
+  |
+  | We cannot know whether a password is genuinely an App Password,
+  | but this warning helps during Vercel debugging.
+  |
+  */
+
+  if (
+    password.length < 12
+  ) {
+    console.warn(
+      `Warning: SMTP password for event "${eventId}" is unusually short. Gmail App Passwords are normally 16 characters.`,
     );
   }
 
-  return config;
+  return {
+    user,
+    password:
+      cleanEnv(config.password).replace(
+        /\s/g,
+        "",
+      ),
+  };
 }
+
+/*
+|--------------------------------------------------------------------------
+| Create Gmail transporter
+|--------------------------------------------------------------------------
+*/
 
 function createTransporter(eventId) {
   const config =
     getEmailConfig(eventId);
 
-  return nodemailer.createTransport({
-    service: "gmail",
-    auth: {
-      user: config.user,
-      pass: config.password,
-    },
-  });
+  /*
+  |--------------------------------------------------------------------------
+  | Gmail SMTP
+  |--------------------------------------------------------------------------
+  |
+  | Port 465 + secure true
+  |
+  | This is the recommended simple configuration
+  | for Gmail SMTP with Nodemailer.
+  |
+  */
+
+  const transporter =
+    nodemailer.createTransport({
+      host:
+        SMTP_HOST,
+
+      port:
+        SMTP_PORT,
+
+      secure:
+        SMTP_SECURE,
+
+      auth: {
+        user:
+          config.user,
+
+        pass:
+          config.password,
+      },
+
+      connectionTimeout:
+        15000,
+
+      greetingTimeout:
+        15000,
+
+      socketTimeout:
+        20000,
+    });
+
+  return transporter;
 }
 
-function escapeHtml(value) {
-  return String(value ?? "")
-    .replace(/&/g, "&amp;")
-    .replace(/</g, "&lt;")
-    .replace(/>/g, "&gt;")
-    .replace(/"/g, "&quot;")
-    .replace(/'/g, "&#039;");
+/*
+|--------------------------------------------------------------------------
+| Verify SMTP connection
+|--------------------------------------------------------------------------
+|
+| This is called before sending.
+| It makes Gmail authentication failures easier to diagnose.
+|--------------------------------------------------------------------------
+*/
+
+async function verifyTransporter(
+  transporter,
+  eventId,
+) {
+  try {
+    await transporter.verify();
+
+    console.log(
+      `SMTP connection verified for event "${eventId}".`,
+    );
+  } catch (error) {
+    console.error(
+      `SMTP verification failed for event "${eventId}":`,
+      error.message,
+    );
+
+    /*
+     |--------------------------------------------------------------------------
+     | Convert Gmail 535 into a useful application error
+     |--------------------------------------------------------------------------
+     */
+
+    if (
+      error?.responseCode ===
+        535 ||
+      String(
+        error?.message || "",
+      ).includes(
+        "535-5.7.8",
+      ) ||
+      String(
+        error?.message || "",
+      ).includes(
+        "Username and Password not accepted",
+      )
+    ) {
+      const authError =
+        new Error(
+          `Gmail authentication failed for event "${eventId}". Check SMTP_USER and SMTP_PASS. SMTP_PASS must be a Google App Password, not the normal Gmail password.`,
+        );
+
+      authError.code =
+        "EMAIL_GMAIL_AUTH_FAILED";
+
+      authError.originalError =
+        error;
+
+      throw authError;
+    }
+
+    throw error;
+  }
 }
+
+/*
+|--------------------------------------------------------------------------
+| Escape HTML
+|--------------------------------------------------------------------------
+*/
+
+function escapeHtml(value) {
+  return String(
+    value ?? "",
+  )
+    .replace(
+      /&/g,
+      "&amp;",
+    )
+    .replace(
+      /</g,
+      "&lt;",
+    )
+    .replace(
+      />/g,
+      "&gt;",
+    )
+    .replace(
+      /"/g,
+      "&quot;",
+    )
+    .replace(
+      /'/g,
+      "&#039;",
+    );
+}
+
+/*
+|--------------------------------------------------------------------------
+| Common email styles
+|--------------------------------------------------------------------------
+*/
 
 const emailStyles = `
 <style>
@@ -138,7 +531,7 @@ const emailStyles = `
 
   .header {
     background: #92172f;
-    color: white;
+    color: #ffffff;
     padding: 28px;
     text-align: center;
   }
@@ -183,14 +576,31 @@ const emailStyles = `
     font-size: 13px;
     text-align: center;
   }
+
+  @media screen and (max-width: 600px) {
+    .container {
+      margin: 10px;
+    }
+
+    .content {
+      padding: 20px;
+    }
+  }
 </style>
 `;
+
+/*
+|--------------------------------------------------------------------------
+| Build registration details table
+|--------------------------------------------------------------------------
+*/
 
 function buildDetailsTable(
   registration,
 ) {
   return `
     <table class="details">
+
       <tr>
         <td>Registration ID</td>
         <td>${escapeHtml(
@@ -252,13 +662,91 @@ function buildDetailsTable(
           registration.transactionId,
         )}</td>
       </tr>
+
     </table>
   `;
 }
 
 /*
 |--------------------------------------------------------------------------
-| Pending email
+| Send email helper
+|--------------------------------------------------------------------------
+*/
+
+async function sendEmail({
+  eventId,
+  from,
+  to,
+  subject,
+  text,
+  html,
+}) {
+  const transporter =
+    createTransporter(
+      eventId,
+    );
+
+  await verifyTransporter(
+    transporter,
+    eventId,
+  );
+
+  try {
+    const result =
+      await transporter.sendMail({
+        from,
+        to,
+        subject,
+        text,
+        html,
+      });
+
+    console.log(
+      `Email sent successfully for event "${eventId}" to ${to}. Message ID: ${result.messageId}`,
+    );
+
+    return result;
+  } catch (error) {
+    console.error(
+      `Email sending failed for event "${eventId}":`,
+      error.message,
+    );
+
+    if (
+      error?.responseCode ===
+        535 ||
+      String(
+        error?.message || "",
+      ).includes(
+        "535-5.7.8",
+      ) ||
+      String(
+        error?.message || "",
+      ).includes(
+        "Username and Password not accepted",
+      )
+    ) {
+      const authError =
+        new Error(
+          `Gmail authentication failed for event "${eventId}". Check SMTP_USER and SMTP_PASS. SMTP_PASS must be a Google App Password, not the normal Gmail password.`,
+        );
+
+      authError.code =
+        "EMAIL_GMAIL_AUTH_FAILED";
+
+      authError.originalError =
+        error;
+
+      throw authError;
+    }
+
+    throw error;
+  }
+}
+
+/*
+|--------------------------------------------------------------------------
+| Pending registration email
 |--------------------------------------------------------------------------
 */
 
@@ -273,11 +761,6 @@ export async function sendRegistrationPendingEmail(
 
   const config =
     getEmailConfig(
-      registration.eventId,
-    );
-
-  const transporter =
-    createTransporter(
       registration.eventId,
     );
 
@@ -297,57 +780,59 @@ export async function sendRegistrationPendingEmail(
   const html = `
 <!DOCTYPE html>
 <html>
+
 <head>
-<meta charset="UTF-8">
-${emailStyles}
+  <meta charset="UTF-8">
+  ${emailStyles}
 </head>
 
 <body>
 
-<div class="container">
+  <div class="container">
 
-  <div class="header">
-    <h1>IT Association | KITSW</h1>
-  </div>
-
-  <div class="content">
-
-    <h2>Registration Received</h2>
-
-    <p>
-      Dear <strong>${name}</strong>,
-    </p>
-
-    <p>
-      Your registration for
-      <strong>${event}</strong>
-      has been received successfully.
-    </p>
-
-    <div class="status">
-      <strong>Status: VERIFICATION PENDING</strong>
-      <br>
-      Your payment and registration details will be
-      verified by the IT Association team.
+    <div class="header">
+      <h1>IT Association | KITSW</h1>
     </div>
 
-    ${buildDetailsTable(
-      registration,
-    )}
+    <div class="content">
 
-    <p>
-      Please keep your Registration ID for future reference.
-    </p>
+      <h2>Registration Received</h2>
+
+      <p>
+        Dear <strong>${name}</strong>,
+      </p>
+
+      <p>
+        Your registration for
+        <strong>${event}</strong>
+        has been received successfully.
+      </p>
+
+      <div class="status">
+        <strong>Status: VERIFICATION PENDING</strong>
+        <br>
+        Your payment and registration details will be
+        verified by the IT Association team.
+      </div>
+
+      ${buildDetailsTable(
+        registration,
+      )}
+
+      <p>
+        Please keep your Registration ID
+        for future reference.
+      </p>
+
+    </div>
+
+    <div class="footer">
+      IT Association · KITSW
+      <br>
+      This is an automated email.
+    </div>
 
   </div>
-
-  <div class="footer">
-    IT Association · KITSW
-    <br>
-    This is an automated email.
-  </div>
-
-</div>
 
 </body>
 </html>
@@ -378,18 +863,27 @@ Your payment and registration details will be verified by the IT Association tea
 IT Association, KITSW
 `;
 
-  await transporter.sendMail({
-    from: `"IT Association | KITSW" <${config.user}>`,
-    to: registration.email,
+  await sendEmail({
+    eventId:
+      registration.eventId,
+
+    from:
+      `"IT Association | KITSW" <${config.user}>`,
+
+    to:
+      registration.email,
+
     subject,
+
     text,
+
     html,
   });
 }
 
 /*
 |--------------------------------------------------------------------------
-| Verified email
+| Verified registration email
 |--------------------------------------------------------------------------
 */
 
@@ -407,67 +901,66 @@ export async function sendRegistrationSuccessEmail(
       registration.eventId,
     );
 
-  const transporter =
-    createTransporter(
-      registration.eventId,
-    );
-
   const subject =
     `Registration Verified - ${registration.event}`;
 
   const html = `
 <!DOCTYPE html>
 <html>
+
 <head>
-<meta charset="UTF-8">
-${emailStyles}
+  <meta charset="UTF-8">
+  ${emailStyles}
 </head>
 
 <body>
 
-<div class="container">
+  <div class="container">
 
-  <div class="header">
-    <h1>IT Association | KITSW</h1>
-  </div>
-
-  <div class="content">
-
-    <h2>Registration Verified</h2>
-
-    <p>
-      Dear <strong>${escapeHtml(
-        registration.name,
-      )}</strong>,
-    </p>
-
-    <div class="status">
-      <strong>Status: VERIFIED</strong>
-      <br>
-      Your registration has been successfully verified.
+    <div class="header">
+      <h1>IT Association | KITSW</h1>
     </div>
 
-    ${buildDetailsTable(
-      registration,
-    )}
+    <div class="content">
 
-    <p>
-      Your registration is now confirmed.
-    </p>
+      <h2>Registration Verified</h2>
 
-    <p>
-      Please keep this email and your Registration ID.
-    </p>
+      <p>
+        Dear
+        <strong>
+          ${escapeHtml(
+            registration.name,
+          )}
+        </strong>,
+      </p>
+
+      <div class="status">
+        <strong>Status: VERIFIED</strong>
+        <br>
+        Your registration has been successfully verified.
+      </div>
+
+      ${buildDetailsTable(
+        registration,
+      )}
+
+      <p>
+        Your registration is now confirmed.
+      </p>
+
+      <p>
+        Please keep this email and your Registration ID.
+      </p>
+
+    </div>
+
+    <div class="footer">
+      IT Association · KITSW
+      <br>
+      This is an automated email.
+    </div>
 
   </div>
-
-  <div class="footer">
-    IT Association · KITSW
-    <br>
-    This is an automated email.
-  </div>
-
-</div>
 
 </body>
 </html>
@@ -491,18 +984,27 @@ Your registration is now confirmed.
 IT Association, KITSW
 `;
 
-  await transporter.sendMail({
-    from: `"IT Association | KITSW" <${config.user}>`,
-    to: registration.email,
+  await sendEmail({
+    eventId:
+      registration.eventId,
+
+    from:
+      `"IT Association | KITSW" <${config.user}>`,
+
+    to:
+      registration.email,
+
     subject,
+
     text,
+
     html,
   });
 }
 
 /*
 |--------------------------------------------------------------------------
-| Rejected email
+| Rejected registration email
 |--------------------------------------------------------------------------
 */
 
@@ -520,64 +1022,63 @@ export async function sendRegistrationRejectedEmail(
       registration.eventId,
     );
 
-  const transporter =
-    createTransporter(
-      registration.eventId,
-    );
-
   const subject =
     `Registration Update - ${registration.event}`;
 
   const html = `
 <!DOCTYPE html>
 <html>
+
 <head>
-<meta charset="UTF-8">
-${emailStyles}
+  <meta charset="UTF-8">
+  ${emailStyles}
 </head>
 
 <body>
 
-<div class="container">
+  <div class="container">
 
-  <div class="header">
-    <h1>IT Association | KITSW</h1>
-  </div>
-
-  <div class="content">
-
-    <h2>Registration Update</h2>
-
-    <p>
-      Dear <strong>${escapeHtml(
-        registration.name,
-      )}</strong>,
-    </p>
-
-    <div class="status">
-      <strong>Status: NOT VERIFIED</strong>
-      <br>
-      Your registration could not be verified at this time.
+    <div class="header">
+      <h1>IT Association | KITSW</h1>
     </div>
 
-    ${buildDetailsTable(
-      registration,
-    )}
+    <div class="content">
 
-    <p>
-      If you believe this was a mistake, please contact
-      the IT Association team.
-    </p>
+      <h2>Registration Update</h2>
+
+      <p>
+        Dear
+        <strong>
+          ${escapeHtml(
+            registration.name,
+          )}
+        </strong>,
+      </p>
+
+      <div class="status">
+        <strong>Status: NOT VERIFIED</strong>
+        <br>
+        Your registration could not be verified at this time.
+      </div>
+
+      ${buildDetailsTable(
+        registration,
+      )}
+
+      <p>
+        If you believe this was a mistake,
+        please contact the IT Association team.
+      </p>
+
+    </div>
+
+    <div class="footer">
+      IT Association · KITSW
+      <br>
+      This is an automated email.
+    </div>
 
   </div>
-
-  <div class="footer">
-    IT Association · KITSW
-    <br>
-    This is an automated email.
-  </div>
-
-</div>
 
 </body>
 </html>
@@ -602,11 +1103,20 @@ Please contact the IT Association team if you believe this was a mistake.
 IT Association, KITSW
 `;
 
-  await transporter.sendMail({
-    from: `"IT Association | KITSW" <${config.user}>`,
-    to: registration.email,
+  await sendEmail({
+    eventId:
+      registration.eventId,
+
+    from:
+      `"IT Association | KITSW" <${config.user}>`,
+
+    to:
+      registration.email,
+
     subject,
+
     text,
+
     html,
   });
 }
