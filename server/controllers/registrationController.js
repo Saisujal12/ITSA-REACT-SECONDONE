@@ -12,6 +12,12 @@ const EMAIL_REGEX =
 const PHONE_REGEX =
   /^\+?[0-9\s()-]{10,20}$/;
 
+/*
+|--------------------------------------------------------------------------
+| Supported registration events
+|--------------------------------------------------------------------------
+*/
+
 const EVENT_IDS = new Set([
   "llm",
   "code-build",
@@ -19,7 +25,14 @@ const EVENT_IDS = new Set([
   "cyber-quest",
   "design-deploy",
   "tech-connect",
+  "event6",
 ]);
+
+/*
+|--------------------------------------------------------------------------
+| Create registration
+|--------------------------------------------------------------------------
+*/
 
 export async function createRegistration(
   req,
@@ -42,7 +55,7 @@ export async function createRegistration(
 
     /*
     |--------------------------------------------------------------------------
-    | Basic validation
+    | Validate event
     |--------------------------------------------------------------------------
     */
 
@@ -52,18 +65,32 @@ export async function createRegistration(
     ) {
       return res.status(400).json({
         success: false,
+
         message:
           "Invalid event selected.",
       });
     }
 
+    /*
+    |--------------------------------------------------------------------------
+    | Validate name
+    |--------------------------------------------------------------------------
+    */
+
     if (!name?.trim()) {
       return res.status(400).json({
         success: false,
+
         message:
           "Please enter your name.",
       });
     }
+
+    /*
+    |--------------------------------------------------------------------------
+    | Validate college type
+    |--------------------------------------------------------------------------
+    */
 
     if (
       !["KITSW", "OTHER"].includes(
@@ -72,40 +99,70 @@ export async function createRegistration(
     ) {
       return res.status(400).json({
         success: false,
+
         message:
           "Please select your college.",
       });
     }
 
+    /*
+    |--------------------------------------------------------------------------
+    | Validate college name
+    |--------------------------------------------------------------------------
+    */
+
     if (
-      collegeType === "OTHER" &&
+      collegeType ===
+        "OTHER" &&
       !collegeName?.trim()
     ) {
       return res.status(400).json({
         success: false,
+
         message:
           "Please enter your college name.",
       });
     }
 
+    /*
+    |--------------------------------------------------------------------------
+    | Validate KITSW roll number
+    |--------------------------------------------------------------------------
+    */
+
     if (
-      collegeType === "KITSW" &&
+      collegeType ===
+        "KITSW" &&
       !rollNo?.trim()
     ) {
       return res.status(400).json({
         success: false,
+
         message:
           "Please enter your roll number.",
       });
     }
 
+    /*
+    |--------------------------------------------------------------------------
+    | Validate branch
+    |--------------------------------------------------------------------------
+    */
+
     if (!branch?.trim()) {
       return res.status(400).json({
         success: false,
+
         message:
           "Please enter your branch.",
       });
     }
+
+    /*
+    |--------------------------------------------------------------------------
+    | Validate email
+    |--------------------------------------------------------------------------
+    */
 
     if (
       !email?.trim() ||
@@ -115,10 +172,17 @@ export async function createRegistration(
     ) {
       return res.status(400).json({
         success: false,
+
         message:
           "Please enter a valid email address.",
       });
     }
+
+    /*
+    |--------------------------------------------------------------------------
+    | Validate phone
+    |--------------------------------------------------------------------------
+    */
 
     if (
       !phone?.trim() ||
@@ -128,18 +192,32 @@ export async function createRegistration(
     ) {
       return res.status(400).json({
         success: false,
+
         message:
           "Please enter a valid phone number.",
       });
     }
 
+    /*
+    |--------------------------------------------------------------------------
+    | Validate transaction ID
+    |--------------------------------------------------------------------------
+    */
+
     if (!transactionId?.trim()) {
       return res.status(400).json({
         success: false,
+
         message:
           "Please enter your UTR / transaction ID.",
       });
     }
+
+    /*
+    |--------------------------------------------------------------------------
+    | Validate amount
+    |--------------------------------------------------------------------------
+    */
 
     if (
       amount === undefined ||
@@ -148,6 +226,7 @@ export async function createRegistration(
     ) {
       return res.status(400).json({
         success: false,
+
         message:
           "Registration amount is missing.",
       });
@@ -161,8 +240,16 @@ export async function createRegistration(
 
     const registrationId =
       `IT-${Date.now()}-${Math.floor(
-        1000 + Math.random() * 9000,
+        1000 +
+          Math.random() *
+            9000,
       )}`;
+
+    /*
+    |--------------------------------------------------------------------------
+    | Normalize data
+    |--------------------------------------------------------------------------
+    */
 
     const normalizedCollegeType =
       collegeType === "KITSW"
@@ -175,12 +262,18 @@ export async function createRegistration(
       eventId,
 
       event:
-        String(event || "Event").trim(),
+        String(
+          event ||
+            "Event",
+        ).trim(),
 
       name:
         String(name)
           .trim()
-          .replace(/\s+/g, " "),
+          .replace(
+            /\s+/g,
+            " ",
+          ),
 
       collegeType:
         normalizedCollegeType,
@@ -190,16 +283,21 @@ export async function createRegistration(
         "KITSW"
           ? "KITSW"
           : String(
-              collegeName || "",
+              collegeName ||
+                "",
             )
               .trim()
-              .replace(/\s+/g, " "),
+              .replace(
+                /\s+/g,
+                " ",
+              ),
 
       rollNo:
         normalizedCollegeType ===
         "KITSW"
           ? String(
-              rollNo || "",
+              rollNo ||
+                "",
             )
               .trim()
               .toUpperCase()
@@ -208,7 +306,10 @@ export async function createRegistration(
       branch:
         String(branch)
           .trim()
-          .replace(/\s+/g, " "),
+          .replace(
+            /\s+/g,
+            " ",
+          ),
 
       email:
         String(email)
@@ -221,10 +322,12 @@ export async function createRegistration(
       amount,
 
       transactionId:
-        String(transactionId)
-          .trim(),
+        String(
+          transactionId,
+        ).trim(),
 
-      status: "PENDING",
+      status:
+        "PENDING",
     };
 
     /*
@@ -240,27 +343,30 @@ export async function createRegistration(
 
     /*
     |--------------------------------------------------------------------------
-    | Send event-specific pending email
+    | Send pending email
     |--------------------------------------------------------------------------
     */
 
-    let emailSent = false;
+    let emailSent =
+      false;
 
     try {
       await sendRegistrationPendingEmail(
         savedRegistration,
       );
 
-      emailSent = true;
+      emailSent =
+        true;
 
       console.log(
         `Pending email sent to ${registration.email}`,
       );
-    } catch (emailError) {
+    } catch (
+      emailError
+    ) {
       /*
-       * IMPORTANT:
-       * Email failure must NOT delete the registration.
-       * The Google Sheet entry remains saved.
+       * Email failure must NOT remove
+       * the Google Sheets registration.
        */
 
       console.error(
@@ -269,42 +375,112 @@ export async function createRegistration(
       );
     }
 
-    return res.status(201).json({
-      success: true,
+    /*
+    |--------------------------------------------------------------------------
+    | Success
+    |--------------------------------------------------------------------------
+    */
 
-      message: emailSent
-        ? "Registration submitted successfully. Verification is pending."
-        : "Registration submitted successfully. Email could not be sent, but your registration was saved.",
+    return res
+      .status(201)
+      .json({
+        success: true,
 
-      registrationId,
+        message: emailSent
+          ? "Registration submitted successfully. Verification is pending."
+          : "Registration submitted successfully. Email could not be sent, but your registration was saved.",
 
-      status: "PENDING",
+        registrationId,
 
-      email: {
-        sent: emailSent,
-      },
-    });
+        status:
+          "PENDING",
+
+        eventId,
+
+        email: {
+          sent:
+            emailSent,
+        },
+      });
   } catch (error) {
     console.error(
       "Registration error:",
       error,
     );
 
+    /*
+    |--------------------------------------------------------------------------
+    | Event sheet not configured
+    |--------------------------------------------------------------------------
+    */
+
     if (
       error.code ===
       "EVENT_SHEET_NOT_CONFIGURED"
     ) {
-      return res.status(503).json({
-        success: false,
-        message:
-          "This event is not configured for registration yet.",
-      });
+      return res
+        .status(503)
+        .json({
+          success: false,
+
+          message:
+            "This event is not configured yet. Please contact the administrator.",
+        });
     }
 
-    return res.status(500).json({
-      success: false,
-      message:
-        "Unable to submit registration right now. Please try again later.",
-    });
+    /*
+    |--------------------------------------------------------------------------
+    | Spreadsheet not found
+    |--------------------------------------------------------------------------
+    */
+
+    if (
+      error.code ===
+      "GOOGLE_SHEET_NOT_FOUND"
+    ) {
+      return res
+        .status(503)
+        .json({
+          success: false,
+
+          message:
+            "The Google Sheet for this event could not be found. Please contact the administrator.",
+        });
+    }
+
+    /*
+    |--------------------------------------------------------------------------
+    | Spreadsheet access denied
+    |--------------------------------------------------------------------------
+    */
+
+    if (
+      error.code ===
+      "GOOGLE_SHEET_ACCESS_DENIED"
+    ) {
+      return res
+        .status(503)
+        .json({
+          success: false,
+
+          message:
+            "The Google Sheet for this event is not accessible. Please contact the administrator.",
+        });
+    }
+
+    /*
+    |--------------------------------------------------------------------------
+    | Generic error
+    |--------------------------------------------------------------------------
+    */
+
+    return res
+      .status(500)
+      .json({
+        success: false,
+
+        message:
+          "Unable to submit registration right now. Please try again later.",
+      });
   }
 }

@@ -6,14 +6,22 @@ import { google } from "googleapis";
 | EVENT → GOOGLE SHEET CONFIGURATION
 |--------------------------------------------------------------------------
 |
-| Workshop → EVENT_SHEET_ID_LLM
-| Event 1  → EVENT_SHEET_ID_CODE_BUILD
-| Event 2  → EVENT_SHEET_ID_INNOVATION
-| Event 3  → EVENT_SHEET_ID_CYBER_QUEST
-| Event 4  → EVENT_SHEET_ID_DESIGN_DEPLOY
-| Event 5  → EVENT_SHEET_ID_TECH_CONNECT
-| Event 6  → EVENT_SHEET_ID_EVENT6
+| Each event can use its own Google Spreadsheet.
 |
+| Workshop      → EVENT_SHEET_ID_LLM
+| Event 1       → EVENT_SHEET_ID_CODE_BUILD
+| Event 2       → EVENT_SHEET_ID_INNOVATION
+| Event 3       → EVENT_SHEET_ID_CYBER_QUEST
+| Event 4       → EVENT_SHEET_ID_DESIGN_DEPLOY
+| Event 5       → EVENT_SHEET_ID_TECH_CONNECT
+| Event 6       → EVENT_SHEET_ID_EVENT6
+|
+| IMPORTANT:
+|
+| These environment variables must contain the REAL
+| Google Spreadsheet IDs.
+|
+|--------------------------------------------------------------------------
 */
 
 const EVENT_CONFIG = {
@@ -62,8 +70,10 @@ const EVENT_CONFIG = {
 };
 
 const SHEET_NAME =
-  process.env.GOOGLE_SHEET_TAB_NAME ||
-  "Registrations";
+  (
+    process.env.GOOGLE_SHEET_TAB_NAME ||
+    "Registrations"
+  ).trim();
 
 const HEADERS = [
   "Registration ID",
@@ -84,15 +94,60 @@ const HEADERS = [
 
 /*
 |--------------------------------------------------------------------------
-| Check whether event has a spreadsheet configured
+| Placeholder detection
+|--------------------------------------------------------------------------
+|
+| Prevents values such as:
+|
+| PASTE_INNOVATION_SHEET_ID_HERE
+|
+| from being sent to Google.
+|--------------------------------------------------------------------------
+*/
+
+function isPlaceholderSheetId(
+  value,
+) {
+  if (!value) {
+    return true;
+  }
+
+  const normalized =
+    String(value)
+      .trim()
+      .toUpperCase();
+
+  return (
+    normalized.startsWith(
+      "PASTE_",
+    ) ||
+    normalized.includes(
+      "SHEET_ID_HERE",
+    ) ||
+    normalized ===
+      "YOUR_SHEET_ID" ||
+    normalized ===
+      "YOUR_GOOGLE_SHEET_ID"
+  );
+}
+
+/*
+|--------------------------------------------------------------------------
+| Check whether an event has a valid spreadsheet configured
 |--------------------------------------------------------------------------
 */
 
 export function isEventSheetConfigured(
   eventId,
 ) {
-  return Boolean(
-    EVENT_CONFIG[eventId]?.sheetId,
+  const sheetId =
+    EVENT_CONFIG[eventId]?.sheetId;
+
+  return (
+    Boolean(sheetId) &&
+    !isPlaceholderSheetId(
+      sheetId,
+    )
   );
 }
 
@@ -105,13 +160,18 @@ export function isEventSheetConfigured(
 function getSpreadsheetId(
   eventId,
 ) {
-  const spreadsheetId =
+  const sheetId =
     EVENT_CONFIG[eventId]?.sheetId;
 
-  if (!spreadsheetId) {
+  if (
+    !sheetId ||
+    isPlaceholderSheetId(
+      sheetId,
+    )
+  ) {
     const error =
       new Error(
-        `Google Sheet is not configured for event "${eventId}".`,
+        `Google Sheet is not configured correctly for event "${eventId}". Set the correct spreadsheet ID in the Vercel environment variable.`,
       );
 
     error.code =
@@ -120,7 +180,9 @@ function getSpreadsheetId(
     throw error;
   }
 
-  return spreadsheetId;
+  return String(
+    sheetId,
+  ).trim();
 }
 
 /*
@@ -132,6 +194,10 @@ function getSpreadsheetId(
 function createAuth() {
   /*
    * Vercel / production
+   *
+   * Recommended:
+   *
+   * GOOGLE_SERVICE_ACCOUNT_JSON
    */
   if (
     process.env
@@ -153,6 +219,7 @@ function createAuth() {
 
     return new google.auth.GoogleAuth({
       credentials,
+
       scopes: [
         "https://www.googleapis.com/auth/spreadsheets",
       ],
@@ -222,52 +289,93 @@ export async function ensureRegistrationSheet(
       eventId,
     );
 
-  const response =
-    await sheets.spreadsheets.values.get(
-      {
-        spreadsheetId,
+  try {
+    const response =
+      await sheets.spreadsheets.values.get(
+        {
+          spreadsheetId,
 
-        range:
-          `${SHEET_NAME}!A1:N1`,
-      },
-    );
-
-  const existingHeaders =
-    response.data.values?.[0] ||
-    [];
-
-  const headersMatch =
-    HEADERS.every(
-      (
-        header,
-        index,
-      ) =>
-        existingHeaders[
-          index
-        ] === header,
-    );
-
-  if (!headersMatch) {
-    await sheets.spreadsheets.values.update(
-      {
-        spreadsheetId,
-
-        range:
-          `${SHEET_NAME}!A1:N1`,
-
-        valueInputOption:
-          "RAW",
-
-        requestBody: {
-          values: [
-            HEADERS,
-          ],
+          range:
+            `${SHEET_NAME}!A1:N1`,
         },
-      },
-    );
-  }
+      );
 
-  return HEADERS;
+    const existingHeaders =
+      response.data.values?.[0] ||
+      [];
+
+    const headersMatch =
+      HEADERS.every(
+        (
+          header,
+          index,
+        ) =>
+          existingHeaders[
+            index
+          ] === header,
+      );
+
+    if (!headersMatch) {
+      await sheets.spreadsheets.values.update(
+        {
+          spreadsheetId,
+
+          range:
+            `${SHEET_NAME}!A1:N1`,
+
+          valueInputOption:
+            "RAW",
+
+          requestBody: {
+            values: [
+              HEADERS,
+            ],
+          },
+        },
+      );
+    }
+
+    return HEADERS;
+  } catch (error) {
+    /*
+     * Give a much clearer error for an invalid
+     * spreadsheet ID or inaccessible spreadsheet.
+     */
+
+    if (
+      error?.code === 404 ||
+      error?.response?.status ===
+        404
+    ) {
+      const configError =
+        new Error(
+          `Google Spreadsheet was not found for event "${eventId}". Check the spreadsheet ID and make sure the spreadsheet is shared with the service-account email.`,
+        );
+
+      configError.code =
+        "GOOGLE_SHEET_NOT_FOUND";
+
+      throw configError;
+    }
+
+    if (
+      error?.code === 403 ||
+      error?.response?.status ===
+        403
+    ) {
+      const configError =
+        new Error(
+          `Google Spreadsheet access denied for event "${eventId}". Share the spreadsheet with the Google service-account email as Editor.`,
+        );
+
+      configError.code =
+        "GOOGLE_SHEET_ACCESS_DENIED";
+
+      throw configError;
+    }
+
+    throw error;
+  }
 }
 
 /*
@@ -338,27 +446,64 @@ export async function appendRegistration(
     ],
   ];
 
-  await sheets.spreadsheets.values.append(
-    {
-      spreadsheetId,
+  try {
+    await sheets.spreadsheets.values.append(
+      {
+        spreadsheetId,
 
-      range:
-        `${SHEET_NAME}!A:N`,
+        range:
+          `${SHEET_NAME}!A:N`,
 
-      valueInputOption:
-        "USER_ENTERED",
+        valueInputOption:
+          "USER_ENTERED",
 
-      insertDataOption:
-        "INSERT_ROWS",
+        insertDataOption:
+          "INSERT_ROWS",
 
-      requestBody: {
-        values,
+        requestBody: {
+          values,
+        },
       },
-    },
-  );
+    );
+  } catch (error) {
+    if (
+      error?.code === 404 ||
+      error?.response?.status ===
+        404
+    ) {
+      const configError =
+        new Error(
+          `Google Spreadsheet was not found for event "${eventId}".`,
+        );
+
+      configError.code =
+        "GOOGLE_SHEET_NOT_FOUND";
+
+      throw configError;
+    }
+
+    if (
+      error?.code === 403 ||
+      error?.response?.status ===
+        403
+    ) {
+      const configError =
+        new Error(
+          `Google Spreadsheet access denied for event "${eventId}".`,
+        );
+
+      configError.code =
+        "GOOGLE_SHEET_ACCESS_DENIED";
+
+      throw configError;
+    }
+
+    throw error;
+  }
 
   return {
     ...registration,
+
     createdAt,
   };
 }
@@ -465,10 +610,6 @@ export async function getRegistrationRows(
 |--------------------------------------------------------------------------
 | Get all registrations
 |--------------------------------------------------------------------------
-|
-| Kept for compatibility with other backend code.
-| Admin dashboard does NOT use this function anymore.
-|
 */
 
 export async function getAllRegistrationRows() {
@@ -523,10 +664,6 @@ export async function getAllRegistrationRows() {
 |--------------------------------------------------------------------------
 | Update registration status
 |--------------------------------------------------------------------------
-|
-| IMPORTANT:
-| eventId comes from the authenticated admin session.
-|
 */
 
 export async function updateRegistrationStatus(

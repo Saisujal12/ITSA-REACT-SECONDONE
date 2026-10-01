@@ -2,69 +2,74 @@
  * ============================================================
  * ADMIN EVENT CONFIGURATION
  * ============================================================
- *
- * The event selected during admin login is stored inside the
- * signed admin session.
- *
- * The backend then uses that eventId for:
- *   - loading registrations
- *   - verifying registrations
- *   - rejecting registrations
- *   - sending status emails
- *
- * The browser cannot change the event after login.
- * The admin must logout and login again to select another event.
  */
 
 export const ADMIN_EVENTS = [
   {
     id: "llm",
+
     label: "Workshop",
+
     name: "Agentic AI Workshop",
   },
 
   {
     id: "code-build",
+
     label: "Event 1",
+
     name: "Code & Build",
   },
 
   {
     id: "innovation",
+
     label: "Event 2",
+
     name: "IT Innovation Challenge",
   },
 
   {
     id: "cyber-quest",
+
     label: "Event 3",
+
     name: "Cyber Quest",
   },
 
   {
     id: "design-deploy",
+
     label: "Event 4",
+
     name: "Design to Deploy",
   },
 
   {
     id: "tech-connect",
+
     label: "Event 5",
+
     name: "Tech Connect",
   },
 
   {
     id: "event6",
+
     label: "Event 6",
+
     name: "Event 6",
   },
 ];
 
-export function getAdminEvent(eventId) {
+export function getAdminEvent(
+  eventId,
+) {
   return (
     ADMIN_EVENTS.find(
       (event) =>
-        event.id === eventId,
+        event.id ===
+        eventId,
     ) || null
   );
 }
