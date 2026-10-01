@@ -7,29 +7,33 @@ import nodemailer from "nodemailer";
 | EMAIL SERVICE
 |--------------------------------------------------------------------------
 |
-| Gmail SMTP configuration
+| MAIN / RECOMMENDED CONFIGURATION
 |
-| IMPORTANT:
-| For Gmail, SMTP_PASS must be a GOOGLE APP PASSWORD.
-| Do NOT use the normal Gmail account password.
-|
-|--------------------------------------------------------------------------
-| GLOBAL SMTP VARIABLES
-|--------------------------------------------------------------------------
-|
-| Recommended Vercel configuration:
+| Use one normal Gmail account for sending all registration emails:
 |
 | SMTP_HOST=smtp.gmail.com
 | SMTP_PORT=465
 | SMTP_SECURE=true
 | SMTP_USER=yourgmail@gmail.com
-| SMTP_PASS=your16characterapppassword
+| SMTP_PASS=your-google-app-password
+|
+| IMPORTANT:
+|
+| SMTP_USER is the NORMAL GMAIL ACCOUNT that sends emails.
+|
+| SMTP_PASS must be the GOOGLE APP PASSWORD for that Gmail account.
+|
+| DO NOT use:
+| - Google service-account email
+| - Google service-account private key
+| - Normal Gmail password
 |
 |--------------------------------------------------------------------------
-| EVENT-SPECIFIC VARIABLES
+| OPTIONAL EVENT-SPECIFIC EMAIL CONFIGURATION
 |--------------------------------------------------------------------------
 |
-| If you want different Gmail accounts for different events:
+| If you later want different Gmail accounts for different events,
+| you can use:
 |
 | EVENT_EMAIL_USER_LLM
 | EVENT_EMAIL_PASSWORD_LLM
@@ -52,17 +56,22 @@ import nodemailer from "nodemailer";
 | EVENT_EMAIL_USER_EVENT6
 | EVENT_EMAIL_PASSWORD_EVENT6
 |
+| If event-specific credentials are not present,
+| the global SMTP_USER / SMTP_PASS are automatically used.
 |--------------------------------------------------------------------------
 */
 
 /*
 |--------------------------------------------------------------------------
-| Helper
+| ENVIRONMENT HELPERS
 |--------------------------------------------------------------------------
 */
 
 function cleanEnv(value) {
-  if (value === undefined || value === null) {
+  if (
+    value === undefined ||
+    value === null
+  ) {
     return "";
   }
 
@@ -71,34 +80,20 @@ function cleanEnv(value) {
 
 /*
 |--------------------------------------------------------------------------
-| Global SMTP configuration
+| GLOBAL SMTP CONFIGURATION
 |--------------------------------------------------------------------------
 */
 
-const GLOBAL_EMAIL_USER =
-  cleanEnv(
-    process.env.SMTP_USER ||
-    process.env.EMAIL_USER ||
-    "",
-  );
-
-const GLOBAL_EMAIL_PASSWORD =
-  cleanEnv(
-    process.env.SMTP_PASS ||
-    process.env.EMAIL_APP_PASSWORD ||
-    "",
-  );
-
 const SMTP_HOST =
   cleanEnv(
-    process.env.SMTP_HOST ||
-    "smtp.gmail.com",
-  );
+    process.env.SMTP_HOST,
+  ) ||
+  "smtp.gmail.com";
 
 const SMTP_PORT =
   Number(
     process.env.SMTP_PORT ||
-    465,
+      465,
   );
 
 const SMTP_SECURE =
@@ -108,9 +103,28 @@ const SMTP_SECURE =
   ).toLowerCase() ===
   "true";
 
+const GLOBAL_SMTP_USER =
+  cleanEnv(
+    process.env.SMTP_USER ||
+      process.env.EMAIL_USER ||
+      "",
+  );
+
+const GLOBAL_SMTP_PASS =
+  cleanEnv(
+    process.env.SMTP_PASS ||
+      process.env.EMAIL_APP_PASSWORD ||
+      "",
+  );
+
 /*
 |--------------------------------------------------------------------------
-| Event-specific email configuration
+| EVENT EMAIL CONFIGURATION
+|--------------------------------------------------------------------------
+|
+| Event-specific credentials override the global SMTP credentials.
+|
+| If they are empty, global SMTP_USER / SMTP_PASS are used.
 |--------------------------------------------------------------------------
 */
 
@@ -126,13 +140,13 @@ const EMAIL_CONFIG = {
       cleanEnv(
         process.env.EVENT_EMAIL_USER_LLM,
       ) ||
-      GLOBAL_EMAIL_USER,
+      GLOBAL_SMTP_USER,
 
     password:
       cleanEnv(
         process.env.EVENT_EMAIL_PASSWORD_LLM,
       ) ||
-      GLOBAL_EMAIL_PASSWORD,
+      GLOBAL_SMTP_PASS,
   },
 
   /*
@@ -146,13 +160,13 @@ const EMAIL_CONFIG = {
       cleanEnv(
         process.env.EVENT_EMAIL_USER_CODE_BUILD,
       ) ||
-      GLOBAL_EMAIL_USER,
+      GLOBAL_SMTP_USER,
 
     password:
       cleanEnv(
         process.env.EVENT_EMAIL_PASSWORD_CODE_BUILD,
       ) ||
-      GLOBAL_EMAIL_PASSWORD,
+      GLOBAL_SMTP_PASS,
   },
 
   /*
@@ -166,13 +180,13 @@ const EMAIL_CONFIG = {
       cleanEnv(
         process.env.EVENT_EMAIL_USER_INNOVATION,
       ) ||
-      GLOBAL_EMAIL_USER,
+      GLOBAL_SMTP_USER,
 
     password:
       cleanEnv(
         process.env.EVENT_EMAIL_PASSWORD_INNOVATION,
       ) ||
-      GLOBAL_EMAIL_PASSWORD,
+      GLOBAL_SMTP_PASS,
   },
 
   /*
@@ -186,13 +200,13 @@ const EMAIL_CONFIG = {
       cleanEnv(
         process.env.EVENT_EMAIL_USER_CYBER_QUEST,
       ) ||
-      GLOBAL_EMAIL_USER,
+      GLOBAL_SMTP_USER,
 
     password:
       cleanEnv(
         process.env.EVENT_EMAIL_PASSWORD_CYBER_QUEST,
       ) ||
-      GLOBAL_EMAIL_PASSWORD,
+      GLOBAL_SMTP_PASS,
   },
 
   /*
@@ -206,13 +220,13 @@ const EMAIL_CONFIG = {
       cleanEnv(
         process.env.EVENT_EMAIL_USER_DESIGN_DEPLOY,
       ) ||
-      GLOBAL_EMAIL_USER,
+      GLOBAL_SMTP_USER,
 
     password:
       cleanEnv(
         process.env.EVENT_EMAIL_PASSWORD_DESIGN_DEPLOY,
       ) ||
-      GLOBAL_EMAIL_PASSWORD,
+      GLOBAL_SMTP_PASS,
   },
 
   /*
@@ -226,13 +240,13 @@ const EMAIL_CONFIG = {
       cleanEnv(
         process.env.EVENT_EMAIL_USER_TECH_CONNECT,
       ) ||
-      GLOBAL_EMAIL_USER,
+      GLOBAL_SMTP_USER,
 
     password:
       cleanEnv(
         process.env.EVENT_EMAIL_PASSWORD_TECH_CONNECT,
       ) ||
-      GLOBAL_EMAIL_PASSWORD,
+      GLOBAL_SMTP_PASS,
   },
 
   /*
@@ -246,19 +260,19 @@ const EMAIL_CONFIG = {
       cleanEnv(
         process.env.EVENT_EMAIL_USER_EVENT6,
       ) ||
-      GLOBAL_EMAIL_USER,
+      GLOBAL_SMTP_USER,
 
     password:
       cleanEnv(
         process.env.EVENT_EMAIL_PASSWORD_EVENT6,
       ) ||
-      GLOBAL_EMAIL_PASSWORD,
+      GLOBAL_SMTP_PASS,
   },
 };
 
 /*
 |--------------------------------------------------------------------------
-| Get email configuration
+| GET EMAIL CONFIGURATION
 |--------------------------------------------------------------------------
 */
 
@@ -269,7 +283,7 @@ function getEmailConfig(eventId) {
   if (!config) {
     const error =
       new Error(
-        `No email configuration exists for event "${eventId}".`,
+        `Email configuration does not exist for event "${eventId}".`,
       );
 
     error.code =
@@ -279,15 +293,19 @@ function getEmailConfig(eventId) {
   }
 
   const user =
-    cleanEnv(config.user);
+    cleanEnv(
+      config.user,
+    );
 
   const password =
-    cleanEnv(config.password);
+    cleanEnv(
+      config.password,
+    );
 
   if (!user) {
     const error =
       new Error(
-        `Email sender address is not configured for event "${eventId}".`,
+        `SMTP_USER is not configured for event "${eventId}".`,
       );
 
     error.code =
@@ -299,7 +317,7 @@ function getEmailConfig(eventId) {
   if (!password) {
     const error =
       new Error(
-        `Email App Password is not configured for event "${eventId}".`,
+        `SMTP_PASS is not configured for event "${eventId}".`,
       );
 
     error.code =
@@ -310,112 +328,78 @@ function getEmailConfig(eventId) {
 
   /*
   |--------------------------------------------------------------------------
-  | Detect common mistakes
+  | Remove spaces from Google App Password
+  |--------------------------------------------------------------------------
+  |
+  | Google may display:
+  |
+  | abcd efgh ijkl mnop
+  |
+  | Nodemailer should receive:
+  |
+  | abcdefghijklmnop
   |--------------------------------------------------------------------------
   */
 
-  if (
-    password.includes(" ") &&
-    password.replace(/\s/g, "").length ===
-      16
-  ) {
-    /*
-     * Google displays App Passwords with spaces.
-     * Remove them automatically.
-     */
-    config.password =
-      password.replace(/\s/g, "");
-  }
-
-  /*
-  |--------------------------------------------------------------------------
-  | Detect obvious normal-password usage
-  |--------------------------------------------------------------------------
-  |
-  | We cannot know whether a password is genuinely an App Password,
-  | but this warning helps during Vercel debugging.
-  |
-  */
-
-  if (
-    password.length < 12
-  ) {
-    console.warn(
-      `Warning: SMTP password for event "${eventId}" is unusually short. Gmail App Passwords are normally 16 characters.`,
+  const cleanedPassword =
+    password.replace(
+      /\s/g,
+      "",
     );
-  }
 
   return {
     user,
     password:
-      cleanEnv(config.password).replace(
-        /\s/g,
-        "",
-      ),
+      cleanedPassword,
   };
 }
 
 /*
 |--------------------------------------------------------------------------
-| Create Gmail transporter
+| CREATE SMTP TRANSPORTER
 |--------------------------------------------------------------------------
 */
 
-function createTransporter(eventId) {
+function createTransporter(
+  eventId,
+) {
   const config =
-    getEmailConfig(eventId);
+    getEmailConfig(
+      eventId,
+    );
 
-  /*
-  |--------------------------------------------------------------------------
-  | Gmail SMTP
-  |--------------------------------------------------------------------------
-  |
-  | Port 465 + secure true
-  |
-  | This is the recommended simple configuration
-  | for Gmail SMTP with Nodemailer.
-  |
-  */
+  return nodemailer.createTransport({
+    host:
+      SMTP_HOST,
 
-  const transporter =
-    nodemailer.createTransport({
-      host:
-        SMTP_HOST,
+    port:
+      SMTP_PORT,
 
-      port:
-        SMTP_PORT,
+    secure:
+      SMTP_SECURE,
 
-      secure:
-        SMTP_SECURE,
+    auth: {
+      user:
+        config.user,
 
-      auth: {
-        user:
-          config.user,
+      pass:
+        config.password,
+    },
 
-        pass:
-          config.password,
-      },
+    connectionTimeout:
+      15000,
 
-      connectionTimeout:
-        15000,
+    greetingTimeout:
+      15000,
 
-      greetingTimeout:
-        15000,
-
-      socketTimeout:
-        20000,
-    });
-
-  return transporter;
+    socketTimeout:
+      20000,
+  });
 }
 
 /*
 |--------------------------------------------------------------------------
-| Verify SMTP connection
-|--------------------------------------------------------------------------
-|
-| This is called before sending.
-| It makes Gmail authentication failures easier to diagnose.
+| VERIFY SMTP CONNECTION
 |--------------------------------------------------------------------------
 */
 
@@ -436,10 +420,10 @@ async function verifyTransporter(
     );
 
     /*
-     |--------------------------------------------------------------------------
-     | Convert Gmail 535 into a useful application error
-     |--------------------------------------------------------------------------
-     */
+    |--------------------------------------------------------------------------
+    | Gmail authentication error
+    |--------------------------------------------------------------------------
+    */
 
     if (
       error?.responseCode ===
@@ -457,7 +441,7 @@ async function verifyTransporter(
     ) {
       const authError =
         new Error(
-          `Gmail authentication failed for event "${eventId}". Check SMTP_USER and SMTP_PASS. SMTP_PASS must be a Google App Password, not the normal Gmail password.`,
+          `Gmail authentication failed for event "${eventId}". Make sure SMTP_USER is your normal Gmail address and SMTP_PASS is a Google App Password generated for that same Gmail account.`,
         );
 
       authError.code =
@@ -475,11 +459,13 @@ async function verifyTransporter(
 
 /*
 |--------------------------------------------------------------------------
-| Escape HTML
+| ESCAPE HTML
 |--------------------------------------------------------------------------
 */
 
-function escapeHtml(value) {
+function escapeHtml(
+  value,
+) {
   return String(
     value ?? "",
   )
@@ -507,12 +493,13 @@ function escapeHtml(value) {
 
 /*
 |--------------------------------------------------------------------------
-| Common email styles
+| EMAIL STYLES
 |--------------------------------------------------------------------------
 */
 
 const emailStyles = `
 <style>
+
   body {
     margin: 0;
     padding: 0;
@@ -544,6 +531,10 @@ const emailStyles = `
   .content {
     padding: 30px;
     line-height: 1.6;
+  }
+
+  .content h2 {
+    margin-top: 0;
   }
 
   .status {
@@ -578,6 +569,7 @@ const emailStyles = `
   }
 
   @media screen and (max-width: 600px) {
+
     .container {
       margin: 10px;
     }
@@ -585,13 +577,15 @@ const emailStyles = `
     .content {
       padding: 20px;
     }
+
   }
+
 </style>
 `;
 
 /*
 |--------------------------------------------------------------------------
-| Build registration details table
+| BUILD REGISTRATION DETAILS
 |--------------------------------------------------------------------------
 */
 
@@ -669,7 +663,7 @@ function buildDetailsTable(
 
 /*
 |--------------------------------------------------------------------------
-| Send email helper
+| SEND EMAIL
 |--------------------------------------------------------------------------
 */
 
@@ -728,7 +722,7 @@ async function sendEmail({
     ) {
       const authError =
         new Error(
-          `Gmail authentication failed for event "${eventId}". Check SMTP_USER and SMTP_PASS. SMTP_PASS must be a Google App Password, not the normal Gmail password.`,
+          `Gmail authentication failed for event "${eventId}". Make sure SMTP_USER is your normal Gmail address and SMTP_PASS is a Google App Password generated for that same Gmail account.`,
         );
 
       authError.code =
@@ -746,14 +740,16 @@ async function sendEmail({
 
 /*
 |--------------------------------------------------------------------------
-| Pending registration email
+| PENDING REGISTRATION EMAIL
 |--------------------------------------------------------------------------
 */
 
 export async function sendRegistrationPendingEmail(
   registration,
 ) {
-  if (!registration?.email) {
+  if (
+    !registration?.email
+  ) {
     throw new Error(
       "Student email is missing.",
     );
@@ -779,11 +775,15 @@ export async function sendRegistrationPendingEmail(
 
   const html = `
 <!DOCTYPE html>
+
 <html>
 
 <head>
+
   <meta charset="UTF-8">
+
   ${emailStyles}
+
 </head>
 
 <body>
@@ -791,15 +791,22 @@ export async function sendRegistrationPendingEmail(
   <div class="container">
 
     <div class="header">
-      <h1>IT Association | KITSW</h1>
+
+      <h1>
+        IT Association | KITSW
+      </h1>
+
     </div>
 
     <div class="content">
 
-      <h2>Registration Received</h2>
+      <h2>
+        Registration Received
+      </h2>
 
       <p>
-        Dear <strong>${name}</strong>,
+        Dear
+        <strong>${name}</strong>,
       </p>
 
       <p>
@@ -809,10 +816,17 @@ export async function sendRegistrationPendingEmail(
       </p>
 
       <div class="status">
-        <strong>Status: VERIFICATION PENDING</strong>
+
+        <strong>
+          Status: VERIFICATION PENDING
+        </strong>
+
         <br>
-        Your payment and registration details will be
-        verified by the IT Association team.
+
+        Your payment and registration
+        details will be verified by the
+        IT Association team.
+
       </div>
 
       ${buildDetailsTable(
@@ -827,14 +841,19 @@ export async function sendRegistrationPendingEmail(
     </div>
 
     <div class="footer">
+
       IT Association · KITSW
+
       <br>
+
       This is an automated email.
+
     </div>
 
   </div>
 
 </body>
+
 </html>
 `;
 
@@ -845,18 +864,35 @@ Registration Received
 
 Dear ${registration.name},
 
-Your registration for ${registration.event} has been received successfully.
+Your registration for ${registration.event}
+has been received successfully.
 
-Registration ID: ${registration.registrationId}
-Name: ${registration.name}
-College: ${registration.collegeName}
-Roll Number: ${registration.rollNo}
-Branch: ${registration.branch}
-Event: ${registration.event}
-Amount: ₹${registration.amount}
-UTR / Transaction ID: ${registration.transactionId}
+Registration ID:
+${registration.registrationId}
 
-Status: VERIFICATION PENDING
+Name:
+${registration.name}
+
+College:
+${registration.collegeName}
+
+Roll Number:
+${registration.rollNo}
+
+Branch:
+${registration.branch}
+
+Event:
+${registration.event}
+
+Amount:
+₹${registration.amount}
+
+UTR / Transaction ID:
+${registration.transactionId}
+
+Status:
+VERIFICATION PENDING
 
 Your payment and registration details will be verified by the IT Association team.
 
@@ -883,14 +919,16 @@ IT Association, KITSW
 
 /*
 |--------------------------------------------------------------------------
-| Verified registration email
+| VERIFIED REGISTRATION EMAIL
 |--------------------------------------------------------------------------
 */
 
 export async function sendRegistrationSuccessEmail(
   registration,
 ) {
-  if (!registration?.email) {
+  if (
+    !registration?.email
+  ) {
     throw new Error(
       "Student email is missing.",
     );
@@ -906,11 +944,15 @@ export async function sendRegistrationSuccessEmail(
 
   const html = `
 <!DOCTYPE html>
+
 <html>
 
 <head>
+
   <meta charset="UTF-8">
+
   ${emailStyles}
+
 </head>
 
 <body>
@@ -918,26 +960,41 @@ export async function sendRegistrationSuccessEmail(
   <div class="container">
 
     <div class="header">
-      <h1>IT Association | KITSW</h1>
+
+      <h1>
+        IT Association | KITSW
+      </h1>
+
     </div>
 
     <div class="content">
 
-      <h2>Registration Verified</h2>
+      <h2>
+        Registration Verified
+      </h2>
 
       <p>
+
         Dear
         <strong>
           ${escapeHtml(
             registration.name,
           )}
         </strong>,
+
       </p>
 
       <div class="status">
-        <strong>Status: VERIFIED</strong>
+
+        <strong>
+          Status: VERIFIED
+        </strong>
+
         <br>
-        Your registration has been successfully verified.
+
+        Your registration has been
+        successfully verified.
+
       </div>
 
       ${buildDetailsTable(
@@ -949,20 +1006,26 @@ export async function sendRegistrationSuccessEmail(
       </p>
 
       <p>
-        Please keep this email and your Registration ID.
+        Please keep this email and your
+        Registration ID.
       </p>
 
     </div>
 
     <div class="footer">
+
       IT Association · KITSW
+
       <br>
+
       This is an automated email.
+
     </div>
 
   </div>
 
 </body>
+
 </html>
 `;
 
@@ -975,9 +1038,14 @@ Dear ${registration.name},
 
 Your registration has been successfully verified.
 
-Registration ID: ${registration.registrationId}
-Event: ${registration.event}
-Status: VERIFIED
+Registration ID:
+${registration.registrationId}
+
+Event:
+${registration.event}
+
+Status:
+VERIFIED
 
 Your registration is now confirmed.
 
@@ -1004,14 +1072,16 @@ IT Association, KITSW
 
 /*
 |--------------------------------------------------------------------------
-| Rejected registration email
+| REJECTED REGISTRATION EMAIL
 |--------------------------------------------------------------------------
 */
 
 export async function sendRegistrationRejectedEmail(
   registration,
 ) {
-  if (!registration?.email) {
+  if (
+    !registration?.email
+  ) {
     throw new Error(
       "Student email is missing.",
     );
@@ -1027,11 +1097,15 @@ export async function sendRegistrationRejectedEmail(
 
   const html = `
 <!DOCTYPE html>
+
 <html>
 
 <head>
+
   <meta charset="UTF-8">
+
   ${emailStyles}
+
 </head>
 
 <body>
@@ -1039,26 +1113,41 @@ export async function sendRegistrationRejectedEmail(
   <div class="container">
 
     <div class="header">
-      <h1>IT Association | KITSW</h1>
+
+      <h1>
+        IT Association | KITSW
+      </h1>
+
     </div>
 
     <div class="content">
 
-      <h2>Registration Update</h2>
+      <h2>
+        Registration Update
+      </h2>
 
       <p>
+
         Dear
         <strong>
           ${escapeHtml(
             registration.name,
           )}
         </strong>,
+
       </p>
 
       <div class="status">
-        <strong>Status: NOT VERIFIED</strong>
+
+        <strong>
+          Status: NOT VERIFIED
+        </strong>
+
         <br>
-        Your registration could not be verified at this time.
+
+        Your registration could not
+        be verified at this time.
+
       </div>
 
       ${buildDetailsTable(
@@ -1073,14 +1162,19 @@ export async function sendRegistrationRejectedEmail(
     </div>
 
     <div class="footer">
+
       IT Association · KITSW
+
       <br>
+
       This is an automated email.
+
     </div>
 
   </div>
 
 </body>
+
 </html>
 `;
 
@@ -1093,10 +1187,14 @@ Dear ${registration.name},
 
 Your registration could not be verified at this time.
 
-Registration ID: ${registration.registrationId}
-Event: ${registration.event}
+Registration ID:
+${registration.registrationId}
 
-Status: NOT VERIFIED
+Event:
+${registration.event}
+
+Status:
+NOT VERIFIED
 
 Please contact the IT Association team if you believe this was a mistake.
 
