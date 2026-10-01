@@ -1,25 +1,42 @@
-import { getAdminSession } from "../services/adminAuth.js";
+import {
+  getAdminSession,
+} from "../services/adminAuth.js";
 
-/*
-|--------------------------------------------------------------------------
-| Read Cookie
-|--------------------------------------------------------------------------
-*/
+import {
+  getAdminEvent,
+} from "../config/adminEvents.js";
 
-function getCookie(req, cookieName) {
-  const cookieHeader = req.headers.cookie;
+function getCookie(
+  req,
+  cookieName,
+) {
+  const cookieHeader =
+    req.headers.cookie;
 
   if (!cookieHeader) {
     return null;
   }
 
-  const cookies = cookieHeader.split(";");
+  const cookies =
+    cookieHeader.split(
+      ";",
+    );
 
-  for (const cookie of cookies) {
-    const [name, ...valueParts] =
-      cookie.trim().split("=");
+  for (
+    const cookie of cookies
+  ) {
+    const [
+      name,
+      ...valueParts
+    ] =
+      cookie
+        .trim()
+        .split("=");
 
-    if (name === cookieName) {
+    if (
+      name ===
+      cookieName
+    ) {
       return decodeURIComponent(
         valueParts.join("="),
       );
@@ -31,7 +48,55 @@ function getCookie(req, cookieName) {
 
 /*
 |--------------------------------------------------------------------------
-| Require Admin
+| Get authenticated admin
+|--------------------------------------------------------------------------
+*/
+
+export function getAdminFromRequest(
+  req,
+) {
+  const token =
+    getCookie(
+      req,
+      "it_admin_session",
+    );
+
+  const session =
+    getAdminSession(
+      token,
+    );
+
+  if (!session) {
+    return null;
+  }
+
+  const event =
+    getAdminEvent(
+      session.eventId,
+    );
+
+  if (!event) {
+    return null;
+  }
+
+  return {
+    username:
+      session.username,
+
+    eventId:
+      event.id,
+
+    eventLabel:
+      event.label,
+
+    eventName:
+      event.name,
+  };
+}
+
+/*
+|--------------------------------------------------------------------------
+| Require admin
 |--------------------------------------------------------------------------
 */
 
@@ -41,42 +106,34 @@ export function requireAdmin(
   next,
 ) {
   try {
-    const token = getCookie(
-      req,
-      "it_admin_session",
-    );
+    const admin =
+      getAdminFromRequest(
+        req,
+      );
 
-    if (!token) {
-      return res.status(401).json({
+    if (!admin) {
+      return res.status(
+        401,
+      ).json({
         success: false,
         message:
           "Admin authentication required.",
       });
     }
 
-    const session =
-      getAdminSession(token);
-
-    if (!session) {
-      return res.status(401).json({
-        success: false,
-        message:
-          "Admin session expired or invalid.",
-      });
-    }
-
-    req.admin = {
-      username: session.username,
-    };
+    req.admin =
+      admin;
 
     next();
   } catch (error) {
     console.error(
-      "❌ Admin authentication error:",
+      "Admin authentication error:",
       error,
     );
 
-    return res.status(401).json({
+    return res.status(
+      401,
+    ).json({
       success: false,
       message:
         "Admin authentication failed.",

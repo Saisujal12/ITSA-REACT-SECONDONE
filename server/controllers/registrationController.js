@@ -6,90 +6,230 @@ import {
   sendRegistrationPendingEmail,
 } from "../services/emailService.js";
 
+const EMAIL_REGEX =
+  /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+const PHONE_REGEX =
+  /^\+?[0-9\s()-]{10,20}$/;
+
+const EVENT_IDS = new Set([
+  "llm",
+  "code-build",
+  "innovation",
+  "cyber-quest",
+  "design-deploy",
+  "tech-connect",
+]);
+
 export async function createRegistration(
   req,
   res,
 ) {
   try {
     const {
+      eventId,
+      event,
       name,
+      collegeType,
+      collegeName,
       rollNo,
-      year,
       branch,
       email,
       phone,
-      workshop,
       amount,
       transactionId,
     } = req.body;
 
     /*
     |--------------------------------------------------------------------------
-    | Validate Required Fields
+    | Basic validation
     |--------------------------------------------------------------------------
     */
 
     if (
-      !name ||
-      !rollNo ||
-      !year ||
-      !branch ||
-      !email ||
-      !phone ||
-      !workshop ||
-      amount === undefined ||
-      amount === null
+      !eventId ||
+      !EVENT_IDS.has(eventId)
     ) {
       return res.status(400).json({
         success: false,
         message:
-          "Please provide all required registration details.",
+          "Invalid event selected.",
+      });
+    }
+
+    if (!name?.trim()) {
+      return res.status(400).json({
+        success: false,
+        message:
+          "Please enter your name.",
+      });
+    }
+
+    if (
+      !["KITSW", "OTHER"].includes(
+        collegeType,
+      )
+    ) {
+      return res.status(400).json({
+        success: false,
+        message:
+          "Please select your college.",
+      });
+    }
+
+    if (
+      collegeType === "OTHER" &&
+      !collegeName?.trim()
+    ) {
+      return res.status(400).json({
+        success: false,
+        message:
+          "Please enter your college name.",
+      });
+    }
+
+    if (
+      collegeType === "KITSW" &&
+      !rollNo?.trim()
+    ) {
+      return res.status(400).json({
+        success: false,
+        message:
+          "Please enter your roll number.",
+      });
+    }
+
+    if (!branch?.trim()) {
+      return res.status(400).json({
+        success: false,
+        message:
+          "Please enter your branch.",
+      });
+    }
+
+    if (
+      !email?.trim() ||
+      !EMAIL_REGEX.test(
+        email.trim(),
+      )
+    ) {
+      return res.status(400).json({
+        success: false,
+        message:
+          "Please enter a valid email address.",
+      });
+    }
+
+    if (
+      !phone?.trim() ||
+      !PHONE_REGEX.test(
+        phone.trim(),
+      )
+    ) {
+      return res.status(400).json({
+        success: false,
+        message:
+          "Please enter a valid phone number.",
+      });
+    }
+
+    if (!transactionId?.trim()) {
+      return res.status(400).json({
+        success: false,
+        message:
+          "Please enter your UTR / transaction ID.",
+      });
+    }
+
+    if (
+      amount === undefined ||
+      amount === null ||
+      amount === ""
+    ) {
+      return res.status(400).json({
+        success: false,
+        message:
+          "Registration amount is missing.",
       });
     }
 
     /*
     |--------------------------------------------------------------------------
-    | Generate Registration ID
+    | Generate registration ID
     |--------------------------------------------------------------------------
     */
 
     const registrationId =
-      `IT-${Date.now()}`;
+      `IT-${Date.now()}-${Math.floor(
+        1000 + Math.random() * 9000,
+      )}`;
 
-    /*
-    |--------------------------------------------------------------------------
-    | Initial Status
-    |--------------------------------------------------------------------------
-    */
-
-    const status = "PENDING";
-
-    /*
-    |--------------------------------------------------------------------------
-    | Registration Object
-    |--------------------------------------------------------------------------
-    */
+    const normalizedCollegeType =
+      collegeType === "KITSW"
+        ? "KITSW"
+        : "OTHER";
 
     const registration = {
       registrationId,
-      name: String(name).trim(),
-      rollNo: String(rollNo).trim(),
-      year: String(year).trim(),
-      branch: String(branch).trim(),
-      email: String(email).trim(),
-      phone: String(phone).trim(),
-      workshop: String(workshop).trim(),
-      amount,
-      transactionId:
-        transactionId
-          ? String(transactionId).trim()
+
+      eventId,
+
+      event:
+        String(event || "Event").trim(),
+
+      name:
+        String(name)
+          .trim()
+          .replace(/\s+/g, " "),
+
+      collegeType:
+        normalizedCollegeType,
+
+      collegeName:
+        normalizedCollegeType ===
+        "KITSW"
+          ? "KITSW"
+          : String(
+              collegeName || "",
+            )
+              .trim()
+              .replace(/\s+/g, " "),
+
+      rollNo:
+        normalizedCollegeType ===
+        "KITSW"
+          ? String(
+              rollNo || "",
+            )
+              .trim()
+              .toUpperCase()
           : "",
-      status,
+
+      branch:
+        String(branch)
+          .trim()
+          .replace(/\s+/g, " "),
+
+      email:
+        String(email)
+          .trim()
+          .toLowerCase(),
+
+      phone:
+        String(phone).trim(),
+
+      amount,
+
+      transactionId:
+        String(transactionId)
+          .trim(),
+
+      status: "PENDING",
     };
 
     /*
     |--------------------------------------------------------------------------
-    | Save to Google Sheets
+    | Save to event-specific Google Sheet
     |--------------------------------------------------------------------------
     */
 
@@ -100,7 +240,7 @@ export async function createRegistration(
 
     /*
     |--------------------------------------------------------------------------
-    | Send Pending Email
+    | Send event-specific pending email
     |--------------------------------------------------------------------------
     */
 
@@ -114,42 +254,57 @@ export async function createRegistration(
       emailSent = true;
 
       console.log(
-        `📧 Pending email sent to ${registration.email}`,
+        `Pending email sent to ${registration.email}`,
       );
     } catch (emailError) {
+      /*
+       * IMPORTANT:
+       * Email failure must NOT delete the registration.
+       * The Google Sheet entry remains saved.
+       */
+
       console.error(
-        "⚠️ Pending email failed:",
-        emailError,
+        "Pending email failed:",
+        emailError.message,
       );
     }
 
-    /*
-    |--------------------------------------------------------------------------
-    | Response
-    |--------------------------------------------------------------------------
-    */
-
     return res.status(201).json({
       success: true,
+
       message: emailSent
         ? "Registration submitted successfully. Verification is pending."
-        : "Registration submitted successfully, but the pending email could not be sent.",
+        : "Registration submitted successfully. Email could not be sent, but your registration was saved.",
+
       registrationId,
-      status,
+
+      status: "PENDING",
+
       email: {
         sent: emailSent,
       },
     });
   } catch (error) {
     console.error(
-      "❌ Registration error:",
+      "Registration error:",
       error,
     );
+
+    if (
+      error.code ===
+      "EVENT_SHEET_NOT_CONFIGURED"
+    ) {
+      return res.status(503).json({
+        success: false,
+        message:
+          "This event is not configured for registration yet.",
+      });
+    }
 
     return res.status(500).json({
       success: false,
       message:
-        "Unable to submit registration right now. Please try again in a few minutes.",
+        "Unable to submit registration right now. Please try again later.",
     });
   }
 }

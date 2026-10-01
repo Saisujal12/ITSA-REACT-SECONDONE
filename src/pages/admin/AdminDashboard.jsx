@@ -1,243 +1,1214 @@
-import { useCallback, useEffect, useState } from 'react'
-import { useNavigate } from 'react-router'
 import {
-  CircleAlert,
-  CircleCheck,
-  CircleX,
-  Clock,
-  Eye,
-  FolderOpen,
-  LoaderCircle,
+  useCallback,
+  useEffect,
+  useMemo,
+  useState,
+} from "react";
+
+import {
+  useNavigate,
+} from "react-router";
+
+import {
+  CheckCircle2,
+  ClipboardList,
+  Clock3,
   LogOut,
-  Microchip,
-  RotateCw,
-  UserCog,
+  RefreshCw,
+  Search,
+  ShieldCheck,
+  UserRound,
   Users,
-} from 'lucide-react'
-import RegistrationDialog from '../../components/admin/RegistrationDialog'
-import PageLoader from '../../components/ui/PageLoader'
-import { useDocumentTitle } from '../../hooks/useDocumentTitle'
-import { checkAdmin, fetchRegistrations, logoutAdmin, updateRegistrationStatus } from '../../services/admin'
-import { cx } from '../../utils/cx'
-import s from './Admin.module.css'
+  XCircle,
+} from "lucide-react";
 
-const BADGES = { PENDING: s.badgePending, VERIFIED: s.badgeVerified, REJECTED: s.badgeRejected }
+import RegistrationDialog from "../../components/admin/RegistrationDialog";
 
-const COLUMNS = ['Registration ID', 'Student', 'Roll No', 'Year', 'Branch', 'Workshop', 'Amount', 'Transaction ID', 'Status', 'Action']
+import {
+  checkAdmin,
+  fetchRegistrations,
+  logoutAdmin,
+  updateRegistrationStatus,
+} from "../../services/admin";
+
+import {
+  useDocumentTitle,
+} from "../../hooks/useDocumentTitle";
+
+import {
+  cx,
+} from "../../utils/cx";
+
+import s from "./Admin.module.css";
+
+/*
+|--------------------------------------------------------------------------
+| Normalize registration
+|--------------------------------------------------------------------------
+*/
+
+function normalizeRegistration(
+  item,
+) {
+  return {
+    ...item,
+
+    rowNumber:
+      item?.rowNumber ??
+      "",
+
+    eventId:
+      item?.eventId ??
+      "",
+
+    registrationId:
+      item?.registrationId ??
+      "",
+
+    name:
+      item?.name ??
+      "",
+
+    collegeType:
+      item?.collegeType ??
+      "",
+
+    collegeName:
+      item?.collegeName ??
+      "",
+
+    rollNo:
+      item?.rollNo ??
+      "",
+
+    branch:
+      item?.branch ??
+      "",
+
+    email:
+      item?.email ??
+      "",
+
+    phone:
+      item?.phone ??
+      "",
+
+    event:
+      item?.event ??
+      "",
+
+    amount:
+      item?.amount ??
+      "",
+
+    transactionId:
+      item?.transactionId ??
+      "",
+
+    status:
+      String(
+        item?.status ||
+          "PENDING",
+      ).toUpperCase(),
+
+    createdAt:
+      item?.createdAt ??
+      "",
+
+    updatedAt:
+      item?.updatedAt ??
+      "",
+  };
+}
+
+/*
+|--------------------------------------------------------------------------
+| Date
+|--------------------------------------------------------------------------
+*/
+
+function formatDate(
+  value,
+) {
+  if (!value) {
+    return "—";
+  }
+
+  const date =
+    new Date(value);
+
+  if (
+    Number.isNaN(
+      date.getTime(),
+    )
+  ) {
+    return String(value);
+  }
+
+  return date.toLocaleString(
+    "en-IN",
+    {
+      day:
+        "2-digit",
+
+      month:
+        "short",
+
+      year:
+        "numeric",
+
+      hour:
+        "2-digit",
+
+      minute:
+        "2-digit",
+    },
+  );
+}
+
+/*
+|--------------------------------------------------------------------------
+| Dashboard
+|--------------------------------------------------------------------------
+*/
 
 export default function AdminDashboard() {
-  useDocumentTitle('Admin Dashboard | IT Association', { raw: true })
-  const navigate = useNavigate()
-
-  const [authState, setAuthState] = useState('checking') // checking | ok
-  const [registrations, setRegistrations] = useState([])
-  const [loadState, setLoadState] = useState('loading') // loading | ready | error
-  const [selected, setSelected] = useState(null)
-  const [notice, setNotice] = useState(null)
-
-  const toLogin = useCallback((expired) => navigate(expired ? '/admin/login?expired=1' : '/admin/login', { replace: true }), [navigate])
-
-  const load = useCallback(
-    async (signal) => {
-      setLoadState('loading')
-      try {
-        const rows = await fetchRegistrations({ signal })
-        setRegistrations(rows)
-        setLoadState('ready')
-      } catch (error) {
-        if (error.name === 'AbortError') return
-        if (error.status === 401) return toLogin(true)
-        setLoadState('error')
-      }
+  useDocumentTitle(
+    "Admin Dashboard | IT Association",
+    {
+      raw: true,
     },
-    [toLogin],
-  )
+  );
 
-  useEffect(() => {
-    const controller = new AbortController()
+  const navigate =
+    useNavigate();
 
-    checkAdmin({ signal: controller.signal })
-      .then((data) => {
-        if (!data.authenticated) return toLogin(false)
-        setAuthState('ok')
-        return load(controller.signal)
-      })
-      .catch((error) => {
-        if (error.name !== 'AbortError') toLogin(false)
-      })
+  const [
+    registrations,
+    setRegistrations,
+  ] =
+    useState([]);
 
-    return () => controller.abort()
-  }, [load, toLogin])
+  const [
+    selected,
+    setSelected,
+  ] =
+    useState(null);
 
-  async function handleUpdateStatus(registration, status) {
-    try {
-      const result = await updateRegistrationStatus(registration.rowNumber, status)
-      setSelected(null)
-      setNotice({ tone: 'success', text: result.message || `Registration marked as ${status}.` })
-      await load()
-    } catch (error) {
-      if (error.status === 401) return toLogin(true)
-      throw error
+  const [
+    admin,
+    setAdmin,
+  ] =
+    useState(null);
+
+  const [
+    statusFilter,
+    setStatusFilter,
+  ] =
+    useState("all");
+
+  const [
+    search,
+    setSearch,
+  ] =
+    useState("");
+
+  const [
+    loading,
+    setLoading,
+  ] =
+    useState(true);
+
+  const [
+    refreshing,
+    setRefreshing,
+  ] =
+    useState(false);
+
+  const [
+    error,
+    setError,
+  ] =
+    useState("");
+
+  const [
+    notice,
+    setNotice,
+  ] =
+    useState("");
+
+  /*
+  |--------------------------------------------------------------------------
+  | Load ONLY selected event
+  |--------------------------------------------------------------------------
+  */
+
+  const loadRegistrations =
+    useCallback(
+      async () => {
+        setRefreshing(
+          true,
+        );
+
+        setError("");
+
+        try {
+          const session =
+            await checkAdmin();
+
+          if (
+            !session?.authenticated ||
+            !session?.admin?.eventId
+          ) {
+            navigate(
+              "/admin/login?expired=1",
+              {
+                replace:
+                  true,
+              },
+            );
+
+            return;
+          }
+
+          setAdmin(
+            session.admin,
+          );
+
+          const result =
+            await fetchRegistrations();
+
+          setRegistrations(
+            (
+              result?.registrations ||
+              []
+            ).map(
+              normalizeRegistration,
+            ),
+          );
+
+          if (
+            result?.event
+          ) {
+            setAdmin(
+              (
+                current,
+              ) => ({
+                ...(current ||
+                  {}),
+
+                ...result.event,
+              }),
+            );
+          }
+        } catch (
+          loadError
+        ) {
+          if (
+            loadError?.status ===
+            401
+          ) {
+            navigate(
+              "/admin/login?expired=1",
+              {
+                replace:
+                  true,
+              },
+            );
+
+            return;
+          }
+
+          setError(
+            loadError?.message ||
+              "Unable to load registrations. Please check the backend.",
+          );
+        } finally {
+          setLoading(
+            false,
+          );
+
+          setRefreshing(
+            false,
+          );
+        }
+      },
+      [
+        navigate,
+      ],
+    );
+
+  useEffect(
+    () => {
+      loadRegistrations();
+    },
+    [
+      loadRegistrations,
+    ],
+  );
+
+  /*
+  |--------------------------------------------------------------------------
+  | Status + search filter
+  |--------------------------------------------------------------------------
+  */
+
+  const filtered =
+    useMemo(
+      () => {
+        const query =
+          search
+            .trim()
+            .toLowerCase();
+
+        return registrations.filter(
+          (
+            registration,
+          ) => {
+            const matchesStatus =
+              statusFilter ===
+                "all" ||
+              registration.status ===
+                statusFilter;
+
+            if (
+              !matchesStatus
+            ) {
+              return false;
+            }
+
+            if (!query) {
+              return true;
+            }
+
+            const searchable =
+              [
+                registration.registrationId,
+                registration.name,
+                registration.email,
+                registration.phone,
+                registration.rollNo,
+                registration.branch,
+                registration.collegeName,
+                registration.event,
+                registration.transactionId,
+              ]
+                .join(" ")
+                .toLowerCase();
+
+            return searchable.includes(
+              query,
+            );
+          },
+        );
+      },
+      [
+        registrations,
+        statusFilter,
+        search,
+      ],
+    );
+
+  /*
+  |--------------------------------------------------------------------------
+  | Statistics
+  |--------------------------------------------------------------------------
+  */
+
+  const stats =
+    useMemo(
+      () => ({
+        total:
+          registrations.length,
+
+        pending:
+          registrations.filter(
+            (
+              item,
+            ) =>
+              item.status ===
+              "PENDING",
+          ).length,
+
+        verified:
+          registrations.filter(
+            (
+              item,
+            ) =>
+              item.status ===
+              "VERIFIED",
+          ).length,
+
+        rejected:
+          registrations.filter(
+            (
+              item,
+            ) =>
+              item.status ===
+              "REJECTED",
+          ).length,
+      }),
+      [
+        registrations,
+      ],
+    );
+
+  /*
+  |--------------------------------------------------------------------------
+  | Verify / Reject
+  |--------------------------------------------------------------------------
+  */
+
+  async function handleStatusUpdate(
+    registration,
+    status,
+  ) {
+    if (
+      !registration.rowNumber
+    ) {
+      throw new Error(
+        "This registration is missing its Google Sheet row number.",
+      );
     }
+
+    /*
+     * No eventId is sent.
+     * Backend gets it from the signed session.
+     */
+    const result =
+      await updateRegistrationStatus(
+        registration.rowNumber,
+        status,
+      );
+
+    const updated =
+      normalizeRegistration(
+        result.registration ||
+          {
+            ...registration,
+            status,
+          },
+      );
+
+    setRegistrations(
+      (
+        current,
+      ) =>
+        current.map(
+          (
+            item,
+          ) =>
+            item.rowNumber ===
+            registration.rowNumber
+              ? updated
+              : item,
+        ),
+    );
+
+    setSelected(
+      null,
+    );
+
+    setNotice(
+      result.email?.sent
+        ? `Registration ${status.toLowerCase()} successfully. Email sent.`
+        : `Registration ${status.toLowerCase()} successfully. Email could not be sent.`,
+    );
   }
+
+  /*
+  |--------------------------------------------------------------------------
+  | Logout
+  |--------------------------------------------------------------------------
+  */
 
   async function handleLogout() {
     try {
-      await logoutAdmin()
-    } catch {
-      // The session may already be gone; return to login either way.
+      await logoutAdmin();
+    } finally {
+      navigate(
+        "/admin/login",
+        {
+          replace:
+            true,
+        },
+      );
     }
-    toLogin(false)
   }
 
-  if (authState === 'checking') return <PageLoader label="Checking admin session" />
+  const eventLabel =
+    admin?.eventLabel ||
+    "Selected Event";
 
-  const count = (status) => registrations.filter((row) => row.status === status).length
-  const stats = [
-    { label: 'Total Registrations', value: registrations.length, icon: Users },
-    { label: 'Pending', value: count('PENDING'), icon: Clock, tone: s.statPending },
-    { label: 'Verified', value: count('VERIFIED'), icon: CircleCheck, tone: s.statVerified },
-    { label: 'Rejected', value: count('REJECTED'), icon: CircleX, tone: s.statRejected },
-  ]
+  const eventName =
+    admin?.eventName ||
+    admin?.name ||
+    "";
 
   return (
-    <>
-      <header className={s.navbar}>
-        <div className={s.brand}>
-          <Microchip size={18} aria-hidden="true" />
-          IT <span>ASSOCIATION</span>
+    <div
+      className={
+        s.admin
+      }
+    >
+      {/* NAVBAR */}
+
+      <header
+        className={
+          s.navbar
+        }
+      >
+        <div
+          className={
+            s.brand
+          }
+        >
+          <ShieldCheck />
+
+          <span>
+            IT ASSOCIATION
+          </span>
         </div>
-        <div className={s.navRight}>
-          <span className={s.adminLabel}>
-            <UserCog size={14} aria-hidden="true" />
+
+        <div
+          className={
+            s.navRight
+          }
+        >
+          <span
+            className={
+              s.adminLabel
+            }
+          >
+            <UserRound
+              size={14}
+            />
+
             ADMIN
           </span>
-          <button type="button" className={s.button} onClick={handleLogout}>
-            <LogOut aria-hidden="true" />
+
+          <button
+            type="button"
+            className={
+              s.button
+            }
+            onClick={
+              handleLogout
+            }
+          >
+            <LogOut />
+
             Logout
           </button>
         </div>
       </header>
 
-      <div className={s.dashboard}>
-        <div className={s.heading}>
+      {/* MAIN */}
+
+      <main
+        className={
+          s.dashboard
+        }
+      >
+        <div
+          className={
+            s.heading
+          }
+        >
           <div>
-            <p className={s.smallTitle}>IT ASSOCIATION</p>
+            <p
+              className={
+                s.smallTitle
+              }
+            >
+              SECURE ADMIN PANEL
+            </p>
+
             <h1>
-              Registration <span>Dashboard</span>
+              Registration{" "}
+              <span>
+                Dashboard
+              </span>
             </h1>
-            <p>Manage workshop registrations and payment verification.</p>
+
+            <p>
+              Only registrations
+              for your selected
+              event are displayed
+              here.
+            </p>
           </div>
-          <button type="button" className={s.button} onClick={() => load()} disabled={loadState === 'loading'}>
-            <RotateCw className={loadState === 'loading' ? s.spin : undefined} aria-hidden="true" />
-            Refresh
+
+          <button
+            type="button"
+            className={
+              s.button
+            }
+            onClick={
+              loadRegistrations
+            }
+            disabled={
+              refreshing
+            }
+          >
+            <RefreshCw
+              className={
+                refreshing
+                  ? s.spin
+                  : undefined
+              }
+            />
+
+            {refreshing
+              ? "Refreshing…"
+              : "Refresh"}
           </button>
         </div>
 
-        <dl className={s.statsGrid}>
-          {stats.map(({ label, value, icon: Icon, tone }) => (
-            <div key={label} className={cx(s.statCard, tone)}>
-              <div className={s.statIcon} aria-hidden="true">
-                <Icon size={20} />
-              </div>
-              <div>
-                <dt>{label}</dt>
-                <dd>{loadState === 'ready' ? value : '—'}</dd>
-              </div>
-            </div>
-          ))}
-        </dl>
+        {/* SELECTED EVENT */}
 
-        {notice && (
-          <p className={cx(s.notice, notice.tone === 'error' && s.noticeError)} role="status">
-            {notice.text}
-          </p>
-        )}
+        <div
+          className={
+            s.selectedEventBanner
+          }
+        >
+          <div>
+            <span
+              className={
+                s.selectedEventLabel
+              }
+            >
+              CURRENT EVENT
+            </span>
 
-        <section className={s.section} aria-labelledby="registrations-title" aria-busy={loadState === 'loading'}>
-          <div className={s.sectionHeading}>
-            <div>
-              <h2 id="registrations-title">Registrations</h2>
-              <p>Student registration records</p>
-            </div>
-            {loadState === 'loading' && (
-              <span className={s.inlineStatus} role="status">
-                <LoaderCircle size={14} className={s.spin} aria-hidden="true" />
-                Loading...
+            <strong>
+              {
+                eventLabel
+              }
+            </strong>
+
+            {eventName && (
+              <span>
+                {
+                  eventName
+                }
               </span>
             )}
           </div>
 
-          {loadState === 'error' ? (
-            <div className={s.errorState} role="alert">
-              <CircleAlert aria-hidden="true" />
-              <p>Unable to load registrations.</p>
-              <button type="button" className={s.button} onClick={() => load()}>
-                Try again
-              </button>
+          <span
+            className={
+              s.selectedEventLock
+            }
+          >
+            Locked to this event
+          </span>
+        </div>
+
+        {/* NOTICE */}
+
+        {notice && (
+          <div
+            className={
+              s.notice
+            }
+            role="status"
+          >
+            {
+              notice
+            }
+          </div>
+        )}
+
+        {/* ERROR */}
+
+        {error && (
+          <div
+            className={cx(
+              s.notice,
+              s.noticeError,
+            )}
+            role="alert"
+          >
+            {
+              error
+            }
+          </div>
+        )}
+
+        {/* STATISTICS */}
+
+        <dl
+          className={
+            s.statsGrid
+          }
+        >
+          <div
+            className={
+              s.statCard
+            }
+          >
+            <div
+              className={
+                s.statIcon
+              }
+            >
+              <Users />
             </div>
-          ) : loadState === 'ready' && registrations.length === 0 ? (
-            <div className={s.empty}>
-              <FolderOpen aria-hidden="true" />
-              <p>No registrations found.</p>
+
+            <div>
+              <dt>
+                Total registrations
+              </dt>
+
+              <dd>
+                {
+                  stats.total
+                }
+              </dd>
             </div>
-          ) : (
-            <div className={s.tableContainer}>
-              <table className={s.table}>
+          </div>
+
+          <div
+            className={cx(
+              s.statCard,
+              s.statPending,
+            )}
+          >
+            <div
+              className={
+                s.statIcon
+              }
+            >
+              <Clock3 />
+            </div>
+
+            <div>
+              <dt>
+                Pending
+              </dt>
+
+              <dd>
+                {
+                  stats.pending
+                }
+              </dd>
+            </div>
+          </div>
+
+          <div
+            className={cx(
+              s.statCard,
+              s.statVerified,
+            )}
+          >
+            <div
+              className={
+                s.statIcon
+              }
+            >
+              <CheckCircle2 />
+            </div>
+
+            <div>
+              <dt>
+                Verified
+              </dt>
+
+              <dd>
+                {
+                  stats.verified
+                }
+              </dd>
+            </div>
+          </div>
+
+          <div
+            className={cx(
+              s.statCard,
+              s.statRejected,
+            )}
+          >
+            <div
+              className={
+                s.statIcon
+              }
+            >
+              <XCircle />
+            </div>
+
+            <div>
+              <dt>
+                Rejected
+              </dt>
+
+              <dd>
+                {
+                  stats.rejected
+                }
+              </dd>
+            </div>
+          </div>
+        </dl>
+
+        {/* REGISTRATIONS */}
+
+        <section
+          className={
+            s.section
+          }
+        >
+          <div
+            className={
+              s.sectionHeading
+            }
+          >
+            <div>
+              <h2>
+                {
+                  eventLabel
+                }{" "}
+                Registrations
+              </h2>
+
+              <p>
+                Showing{" "}
+                {
+                  filtered.length
+                }{" "}
+                of{" "}
+                {
+                  registrations.length
+                }{" "}
+                registrations for
+                this event.
+              </p>
+            </div>
+
+            <span
+              className={
+                s.inlineStatus
+              }
+            >
+              <ClipboardList
+                size={15}
+              />
+
+              Google Sheets
+            </span>
+          </div>
+
+          {/* FILTERS */}
+
+          <div
+            className={
+              s.filters
+            }
+          >
+            <label
+              className={
+                s.filterField
+              }
+            >
+              <span>
+                Status
+              </span>
+
+              <select
+                value={
+                  statusFilter
+                }
+                onChange={(
+                  event,
+                ) =>
+                  setStatusFilter(
+                    event
+                      .target
+                      .value,
+                  )
+                }
+              >
+                <option value="all">
+                  All statuses
+                </option>
+
+                <option value="PENDING">
+                  Pending
+                </option>
+
+                <option value="VERIFIED">
+                  Verified
+                </option>
+
+                <option value="REJECTED">
+                  Rejected
+                </option>
+              </select>
+            </label>
+
+            <label
+              className={cx(
+                s.filterField,
+                s.searchField,
+              )}
+            >
+              <span>
+                Search
+              </span>
+
+              <div
+                className={
+                  s.searchInput
+                }
+              >
+                <Search
+                  size={16}
+                />
+
+                <input
+                  type="search"
+                  placeholder="Name, email, roll no, UTR…"
+                  value={
+                    search
+                  }
+                  onChange={(
+                    event,
+                  ) =>
+                    setSearch(
+                      event
+                        .target
+                        .value,
+                    )
+                  }
+                />
+              </div>
+            </label>
+          </div>
+
+          {/* TABLE */}
+
+          <div
+            className={
+              s.tableContainer
+            }
+          >
+            {loading ? (
+              <div
+                className={
+                  s.empty
+                }
+              >
+                <RefreshCw
+                  className={
+                    s.spin
+                  }
+                />
+
+                <p>
+                  Loading
+                  registrations…
+                </p>
+              </div>
+            ) : filtered.length ===
+              0 ? (
+              <div
+                className={
+                  s.empty
+                }
+              >
+                <ClipboardList />
+
+                <p>
+                  No registrations
+                  match the current
+                  filters.
+                </p>
+              </div>
+            ) : (
+              <table
+                className={
+                  s.table
+                }
+              >
                 <thead>
                   <tr>
-                    {COLUMNS.map((column) => (
-                      <th key={column} scope="col">
-                        {column}
-                      </th>
-                    ))}
+                    <th>
+                      Registration
+                    </th>
+
+                    <th>
+                      Student
+                    </th>
+
+                    <th>
+                      Contact
+                    </th>
+
+                    <th>
+                      UTR
+                    </th>
+
+                    <th>
+                      Status
+                    </th>
+
+                    <th>
+                      Created
+                    </th>
+
+                    <th>
+                      Action
+                    </th>
                   </tr>
                 </thead>
+
                 <tbody>
-                  {registrations.map((row) => (
-                    <tr key={row.rowNumber}>
-                      <td className={s.mono}>{row.registrationId}</td>
-                      <td>{row.name}</td>
-                      <td>{row.rollNo}</td>
-                      <td>{row.year}</td>
-                      <td>{row.branch}</td>
-                      <td>{row.workshop}</td>
-                      <td>{row.amount ? `₹${row.amount}` : '—'}</td>
-                      <td className={s.mono}>{row.transactionId}</td>
-                      <td>
-                        <span className={cx(s.badge, BADGES[row.status] ?? s.badgePending)}>{row.status}</span>
-                      </td>
-                      <td>
-                        <button
-                          type="button"
-                          className={cx(s.button, s.viewButton)}
-                          onClick={() => {
-                            setNotice(null)
-                            setSelected(row)
-                          }}
-                          aria-label={`View registration ${row.registrationId} for ${row.name}`}
+                  {filtered.map(
+                    (
+                      registration,
+                    ) => (
+                      <tr
+                        key={
+                          registration.rowNumber
+                        }
+                      >
+                        <td
+                          className={
+                            s.mono
+                          }
                         >
-                          <Eye aria-hidden="true" />
-                          View
-                        </button>
-                      </td>
-                    </tr>
-                  ))}
+                          {
+                            registration.registrationId ||
+                            `ROW ${registration.rowNumber}`
+                          }
+                        </td>
+
+                        <td>
+                          <strong>
+                            {
+                              registration.name ||
+                              "—"
+                            }
+                          </strong>
+
+                          <br />
+
+                          <span>
+                            {
+                              registration.collegeName ||
+                              registration.collegeType ||
+                              "—"
+                            }
+                          </span>
+                        </td>
+
+                        <td>
+                          {
+                            registration.email ||
+                            "—"
+                          }
+
+                          <br />
+
+                          <span>
+                            {
+                              registration.phone ||
+                              "—"
+                            }
+                          </span>
+                        </td>
+
+                        <td
+                          className={
+                            s.mono
+                          }
+                        >
+                          {
+                            registration.transactionId ||
+                            "—"
+                          }
+                        </td>
+
+                        <td>
+                          <span
+                            className={cx(
+                              s.badge,
+
+                              registration.status ===
+                                "VERIFIED"
+                                ? s.badgeVerified
+                                : registration.status ===
+                                    "REJECTED"
+                                  ? s.badgeRejected
+                                  : s.badgePending,
+                            )}
+                          >
+                            {
+                              registration.status
+                            }
+                          </span>
+                        </td>
+
+                        <td>
+                          {
+                            formatDate(
+                              registration.createdAt,
+                            )
+                          }
+                        </td>
+
+                        <td>
+                          <button
+                            type="button"
+                            className={cx(
+                              s.button,
+                              s.viewButton,
+                            )}
+                            onClick={() =>
+                              setSelected(
+                                registration,
+                              )
+                            }
+                          >
+                            View
+                          </button>
+                        </td>
+                      </tr>
+                    ),
+                  )}
                 </tbody>
               </table>
-            </div>
-          )}
+            )}
+          </div>
         </section>
-      </div>
+      </main>
+
+      {/* DETAILS */}
 
       {selected && (
         <RegistrationDialog
-          key={selected.rowNumber}
-          registration={selected}
-          onClose={() => setSelected(null)}
-          onUpdateStatus={handleUpdateStatus}
+          registration={{
+            ...selected,
+
+            year:
+              selected.year ||
+              "—",
+
+            workshop:
+              eventName ||
+              selected.event ||
+              eventLabel,
+          }}
+          onClose={() =>
+            setSelected(
+              null,
+            )
+          }
+          onUpdateStatus={
+            handleStatusUpdate
+          }
         />
       )}
-    </>
-  )
+    </div>
+  );
 }

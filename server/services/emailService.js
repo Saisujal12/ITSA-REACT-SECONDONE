@@ -1,39 +1,129 @@
 import "dotenv/config";
 import nodemailer from "nodemailer";
 
-const emailUser =
-  process.env.EMAIL_USER?.trim();
-
-const emailPassword =
-  process.env.EMAIL_APP_PASSWORD?.trim();
-
-if (!emailUser || !emailPassword) {
-  console.warn(
-    "⚠️ EMAIL_USER or EMAIL_APP_PASSWORD is missing. Email service will not work.",
-  );
-}
-
-const transporter =
-  nodemailer.createTransport({
-    service: "gmail",
-    auth: {
-      user: emailUser,
-      pass: emailPassword,
-    },
-  });
-
 /*
 |--------------------------------------------------------------------------
-| Common Email Styles
+| Event email configuration
+|--------------------------------------------------------------------------
+|
+| TEST MODE:
+| Each event can have a different Gmail account.
+|
+| Later add:
+| EVENT_EMAIL_USER_DESIGN_DEPLOY
+| EVENT_EMAIL_PASSWORD_DESIGN_DEPLOY
+|
 |--------------------------------------------------------------------------
 */
+
+const EMAIL_CONFIG = {
+  llm: {
+    user:
+      process.env.EVENT_EMAIL_USER_LLM ||
+      process.env.EMAIL_USER ||
+      "",
+
+    password:
+      process.env.EVENT_EMAIL_PASSWORD_LLM ||
+      process.env.EMAIL_APP_PASSWORD ||
+      "",
+  },
+
+  "code-build": {
+    user:
+      process.env.EVENT_EMAIL_USER_CODE_BUILD ||
+      "",
+
+    password:
+      process.env.EVENT_EMAIL_PASSWORD_CODE_BUILD ||
+      "",
+  },
+
+  innovation: {
+    user:
+      process.env.EVENT_EMAIL_USER_INNOVATION ||
+      "",
+
+    password:
+      process.env.EVENT_EMAIL_PASSWORD_INNOVATION ||
+      "",
+  },
+
+  "cyber-quest": {
+    user:
+      process.env.EVENT_EMAIL_USER_CYBER_QUEST ||
+      "",
+
+    password:
+      process.env.EVENT_EMAIL_PASSWORD_CYBER_QUEST ||
+      "",
+  },
+
+  "design-deploy": {
+    user:
+      process.env.EVENT_EMAIL_USER_DESIGN_DEPLOY ||
+      "",
+
+    password:
+      process.env.EVENT_EMAIL_PASSWORD_DESIGN_DEPLOY ||
+      "",
+  },
+
+  "tech-connect": {
+    user:
+      process.env.EVENT_EMAIL_USER_TECH_CONNECT ||
+      "",
+
+    password:
+      process.env.EVENT_EMAIL_PASSWORD_TECH_CONNECT ||
+      "",
+  },
+};
+
+function getEmailConfig(eventId) {
+  const config =
+    EMAIL_CONFIG[eventId];
+
+  if (
+    !config?.user ||
+    !config?.password
+  ) {
+    throw new Error(
+      `Email account is not configured for event "${eventId}".`,
+    );
+  }
+
+  return config;
+}
+
+function createTransporter(eventId) {
+  const config =
+    getEmailConfig(eventId);
+
+  return nodemailer.createTransport({
+    service: "gmail",
+    auth: {
+      user: config.user,
+      pass: config.password,
+    },
+  });
+}
+
+function escapeHtml(value) {
+  return String(value ?? "")
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#039;");
+}
 
 const emailStyles = `
 <style>
   body {
     margin: 0;
     padding: 0;
-    background: #f5f5f5;
+    background: #f4f4f4;
     font-family: Arial, Helvetica, sans-serif;
     color: #222;
   }
@@ -44,12 +134,11 @@ const emailStyles = `
     background: #ffffff;
     border-radius: 12px;
     overflow: hidden;
-    box-shadow: 0 4px 18px rgba(0, 0, 0, 0.08);
   }
 
   .header {
     background: #92172f;
-    color: #ffffff;
+    color: white;
     padding: 28px;
     text-align: center;
   }
@@ -73,9 +162,8 @@ const emailStyles = `
   }
 
   .details {
-    margin-top: 20px;
-    border-collapse: collapse;
     width: 100%;
+    border-collapse: collapse;
   }
 
   .details td {
@@ -98,9 +186,79 @@ const emailStyles = `
 </style>
 `;
 
+function buildDetailsTable(
+  registration,
+) {
+  return `
+    <table class="details">
+      <tr>
+        <td>Registration ID</td>
+        <td>${escapeHtml(
+          registration.registrationId,
+        )}</td>
+      </tr>
+
+      <tr>
+        <td>Name</td>
+        <td>${escapeHtml(
+          registration.name,
+        )}</td>
+      </tr>
+
+      <tr>
+        <td>College</td>
+        <td>${escapeHtml(
+          registration.collegeName,
+        )}</td>
+      </tr>
+
+      ${
+        registration.rollNo
+          ? `
+      <tr>
+        <td>Roll Number</td>
+        <td>${escapeHtml(
+          registration.rollNo,
+        )}</td>
+      </tr>
+      `
+          : ""
+      }
+
+      <tr>
+        <td>Branch</td>
+        <td>${escapeHtml(
+          registration.branch,
+        )}</td>
+      </tr>
+
+      <tr>
+        <td>Event</td>
+        <td>${escapeHtml(
+          registration.event,
+        )}</td>
+      </tr>
+
+      <tr>
+        <td>Amount</td>
+        <td>₹${escapeHtml(
+          registration.amount,
+        )}</td>
+      </tr>
+
+      <tr>
+        <td>UTR / Transaction ID</td>
+        <td>${escapeHtml(
+          registration.transactionId,
+        )}</td>
+      </tr>
+    </table>
+  `;
+}
+
 /*
 |--------------------------------------------------------------------------
-| Pending Registration Email
+| Pending email
 |--------------------------------------------------------------------------
 */
 
@@ -113,108 +271,84 @@ export async function sendRegistrationPendingEmail(
     );
   }
 
-  if (!emailUser || !emailPassword) {
-    throw new Error(
-      "Email service is not configured.",
+  const config =
+    getEmailConfig(
+      registration.eventId,
     );
-  }
+
+  const transporter =
+    createTransporter(
+      registration.eventId,
+    );
+
+  const name =
+    escapeHtml(
+      registration.name,
+    );
+
+  const event =
+    escapeHtml(
+      registration.event,
+    );
 
   const subject =
-    "Registration Received - Verification Pending";
+    `Registration Received - ${registration.event}`;
 
   const html = `
 <!DOCTYPE html>
 <html>
 <head>
-  <meta charset="UTF-8">
-  ${emailStyles}
+<meta charset="UTF-8">
+${emailStyles}
 </head>
 
 <body>
-  <div class="container">
 
-    <div class="header">
-      <h1>IT Association | KITSW</h1>
+<div class="container">
+
+  <div class="header">
+    <h1>IT Association | KITSW</h1>
+  </div>
+
+  <div class="content">
+
+    <h2>Registration Received</h2>
+
+    <p>
+      Dear <strong>${name}</strong>,
+    </p>
+
+    <p>
+      Your registration for
+      <strong>${event}</strong>
+      has been received successfully.
+    </p>
+
+    <div class="status">
+      <strong>Status: VERIFICATION PENDING</strong>
+      <br>
+      Your payment and registration details will be
+      verified by the IT Association team.
     </div>
 
-    <div class="content">
+    ${buildDetailsTable(
+      registration,
+    )}
 
-      <h2>Registration Received</h2>
-
-      <p>
-        Dear <strong>${registration.name}</strong>,
-      </p>
-
-      <p>
-        Thank you for registering for the event.
-        We have successfully received your registration.
-      </p>
-
-      <div class="status">
-        <strong>Status: Verification Pending</strong>
-        <br>
-        Your registration is currently waiting for verification
-        by the IT Association team.
-      </div>
-
-      <table class="details">
-
-        <tr>
-          <td>Registration ID</td>
-          <td>${registration.registrationId}</td>
-        </tr>
-
-        <tr>
-          <td>Name</td>
-          <td>${registration.name}</td>
-        </tr>
-
-        <tr>
-          <td>Roll Number</td>
-          <td>${registration.rollNo}</td>
-        </tr>
-
-        <tr>
-          <td>Event / Workshop</td>
-          <td>${registration.workshop}</td>
-        </tr>
-
-        <tr>
-          <td>Amount</td>
-          <td>₹${registration.amount}</td>
-        </tr>
-
-        <tr>
-          <td>Status</td>
-          <td>PENDING</td>
-        </tr>
-
-      </table>
-
-      <p>
-        Please keep your
-        <strong>Registration ID</strong>
-        for future reference.
-      </p>
-
-      <p>
-        You will receive another email once your
-        registration has been verified.
-      </p>
-
-      <p>
-        Thank you,<br>
-        <strong>IT Association, KITSW</strong>
-      </p>
-
-    </div>
-
-    <div class="footer">
-      This is an automated email.
-      Please do not reply to this email.
-    </div>
+    <p>
+      Please keep your Registration ID for future reference.
+    </p>
 
   </div>
+
+  <div class="footer">
+    IT Association · KITSW
+    <br>
+    This is an automated email.
+  </div>
+
+</div>
+
 </body>
 </html>
 `;
@@ -222,32 +356,30 @@ export async function sendRegistrationPendingEmail(
   const text = `
 IT Association | KITSW
 
-Registration Received - Verification Pending
+Registration Received
 
 Dear ${registration.name},
 
-Your registration has been successfully received.
+Your registration for ${registration.event} has been received successfully.
 
 Registration ID: ${registration.registrationId}
 Name: ${registration.name}
+College: ${registration.collegeName}
 Roll Number: ${registration.rollNo}
-Event / Workshop: ${registration.workshop}
+Branch: ${registration.branch}
+Event: ${registration.event}
 Amount: ₹${registration.amount}
+UTR / Transaction ID: ${registration.transactionId}
 
-Status: PENDING
+Status: VERIFICATION PENDING
 
-Your registration is currently waiting for verification
-by the IT Association team.
+Your payment and registration details will be verified by the IT Association team.
 
-You will receive another email once your registration
-has been verified.
-
-Thank you,
 IT Association, KITSW
 `;
 
   await transporter.sendMail({
-    from: `"IT Association | KITSW" <${emailUser}>`,
+    from: `"IT Association | KITSW" <${config.user}>`,
     to: registration.email,
     subject,
     text,
@@ -257,7 +389,7 @@ IT Association, KITSW
 
 /*
 |--------------------------------------------------------------------------
-| Successful Registration Email
+| Verified email
 |--------------------------------------------------------------------------
 */
 
@@ -270,106 +402,73 @@ export async function sendRegistrationSuccessEmail(
     );
   }
 
-  if (!emailUser || !emailPassword) {
-    throw new Error(
-      "Email service is not configured.",
+  const config =
+    getEmailConfig(
+      registration.eventId,
     );
-  }
+
+  const transporter =
+    createTransporter(
+      registration.eventId,
+    );
 
   const subject =
-    "Registration Successful - IT Association KITSW";
+    `Registration Verified - ${registration.event}`;
 
   const html = `
 <!DOCTYPE html>
 <html>
 <head>
-  <meta charset="UTF-8">
-  ${emailStyles}
+<meta charset="UTF-8">
+${emailStyles}
 </head>
 
 <body>
-  <div class="container">
 
-    <div class="header">
-      <h1>IT Association | KITSW</h1>
+<div class="container">
+
+  <div class="header">
+    <h1>IT Association | KITSW</h1>
+  </div>
+
+  <div class="content">
+
+    <h2>Registration Verified</h2>
+
+    <p>
+      Dear <strong>${escapeHtml(
+        registration.name,
+      )}</strong>,
+    </p>
+
+    <div class="status">
+      <strong>Status: VERIFIED</strong>
+      <br>
+      Your registration has been successfully verified.
     </div>
 
-    <div class="content">
+    ${buildDetailsTable(
+      registration,
+    )}
 
-      <h2>Registration Successful 🎉</h2>
+    <p>
+      Your registration is now confirmed.
+    </p>
 
-      <p>
-        Dear <strong>${registration.name}</strong>,
-      </p>
-
-      <p>
-        Your registration has been successfully verified
-        by the IT Association team.
-      </p>
-
-      <div class="status">
-        <strong>Status: VERIFIED</strong>
-        <br>
-        Your registration is confirmed successfully.
-      </div>
-
-      <table class="details">
-
-        <tr>
-          <td>Registration ID</td>
-          <td>${registration.registrationId}</td>
-        </tr>
-
-        <tr>
-          <td>Name</td>
-          <td>${registration.name}</td>
-        </tr>
-
-        <tr>
-          <td>Roll Number</td>
-          <td>${registration.rollNo}</td>
-        </tr>
-
-        <tr>
-          <td>Event / Workshop</td>
-          <td>${registration.workshop}</td>
-        </tr>
-
-        <tr>
-          <td>Amount</td>
-          <td>₹${registration.amount}</td>
-        </tr>
-
-        <tr>
-          <td>Status</td>
-          <td>VERIFIED</td>
-        </tr>
-
-      </table>
-
-      <p>
-        Your registration is now confirmed.
-        Please keep this email and your Registration ID
-        for future reference.
-      </p>
-
-      <p>
-        Thank you for registering with the
-        <strong>IT Association, KITSW</strong>.
-      </p>
-
-      <p>
-        We look forward to seeing you at the event!
-      </p>
-
-    </div>
-
-    <div class="footer">
-      This is an automated email.
-      Please do not reply to this email.
-    </div>
+    <p>
+      Please keep this email and your Registration ID.
+    </p>
 
   </div>
+
+  <div class="footer">
+    IT Association · KITSW
+    <br>
+    This is an automated email.
+  </div>
+
+</div>
+
 </body>
 </html>
 `;
@@ -377,32 +476,23 @@ export async function sendRegistrationSuccessEmail(
   const text = `
 IT Association | KITSW
 
-Registration Successful
+Registration Verified
 
 Dear ${registration.name},
 
-Your registration has been successfully verified
-by the IT Association team.
+Your registration has been successfully verified.
 
 Registration ID: ${registration.registrationId}
-Name: ${registration.name}
-Roll Number: ${registration.rollNo}
-Event / Workshop: ${registration.workshop}
-Amount: ₹${registration.amount}
-
+Event: ${registration.event}
 Status: VERIFIED
 
 Your registration is now confirmed.
-
-Thank you for registering with the IT Association, KITSW.
-
-We look forward to seeing you at the event.
 
 IT Association, KITSW
 `;
 
   await transporter.sendMail({
-    from: `"IT Association | KITSW" <${emailUser}>`,
+    from: `"IT Association | KITSW" <${config.user}>`,
     to: registration.email,
     subject,
     text,
@@ -412,7 +502,7 @@ IT Association, KITSW
 
 /*
 |--------------------------------------------------------------------------
-| Rejected Registration Email
+| Rejected email
 |--------------------------------------------------------------------------
 */
 
@@ -425,103 +515,70 @@ export async function sendRegistrationRejectedEmail(
     );
   }
 
-  if (!emailUser || !emailPassword) {
-    throw new Error(
-      "Email service is not configured.",
+  const config =
+    getEmailConfig(
+      registration.eventId,
     );
-  }
+
+  const transporter =
+    createTransporter(
+      registration.eventId,
+    );
 
   const subject =
-    "Registration Update - IT Association KITSW";
+    `Registration Update - ${registration.event}`;
 
   const html = `
 <!DOCTYPE html>
 <html>
 <head>
-  <meta charset="UTF-8">
-  ${emailStyles}
+<meta charset="UTF-8">
+${emailStyles}
 </head>
 
 <body>
-  <div class="container">
 
-    <div class="header">
-      <h1>IT Association | KITSW</h1>
+<div class="container">
+
+  <div class="header">
+    <h1>IT Association | KITSW</h1>
+  </div>
+
+  <div class="content">
+
+    <h2>Registration Update</h2>
+
+    <p>
+      Dear <strong>${escapeHtml(
+        registration.name,
+      )}</strong>,
+    </p>
+
+    <div class="status">
+      <strong>Status: NOT VERIFIED</strong>
+      <br>
+      Your registration could not be verified at this time.
     </div>
 
-    <div class="content">
+    ${buildDetailsTable(
+      registration,
+    )}
 
-      <h2>Registration Update</h2>
-
-      <p>
-        Dear <strong>${registration.name}</strong>,
-      </p>
-
-      <p>
-        We have reviewed your registration for the event.
-      </p>
-
-      <div class="status">
-        <strong>Status: REGISTRATION NOT VERIFIED</strong>
-        <br>
-        Unfortunately, your registration could not be
-        verified at this time.
-      </div>
-
-      <table class="details">
-
-        <tr>
-          <td>Registration ID</td>
-          <td>${registration.registrationId}</td>
-        </tr>
-
-        <tr>
-          <td>Name</td>
-          <td>${registration.name}</td>
-        </tr>
-
-        <tr>
-          <td>Roll Number</td>
-          <td>${registration.rollNo}</td>
-        </tr>
-
-        <tr>
-          <td>Event / Workshop</td>
-          <td>${registration.workshop}</td>
-        </tr>
-
-        <tr>
-          <td>Status</td>
-          <td>REJECTED</td>
-        </tr>
-
-      </table>
-
-      <p>
-        If you believe this was a mistake or if you need
-        further information, please contact the
-        IT Association team.
-      </p>
-
-      <p>
-        Please mention your
-        <strong>Registration ID</strong>
-        when contacting the team.
-      </p>
-
-      <p>
-        Thank you,<br>
-        <strong>IT Association, KITSW</strong>
-      </p>
-
-    </div>
-
-    <div class="footer">
-      This is an automated email.
-      Please do not reply to this email.
-    </div>
+    <p>
+      If you believe this was a mistake, please contact
+      the IT Association team.
+    </p>
 
   </div>
+
+  <div class="footer">
+    IT Association · KITSW
+    <br>
+    This is an automated email.
+  </div>
+
+</div>
+
 </body>
 </html>
 `;
@@ -533,30 +590,20 @@ Registration Update
 
 Dear ${registration.name},
 
-We have reviewed your registration for the event.
-
-Unfortunately, your registration could not be verified
-at this time.
+Your registration could not be verified at this time.
 
 Registration ID: ${registration.registrationId}
-Name: ${registration.name}
-Roll Number: ${registration.rollNo}
-Event / Workshop: ${registration.workshop}
+Event: ${registration.event}
 
-Status: REJECTED
+Status: NOT VERIFIED
 
-If you believe this was a mistake or need further
-information, please contact the IT Association team.
+Please contact the IT Association team if you believe this was a mistake.
 
-Please mention your Registration ID when contacting
-the team.
-
-Thank you,
 IT Association, KITSW
 `;
 
   await transporter.sendMail({
-    from: `"IT Association | KITSW" <${emailUser}>`,
+    from: `"IT Association | KITSW" <${config.user}>`,
     to: registration.email,
     subject,
     text,

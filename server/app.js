@@ -9,19 +9,79 @@ import adminRoutes from "./routes/adminRoutes.js";
 
 const app = express();
 
-app.use(helmet());
+app.set(
+  "trust proxy",
+  1,
+);
 
-const frontendOrigin =
-  process.env.FRONTEND_ORIGIN || "http://localhost:5173";
+app.use(
+  helmet({
+    crossOriginResourcePolicy: false,
+  }),
+);
+
+const allowedOrigins =
+  (
+    process.env.FRONTEND_ORIGIN ||
+    ""
+  )
+    .split(",")
+    .map((origin) =>
+      origin.trim(),
+    )
+    .filter(Boolean);
 
 app.use(
   cors({
-    origin: frontendOrigin,
+    origin(origin, callback) {
+      /*
+       * Allow server-to-server requests
+       * and local development.
+       */
+      if (!origin) {
+        return callback(
+          null,
+          true,
+        );
+      }
+
+      if (
+        allowedOrigins.length ===
+        0
+      ) {
+        return callback(
+          null,
+          true,
+        );
+      }
+
+      if (
+        allowedOrigins.includes(
+          origin,
+        )
+      ) {
+        return callback(
+          null,
+          true,
+        );
+      }
+
+      return callback(
+        new Error(
+          "CORS origin not allowed.",
+        ),
+      );
+    },
+
     credentials: true,
   }),
 );
 
-app.use(express.json());
+app.use(
+  express.json({
+    limit: "1mb",
+  }),
+);
 
 app.use(
   express.urlencoded({
@@ -29,23 +89,38 @@ app.use(
   }),
 );
 
-app.use("/api/registrations", registrationRoutes);
+app.use(
+  "/api/registrations",
+  registrationRoutes,
+);
 
-app.use("/api/admin", adminRoutes);
+app.use(
+  "/api/admin",
+  adminRoutes,
+);
 
-app.get("/", (req, res) => {
-  res.status(200).json({
-    success: true,
-    message: "IT Association backend is running",
-  });
-});
+app.get(
+  "/api/health",
+  (req, res) => {
+    res.status(200).json({
+      success: true,
+      message:
+        "IT Association backend is running.",
+      timestamp:
+        new Date().toISOString(),
+    });
+  },
+);
 
-app.get("/api/health", (req, res) => {
-  res.status(200).json({
-    success: true,
-    message: "IT Association backend is running",
-    timestamp: new Date().toISOString(),
-  });
-});
+app.get(
+  "/",
+  (req, res) => {
+    res.status(200).json({
+      success: true,
+      message:
+        "IT Association backend is running.",
+    });
+  },
+);
 
 export default app;

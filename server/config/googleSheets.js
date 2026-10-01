@@ -1,38 +1,123 @@
 import "dotenv/config";
-
 import { google } from "googleapis";
-import path from "path";
-import { fileURLToPath } from "url";
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
+/*
+|--------------------------------------------------------------------------
+| EVENT → GOOGLE SHEET CONFIGURATION
+|--------------------------------------------------------------------------
+|
+| Workshop → EVENT_SHEET_ID_LLM
+| Event 1  → EVENT_SHEET_ID_CODE_BUILD
+| Event 2  → EVENT_SHEET_ID_INNOVATION
+| Event 3  → EVENT_SHEET_ID_CYBER_QUEST
+| Event 4  → EVENT_SHEET_ID_DESIGN_DEPLOY
+| Event 5  → EVENT_SHEET_ID_TECH_CONNECT
+| Event 6  → EVENT_SHEET_ID_EVENT6
+|
+*/
 
-const credentialsPath = path.join(
-  __dirname,
-  "google-service-account.json",
-);
+const EVENT_CONFIG = {
+  llm: {
+    sheetId:
+      process.env.EVENT_SHEET_ID_LLM ||
+      process.env.GOOGLE_SHEET_ID ||
+      "",
+  },
 
-const auth = new google.auth.GoogleAuth({
-  keyFile: credentialsPath,
-  scopes: [
-    "https://www.googleapis.com/auth/spreadsheets",
-  ],
-});
+  "code-build": {
+    sheetId:
+      process.env.EVENT_SHEET_ID_CODE_BUILD ||
+      "",
+  },
 
-const sheets = google.sheets({
-  version: "v4",
-  auth,
-});
+  innovation: {
+    sheetId:
+      process.env.EVENT_SHEET_ID_INNOVATION ||
+      "",
+  },
 
-const SHEET_NAME = "Registrations";
+  "cyber-quest": {
+    sheetId:
+      process.env.EVENT_SHEET_ID_CYBER_QUEST ||
+      "",
+  },
 
-function getSpreadsheetId() {
-  const spreadsheetId = process.env.GOOGLE_SHEET_ID;
+  "design-deploy": {
+    sheetId:
+      process.env.EVENT_SHEET_ID_DESIGN_DEPLOY ||
+      "",
+  },
+
+  "tech-connect": {
+    sheetId:
+      process.env.EVENT_SHEET_ID_TECH_CONNECT ||
+      "",
+  },
+
+  event6: {
+    sheetId:
+      process.env.EVENT_SHEET_ID_EVENT6 ||
+      "",
+  },
+};
+
+const SHEET_NAME =
+  process.env.GOOGLE_SHEET_TAB_NAME ||
+  "Registrations";
+
+const HEADERS = [
+  "Registration ID",
+  "Name",
+  "College Type",
+  "College Name",
+  "Roll No",
+  "Branch",
+  "Email",
+  "Phone",
+  "Event",
+  "Amount",
+  "UTR / Transaction ID",
+  "Status",
+  "Created At",
+  "Updated At",
+];
+
+/*
+|--------------------------------------------------------------------------
+| Check whether event has a spreadsheet configured
+|--------------------------------------------------------------------------
+*/
+
+export function isEventSheetConfigured(
+  eventId,
+) {
+  return Boolean(
+    EVENT_CONFIG[eventId]?.sheetId,
+  );
+}
+
+/*
+|--------------------------------------------------------------------------
+| Get spreadsheet ID
+|--------------------------------------------------------------------------
+*/
+
+function getSpreadsheetId(
+  eventId,
+) {
+  const spreadsheetId =
+    EVENT_CONFIG[eventId]?.sheetId;
 
   if (!spreadsheetId) {
-    throw new Error(
-      "GOOGLE_SHEET_ID is missing from the .env file.",
-    );
+    const error =
+      new Error(
+        `Google Sheet is not configured for event "${eventId}".`,
+      );
+
+    error.code =
+      "EVENT_SHEET_NOT_CONFIGURED";
+
+    throw error;
   }
 
   return spreadsheetId;
@@ -40,64 +125,237 @@ function getSpreadsheetId() {
 
 /*
 |--------------------------------------------------------------------------
-| Get Headers
+| Google authentication
 |--------------------------------------------------------------------------
 */
 
-export async function getRegistrationHeaders() {
-  const spreadsheetId = getSpreadsheetId();
+function createAuth() {
+  /*
+   * Vercel / production
+   */
+  if (
+    process.env
+      .GOOGLE_SERVICE_ACCOUNT_JSON
+  ) {
+    let credentials;
 
-  const response = await sheets.spreadsheets.values.get({
-    spreadsheetId,
-    range: `${SHEET_NAME}!A1:M1`,
+    try {
+      credentials =
+        JSON.parse(
+          process.env
+            .GOOGLE_SERVICE_ACCOUNT_JSON,
+        );
+    } catch {
+      throw new Error(
+        "GOOGLE_SERVICE_ACCOUNT_JSON is not valid JSON.",
+      );
+    }
+
+    return new google.auth.GoogleAuth({
+      credentials,
+      scopes: [
+        "https://www.googleapis.com/auth/spreadsheets",
+      ],
+    });
+  }
+
+  /*
+   * Local development
+   */
+  const clientEmail =
+    process.env
+      .GOOGLE_SERVICE_ACCOUNT_EMAIL
+      ?.trim();
+
+  const privateKey =
+    process.env
+      .GOOGLE_PRIVATE_KEY
+      ?.replace(
+        /\\n/g,
+        "\n",
+      );
+
+  if (
+    !clientEmail ||
+    !privateKey
+  ) {
+    throw new Error(
+      "Google service-account credentials are not configured.",
+    );
+  }
+
+  return new google.auth.GoogleAuth({
+    credentials: {
+      client_email:
+        clientEmail,
+
+      private_key:
+        privateKey,
+    },
+
+    scopes: [
+      "https://www.googleapis.com/auth/spreadsheets",
+    ],
+  });
+}
+
+const auth =
+  createAuth();
+
+const sheets =
+  google.sheets({
+    version: "v4",
+    auth,
   });
 
-  return response.data.values || [];
+/*
+|--------------------------------------------------------------------------
+| Ensure registration sheet headers exist
+|--------------------------------------------------------------------------
+*/
+
+export async function ensureRegistrationSheet(
+  eventId,
+) {
+  const spreadsheetId =
+    getSpreadsheetId(
+      eventId,
+    );
+
+  const response =
+    await sheets.spreadsheets.values.get(
+      {
+        spreadsheetId,
+
+        range:
+          `${SHEET_NAME}!A1:N1`,
+      },
+    );
+
+  const existingHeaders =
+    response.data.values?.[0] ||
+    [];
+
+  const headersMatch =
+    HEADERS.every(
+      (
+        header,
+        index,
+      ) =>
+        existingHeaders[
+          index
+        ] === header,
+    );
+
+  if (!headersMatch) {
+    await sheets.spreadsheets.values.update(
+      {
+        spreadsheetId,
+
+        range:
+          `${SHEET_NAME}!A1:N1`,
+
+        valueInputOption:
+          "RAW",
+
+        requestBody: {
+          values: [
+            HEADERS,
+          ],
+        },
+      },
+    );
+  }
+
+  return HEADERS;
 }
 
 /*
 |--------------------------------------------------------------------------
-| Append Registration
+| Append registration
 |--------------------------------------------------------------------------
 */
 
-export async function appendRegistration(registration) {
-  const spreadsheetId = getSpreadsheetId();
+export async function appendRegistration(
+  registration,
+) {
+  const eventId =
+    registration.eventId;
 
-  const createdAt = new Date().toISOString();
+  const spreadsheetId =
+    getSpreadsheetId(
+      eventId,
+    );
 
-  /*
-  IMPORTANT:
-  Google Sheets API expects values as an array of arrays.
-  */
+  await ensureRegistrationSheet(
+    eventId,
+  );
+
+  const createdAt =
+    new Date().toISOString();
 
   const values = [
     [
-      registration.registrationId || "",
-      registration.name || "",
-      registration.rollNo || "",
-      registration.year || "",
-      registration.branch || "",
-      registration.email || "",
-      registration.phone || "",
-      registration.workshop || "",
-      registration.amount ?? "",
-      registration.transactionId || "",
-      registration.status || "PENDING",
+      registration.registrationId ||
+        "",
+
+      registration.name ||
+        "",
+
+      registration.collegeType ||
+        "",
+
+      registration.collegeName ||
+        "",
+
+      registration.rollNo ||
+        "",
+
+      registration.branch ||
+        "",
+
+      registration.email ||
+        "",
+
+      registration.phone ||
+        "",
+
+      registration.event ||
+        "",
+
+      registration.amount ??
+        "",
+
+      registration.transactionId ||
+        "",
+
+      registration.status ||
+        "PENDING",
+
       createdAt,
+
       "",
     ],
   ];
 
-  await sheets.spreadsheets.values.append({
-    spreadsheetId,
-    range: `${SHEET_NAME}!A:M`,
-    valueInputOption: "USER_ENTERED",
-    insertDataOption: "INSERT_ROWS",
-    requestBody: {
-      values,
+  await sheets.spreadsheets.values.append(
+    {
+      spreadsheetId,
+
+      range:
+        `${SHEET_NAME}!A:N`,
+
+      valueInputOption:
+        "USER_ENTERED",
+
+      insertDataOption:
+        "INSERT_ROWS",
+
+      requestBody: {
+        values,
+      },
     },
-  });
+  );
 
   return {
     ...registration,
@@ -107,43 +365,95 @@ export async function appendRegistration(registration) {
 
 /*
 |--------------------------------------------------------------------------
-| Get All Registrations
+| Get registrations for ONE event
 |--------------------------------------------------------------------------
 */
 
-export async function getRegistrationRows() {
-  const spreadsheetId = getSpreadsheetId();
+export async function getRegistrationRows(
+  eventId,
+) {
+  const spreadsheetId =
+    getSpreadsheetId(
+      eventId,
+    );
 
-  const response = await sheets.spreadsheets.values.get({
-    spreadsheetId,
-    range: `${SHEET_NAME}!A2:M`,
-  });
+  await ensureRegistrationSheet(
+    eventId,
+  );
 
-  const rows = response.data.values || [];
+  const response =
+    await sheets.spreadsheets.values.get(
+      {
+        spreadsheetId,
+
+        range:
+          `${SHEET_NAME}!A2:N`,
+      },
+    );
+
+  const rows =
+    response.data.values ||
+    [];
 
   return rows
-    .map((row, index) => {
-      const rowNumber = index + 2;
+    .map(
+      (
+        row,
+        index,
+      ) => ({
+        rowNumber:
+          index + 2,
 
-      return {
-        rowNumber,
-        registrationId: row[0] || "",
-        name: row[1] || "",
-        rollNo: row[2] || "",
-        year: row[3] || "",
-        branch: row[4] || "",
-        email: row[5] || "",
-        phone: row[6] || "",
-        workshop: row[7] || "",
-        amount: row[8] || "",
-        transactionId: row[9] || "",
-        status: row[10] || "PENDING",
-        createdAt: row[11] || "",
-        updatedAt: row[12] || "",
-      };
-    })
+        eventId,
+
+        registrationId:
+          row[0] || "",
+
+        name:
+          row[1] || "",
+
+        collegeType:
+          row[2] || "",
+
+        collegeName:
+          row[3] || "",
+
+        rollNo:
+          row[4] || "",
+
+        branch:
+          row[5] || "",
+
+        email:
+          row[6] || "",
+
+        phone:
+          row[7] || "",
+
+        event:
+          row[8] || "",
+
+        amount:
+          row[9] || "",
+
+        transactionId:
+          row[10] || "",
+
+        status:
+          row[11] ||
+          "PENDING",
+
+        createdAt:
+          row[12] || "",
+
+        updatedAt:
+          row[13] || "",
+      }),
+    )
     .filter(
-      (registration) =>
+      (
+        registration,
+      ) =>
         registration.registrationId ||
         registration.name ||
         registration.email,
@@ -153,149 +463,217 @@ export async function getRegistrationRows() {
 
 /*
 |--------------------------------------------------------------------------
-| Update Registration Status
+| Get all registrations
 |--------------------------------------------------------------------------
+|
+| Kept for compatibility with other backend code.
+| Admin dashboard does NOT use this function anymore.
+|
+*/
+
+export async function getAllRegistrationRows() {
+  const results = [];
+
+  for (
+    const eventId of
+    Object.keys(
+      EVENT_CONFIG,
+    )
+  ) {
+    if (
+      !isEventSheetConfigured(
+        eventId,
+      )
+    ) {
+      continue;
+    }
+
+    try {
+      const rows =
+        await getRegistrationRows(
+          eventId,
+        );
+
+      results.push(
+        ...rows,
+      );
+    } catch (error) {
+      console.error(
+        `Failed to read sheet for ${eventId}:`,
+        error.message,
+      );
+    }
+  }
+
+  return results.sort(
+    (
+      a,
+      b,
+    ) =>
+      new Date(
+        b.createdAt || 0,
+      ) -
+      new Date(
+        a.createdAt || 0,
+      ),
+  );
+}
+
+/*
+|--------------------------------------------------------------------------
+| Update registration status
+|--------------------------------------------------------------------------
+|
+| IMPORTANT:
+| eventId comes from the authenticated admin session.
+|
 */
 
 export async function updateRegistrationStatus(
+  eventId,
   rowNumber,
   status,
 ) {
-  const spreadsheetId = getSpreadsheetId();
-
-  if (!Number.isInteger(rowNumber) || rowNumber < 2) {
-    const error = new Error(
-      "Invalid registration row number.",
+  const spreadsheetId =
+    getSpreadsheetId(
+      eventId,
     );
 
-    error.code = "INVALID_ROW_NUMBER";
+  if (
+    !Number.isInteger(
+      rowNumber,
+    ) ||
+    rowNumber < 2
+  ) {
+    const error =
+      new Error(
+        "Invalid registration row number.",
+      );
+
+    error.code =
+      "INVALID_ROW_NUMBER";
 
     throw error;
   }
 
   const response =
-    await sheets.spreadsheets.values.get({
+    await sheets.spreadsheets.values.get(
+      {
+        spreadsheetId,
+
+        range:
+          `${SHEET_NAME}!A${rowNumber}:N${rowNumber}`,
+      },
+    );
+
+  const rows =
+    response.data.values ||
+    [];
+
+  if (!rows.length) {
+    const error =
+      new Error(
+        "Registration row was not found.",
+      );
+
+    error.code =
+      "REGISTRATION_NOT_FOUND";
+
+    throw error;
+  }
+
+  const row =
+    rows[0];
+
+  const currentStatus =
+    String(
+      row[11] ||
+        "PENDING",
+    ).toUpperCase();
+
+  if (
+    currentStatus !==
+    "PENDING"
+  ) {
+    const error =
+      new Error(
+        "Registration has already been processed.",
+      );
+
+    error.code =
+      "REGISTRATION_ALREADY_PROCESSED";
+
+    throw error;
+  }
+
+  const updatedAt =
+    new Date().toISOString();
+
+  await sheets.spreadsheets.values.update(
+    {
       spreadsheetId,
-      range: `${SHEET_NAME}!A${rowNumber}:M${rowNumber}`,
-    });
 
-  const rows = response.data.values || [];
+      range:
+        `${SHEET_NAME}!L${rowNumber}:N${rowNumber}`,
 
-  if (!rows.length || !rows[0]) {
-    const error = new Error(
-      "Registration row was not found.",
-    );
+      valueInputOption:
+        "USER_ENTERED",
 
-    error.code = "REGISTRATION_NOT_FOUND";
-
-    throw error;
-  }
-
-  const row = rows[0];
-
-  const currentStatus = row[10] || "PENDING";
-
-  if (currentStatus !== "PENDING") {
-    const error = new Error(
-      "Registration has already been processed.",
-    );
-
-    error.code = "REGISTRATION_ALREADY_PROCESSED";
-
-    throw error;
-  }
-
-  const updatedAt = new Date().toISOString();
-
-  await sheets.spreadsheets.values.update({
-    spreadsheetId,
-    range: `${SHEET_NAME}!K${rowNumber}:M${rowNumber}`,
-    valueInputOption: "USER_ENTERED",
-    requestBody: {
-      values: [
-        [
-          status,
-          row[11] || "",
-          updatedAt,
+      requestBody: {
+        values: [
+          [
+            status,
+            row[12] || "",
+            updatedAt,
+          ],
         ],
-      ],
+      },
     },
-  });
+  );
 
   return {
     rowNumber,
-    registrationId: row[0] || "",
-    name: row[1] || "",
-    rollNo: row[2] || "",
-    year: row[3] || "",
-    branch: row[4] || "",
-    email: row[5] || "",
-    phone: row[6] || "",
-    workshop: row[7] || "",
-    amount: row[8] || "",
-    transactionId: row[9] || "",
+
+    eventId,
+
+    registrationId:
+      row[0] || "",
+
+    name:
+      row[1] || "",
+
+    collegeType:
+      row[2] || "",
+
+    collegeName:
+      row[3] || "",
+
+    rollNo:
+      row[4] || "",
+
+    branch:
+      row[5] || "",
+
+    email:
+      row[6] || "",
+
+    phone:
+      row[7] || "",
+
+    event:
+      row[8] || "",
+
+    amount:
+      row[9] || "",
+
+    transactionId:
+      row[10] || "",
+
     status,
-    createdAt: row[11] || "",
+
+    createdAt:
+      row[12] || "",
+
     updatedAt,
   };
-}
-
-/*
-|--------------------------------------------------------------------------
-| Delete Sheet Row
-|--------------------------------------------------------------------------
-*/
-
-export async function deleteSheetRow(rowNumber) {
-  const spreadsheetId = getSpreadsheetId();
-
-  const sheetId = await getSheetId();
-
-  await sheets.spreadsheets.batchUpdate({
-    spreadsheetId,
-    requestBody: {
-      requests: [
-        {
-          deleteDimension: {
-            range: {
-              sheetId,
-              dimension: "ROWS",
-              startIndex: rowNumber - 1,
-              endIndex: rowNumber,
-            },
-          },
-        },
-      ],
-    },
-  });
-}
-
-/*
-|--------------------------------------------------------------------------
-| Get Numeric Sheet ID
-|--------------------------------------------------------------------------
-*/
-
-async function getSheetId() {
-  const spreadsheetId = getSpreadsheetId();
-
-  const response =
-    await sheets.spreadsheets.get({
-      spreadsheetId,
-      fields: "sheets.properties",
-    });
-
-  const registrationSheet =
-    response.data.sheets?.find(
-      (sheet) =>
-        sheet.properties.title === SHEET_NAME,
-    );
-
-  if (!registrationSheet) {
-    throw new Error(
-      `Sheet tab "${SHEET_NAME}" was not found.`,
-    );
-  }
-
-  return registrationSheet.properties.sheetId;
 }

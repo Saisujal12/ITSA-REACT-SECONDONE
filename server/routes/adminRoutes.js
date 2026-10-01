@@ -6,24 +6,64 @@ import {
   logoutAdmin,
   listRegistrations,
   changeRegistrationStatus,
+  getAvailableAdminEvents,
 } from "../controllers/adminController.js";
 
-import { requireAdmin } from "../middleware/adminAuth.js";
+import {
+  requireAdmin,
+} from "../middleware/adminAuth.js";
 
-const router = express.Router();
+const router =
+  express.Router();
 
 /*
-  Authentication
+|--------------------------------------------------------------------------
+| Event list
+|--------------------------------------------------------------------------
 */
 
-router.post("/login", loginAdmin);
-
-router.get("/check", checkAdmin);
-
-router.post("/logout", logoutAdmin);
+router.get(
+  "/events",
+  getAvailableAdminEvents,
+);
 
 /*
-  Protected admin routes
+|--------------------------------------------------------------------------
+| Login
+|--------------------------------------------------------------------------
+*/
+
+router.post(
+  "/login",
+  loginAdmin,
+);
+
+/*
+|--------------------------------------------------------------------------
+| Session
+|--------------------------------------------------------------------------
+*/
+
+router.get(
+  "/check",
+  checkAdmin,
+);
+
+/*
+|--------------------------------------------------------------------------
+| Logout
+|--------------------------------------------------------------------------
+*/
+
+router.post(
+  "/logout",
+  logoutAdmin,
+);
+
+/*
+|--------------------------------------------------------------------------
+| Registrations
+|--------------------------------------------------------------------------
 */
 
 router.get(
@@ -31,6 +71,12 @@ router.get(
   requireAdmin,
   listRegistrations,
 );
+
+/*
+|--------------------------------------------------------------------------
+| Verify / Reject
+|--------------------------------------------------------------------------
+*/
 
 router.put(
   "/registrations/:rowNumber/status",

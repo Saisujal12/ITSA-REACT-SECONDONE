@@ -1,37 +1,74 @@
 import crypto from "crypto";
 import { promisify } from "util";
 
-const scrypt = promisify(crypto.scrypt);
-
-const sessions = new Map();
-
-const SESSION_DURATION = 8 * 60 * 60 * 1000;
+const scrypt = promisify(
+  crypto.scrypt,
+);
 
 /*
 |--------------------------------------------------------------------------
-| Hash Password
+| ADMIN SESSION SETTINGS
 |--------------------------------------------------------------------------
 */
 
-export async function hashPassword(password) {
-  if (!password) {
-    throw new Error("Password cannot be empty.");
+const SESSION_DURATION =
+  8 * 60 * 60 * 1000; // 8 hours
+
+/*
+|--------------------------------------------------------------------------
+| SESSION SECRET
+|--------------------------------------------------------------------------
+*/
+
+function getSessionSecret() {
+  const secret =
+    process.env.ADMIN_SESSION_SECRET ||
+    process.env.ADMIN_PASSWORD_HASH;
+
+  if (!secret) {
+    throw new Error(
+      "ADMIN_SESSION_SECRET is not configured.",
+    );
   }
 
-  const salt = crypto.randomBytes(16).toString("hex");
-
-  const derivedKey = await scrypt(
-    password,
-    salt,
-    64,
-  );
-
-  return `${salt}:${derivedKey.toString("hex")}`;
+  return secret;
 }
 
 /*
 |--------------------------------------------------------------------------
-| Verify Password
+| PASSWORD HASHING
+|--------------------------------------------------------------------------
+*/
+
+export async function hashPassword(
+  password,
+) {
+  if (!password) {
+    throw new Error(
+      "Password cannot be empty.",
+    );
+  }
+
+  const salt =
+    crypto
+      .randomBytes(16)
+      .toString("hex");
+
+  const derivedKey =
+    await scrypt(
+      password,
+      salt,
+      64,
+    );
+
+  return `${salt}:${derivedKey.toString(
+    "hex",
+  )}`;
+}
+
+/*
+|--------------------------------------------------------------------------
+| PASSWORD VERIFICATION
 |--------------------------------------------------------------------------
 */
 
@@ -39,108 +76,302 @@ export async function verifyPassword(
   password,
   storedHash,
 ) {
-  if (!password || !storedHash) {
+  if (
+    !password ||
+    !storedHash
+  ) {
     return false;
   }
 
-  const parts = storedHash.split(":");
+  const parts =
+    storedHash.split(":");
 
-  if (parts.length !== 2) {
+  if (
+    parts.length !== 2
+  ) {
     return false;
   }
 
-  const [salt, key] = parts;
+  const [
+    salt,
+    key,
+  ] = parts;
 
   try {
-    const derivedKey = await scrypt(
-      password,
-      salt,
-      64,
-    );
+    const derivedKey =
+      await scrypt(
+        password,
+        salt,
+        64,
+      );
 
-    const storedKeyBuffer = Buffer.from(
-      key,
-      "hex",
-    );
+    const storedKey =
+      Buffer.from(
+        key,
+        "hex",
+      );
 
     if (
       derivedKey.length !==
-      storedKeyBuffer.length
+      storedKey.length
     ) {
       return false;
     }
 
     return crypto.timingSafeEqual(
       derivedKey,
-      storedKeyBuffer,
+      storedKey,
     );
-  } catch (error) {
-    console.error(
-      "❌ Password verification error:",
-      error,
-    );
-
+  } catch {
     return false;
   }
 }
 
 /*
 |--------------------------------------------------------------------------
-| Create Admin Session
+| CREATE SESSION SIGNATURE
 |--------------------------------------------------------------------------
 */
 
-export function createAdminSession(username) {
-  const token = crypto
-    .randomBytes(32)
-    .toString("hex");
-
-  sessions.set(token, {
-    username,
-    createdAt: Date.now(),
-    expiresAt:
-      Date.now() + SESSION_DURATION,
-  });
-
-  return token;
+function sign(value) {
+  return crypto
+    .createHmac(
+      "sha256",
+      getSessionSecret(),
+    )
+    .update(value)
+    .digest("base64url");
 }
 
 /*
 |--------------------------------------------------------------------------
-| Get Admin Session
+| SAFE STRING COMPARISON
 |--------------------------------------------------------------------------
 */
 
-export function getAdminSession(token) {
-  if (!token) {
-    return null;
+function safeEqual(
+  a,
+  b,
+) {
+  const aBuffer =
+    Buffer.from(a);
+
+  const bBuffer =
+    Buffer.from(b);
+
+  if (
+    aBuffer.length !==
+    bBuffer.length
+  ) {
+    return false;
   }
 
-  const session = sessions.get(token);
-
-  if (!session) {
-    return null;
-  }
-
-  if (Date.now() > session.expiresAt) {
-    sessions.delete(token);
-
-    return null;
-  }
-
-  return session;
+  return crypto.timingSafeEqual(
+    aBuffer,
+    bBuffer,
+  );
 }
 
 /*
 |--------------------------------------------------------------------------
-| Destroy Admin Session
+| CREATE ADMIN SESSION
+|--------------------------------------------------------------------------
+|
+| IMPORTANT:
+|
+| The selected eventId MUST be stored in the session.
+|
+| Example:
+|
+| username = admin
+| eventId  = llm
+|
+| The backend will then know:
+|
+| admin -> Workshop
+|
+| and will only load that event's registrations.
 |--------------------------------------------------------------------------
 */
 
-export function destroyAdminSession(token) {
-  if (!token) {
-    return;
+export function createAdminSession(
+  username,
+  eventId,
+) {
+  if (!username) {
+    throw new Error(
+      "Username is required.",
+    );
   }
 
-  sessions.delete(token);
+  if (!eventId) {
+    throw new Error(
+      "Event ID is required.",
+    );
+  }
+
+  const expiresAt =
+    Date.now() +
+    SESSION_DURATION;
+
+  /*
+   * Store BOTH username and eventId.
+   */
+  const payload =
+    Buffer.from(
+      JSON.stringify({
+        username,
+        eventId,
+        expiresAt,
+      }),
+    ).toString("base64url");
+
+  const signature =
+    sign(payload);
+
+  return `${payload}.${signature}`;
+}
+
+/*
+|--------------------------------------------------------------------------
+| READ / VERIFY ADMIN SESSION
+|--------------------------------------------------------------------------
+*/
+
+export function getAdminSession(
+  token,
+) {
+  if (!token) {
+    return null;
+  }
+
+  const parts =
+    token.split(".");
+
+  if (
+    parts.length !== 2
+  ) {
+    return null;
+  }
+
+  const [
+    payload,
+    signature,
+  ] = parts;
+
+  /*
+   * Generate the expected signature.
+   */
+  let expected;
+
+  try {
+    expected =
+      sign(payload);
+  } catch {
+    return null;
+  }
+
+  /*
+   * Verify signature.
+   */
+  if (
+    !safeEqual(
+      signature,
+      expected,
+    )
+  ) {
+    return null;
+  }
+
+  /*
+   * Decode session payload.
+   */
+  try {
+    const decoded =
+      JSON.parse(
+        Buffer.from(
+          payload,
+          "base64url",
+        ).toString("utf8"),
+      );
+
+    /*
+     * Username is required.
+     */
+    if (
+      !decoded.username
+    ) {
+      return null;
+    }
+
+    /*
+     * Event ID is REQUIRED.
+     *
+     * This is the important fix.
+     */
+    if (
+      !decoded.eventId
+    ) {
+      return null;
+    }
+
+    /*
+     * Expiration time is required.
+     */
+    if (
+      !decoded.expiresAt
+    ) {
+      return null;
+    }
+
+    /*
+     * Check expiration.
+     */
+    if (
+      Date.now() >
+      Number(
+        decoded.expiresAt,
+      )
+    ) {
+      return null;
+    }
+
+    /*
+     * Return authenticated session.
+     */
+    return {
+      username:
+        decoded.username,
+
+      eventId:
+        decoded.eventId,
+
+      expiresAt:
+        Number(
+          decoded.expiresAt,
+        ),
+    };
+  } catch {
+    return null;
+  }
+}
+
+/*
+|--------------------------------------------------------------------------
+| DESTROY SESSION
+|--------------------------------------------------------------------------
+|
+| Sessions are stateless.
+|
+| Logout clears the browser cookie.
+|--------------------------------------------------------------------------
+*/
+
+export function destroyAdminSession() {
+  /*
+   * Nothing is required here.
+   *
+   * The browser cookie is cleared
+   * by the logout controller.
+   */
 }

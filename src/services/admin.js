@@ -1,18 +1,89 @@
-import { request } from './api'
+import {
+  request,
+} from "./api";
 
-export const loginAdmin = (username, password) =>
-  request('/api/admin/login', { method: 'POST', body: { username, password } })
+export const fetchAdminEvents = ({
+  signal,
+} = {}) =>
+  request(
+    "/api/admin/events",
+    {
+      signal,
+    },
+  ).then(
+    (data) =>
+      data.events ?? [],
+  );
 
-export const checkAdmin = ({ signal } = {}) => request('/api/admin/check', { signal })
+export const loginAdmin = (
+  username,
+  password,
+  eventId,
+) =>
+  request(
+    "/api/admin/login",
+    {
+      method:
+        "POST",
 
-export const logoutAdmin = () => request('/api/admin/logout', { method: 'POST' })
+      body: {
+        username,
+        password,
+        eventId,
+      },
+    },
+  );
 
-export const fetchRegistrations = ({ signal } = {}) =>
-  request('/api/admin/registrations', { signal }).then((data) => data.registrations ?? [])
+export const checkAdmin = ({
+  signal,
+} = {}) =>
+  request(
+    "/api/admin/check",
+    {
+      signal,
+    },
+  );
 
-/** status: "VERIFIED" | "REJECTED" */
-export const updateRegistrationStatus = (rowNumber, status) =>
-  request(`/api/admin/registrations/${encodeURIComponent(rowNumber)}/status`, {
-    method: 'PUT',
-    body: { status },
-  })
+export const logoutAdmin =
+  () =>
+    request(
+      "/api/admin/logout",
+      {
+        method:
+          "POST",
+      },
+    );
+
+export const fetchRegistrations = ({
+  signal,
+} = {}) =>
+  request(
+    "/api/admin/registrations",
+    {
+      signal,
+    },
+  );
+
+export const updateRegistrationStatus = (
+  rowNumber,
+  status,
+) =>
+  request(
+    `/api/admin/registrations/${encodeURIComponent(
+      rowNumber,
+    )}/status`,
+    {
+      method:
+        "PUT",
+
+      /*
+       * DO NOT send eventId.
+       *
+       * Backend takes eventId from
+       * the signed admin session.
+       */
+      body: {
+        status,
+      },
+    },
+  );

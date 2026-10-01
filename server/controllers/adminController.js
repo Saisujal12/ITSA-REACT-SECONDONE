@@ -4,37 +4,55 @@ import {
 } from "../config/googleSheets.js";
 
 import {
+  ADMIN_EVENTS,
+  getAdminEvent,
+} from "../config/adminEvents.js";
+
+import {
   verifyPassword,
   createAdminSession,
-  getAdminSession,
-  destroyAdminSession,
 } from "../services/adminAuth.js";
+
+import {
+  getAdminFromRequest,
+} from "../middleware/adminAuth.js";
 
 import {
   sendRegistrationSuccessEmail,
   sendRegistrationRejectedEmail,
 } from "../services/emailService.js";
 
-/*
-|--------------------------------------------------------------------------
-| Read Cookie
-|--------------------------------------------------------------------------
-*/
-
-function getCookie(req, cookieName) {
-  const cookieHeader = req.headers.cookie;
+function getCookie(
+  req,
+  cookieName,
+) {
+  const cookieHeader =
+    req.headers.cookie;
 
   if (!cookieHeader) {
     return null;
   }
 
-  const cookies = cookieHeader.split(";");
+  const cookies =
+    cookieHeader.split(
+      ";",
+    );
 
-  for (const cookie of cookies) {
-    const [name, ...valueParts] =
-      cookie.trim().split("=");
+  for (
+    const cookie of cookies
+  ) {
+    const [
+      name,
+      ...valueParts
+    ] =
+      cookie
+        .trim()
+        .split("=");
 
-    if (name === cookieName) {
+    if (
+      name ===
+      cookieName
+    ) {
       return decodeURIComponent(
         valueParts.join("="),
       );
@@ -44,9 +62,27 @@ function getCookie(req, cookieName) {
   return null;
 }
 
+function cookieOptions() {
+  return {
+    httpOnly: true,
+
+    sameSite:
+      "lax",
+
+    secure:
+      process.env.NODE_ENV ===
+      "production",
+
+    maxAge:
+      8 * 60 * 60 * 1000,
+
+    path: "/",
+  };
+}
+
 /*
 |--------------------------------------------------------------------------
-| Admin Login
+| ADMIN LOGIN
 |--------------------------------------------------------------------------
 */
 
@@ -58,101 +94,151 @@ export async function loginAdmin(
     const {
       username,
       password,
-    } = req.body;
+      eventId,
+    } =
+      req.body || {};
 
     const adminUsername =
-      process.env.ADMIN_USERNAME?.trim();
+      process.env
+        .ADMIN_USERNAME
+        ?.trim();
 
     const adminPasswordHash =
-      process.env.ADMIN_PASSWORD_HASH?.trim();
+      process.env
+        .ADMIN_PASSWORD_HASH
+        ?.trim();
 
-    if (!username || !password) {
-      return res.status(400).json({
-        success: false,
-        message:
-          "Username and password are required.",
-      });
+    /*
+     * All three fields are mandatory.
+     */
+    if (
+      !username ||
+      !password ||
+      !eventId
+    ) {
+      return res
+        .status(400)
+        .json({
+          success: false,
+          message:
+            "Username, password, and event are required.",
+        });
     }
 
     if (
-      String(username).trim() !==
-      adminUsername
+      !adminUsername ||
+      !adminPasswordHash
     ) {
-      return res.status(401).json({
-        success: false,
-        message:
-          "Invalid username or password.",
-      });
+      return res
+        .status(500)
+        .json({
+          success: false,
+          message:
+            "Admin authentication is not configured.",
+        });
     }
 
-    if (!adminPasswordHash) {
-      console.error(
-        "❌ ADMIN_PASSWORD_HASH is missing.",
+    /*
+     * Validate selected event.
+     */
+    const selectedEvent =
+      getAdminEvent(
+        String(
+          eventId,
+        ).trim(),
       );
 
-      return res.status(500).json({
-        success: false,
-        message:
-          "Admin authentication is not configured.",
-      });
+    if (!selectedEvent) {
+      return res
+        .status(400)
+        .json({
+          success: false,
+          message:
+            "Please select a valid event.",
+        });
     }
 
-    const passwordCorrect =
+    /*
+     * Validate username.
+     */
+    if (
+      String(
+        username,
+      ).trim() !==
+      adminUsername
+    ) {
+      return res
+        .status(401)
+        .json({
+          success: false,
+          message:
+            "Invalid username or password.",
+        });
+    }
+
+    /*
+     * Validate password.
+     */
+    const valid =
       await verifyPassword(
         password,
         adminPasswordHash,
       );
 
-    if (!passwordCorrect) {
-      return res.status(401).json({
-        success: false,
-        message:
-          "Invalid username or password.",
-      });
+    if (!valid) {
+      return res
+        .status(401)
+        .json({
+          success: false,
+          message:
+            "Invalid username or password.",
+        });
     }
 
+    /*
+     * IMPORTANT:
+     * Store selected event inside signed session.
+     */
     const token =
       createAdminSession(
         adminUsername,
+        selectedEvent.id,
       );
 
     res.cookie(
       "it_admin_session",
       token,
-      {
-        httpOnly: true,
-        sameSite: "lax",
-        secure:
-          process.env.NODE_ENV ===
-          "production",
-        maxAge:
-          8 * 60 * 60 * 1000,
-        path: "/",
-      },
+      cookieOptions(),
     );
 
     return res.json({
       success: true,
+
       message:
         "Admin login successful.",
+
+      event:
+        selectedEvent,
     });
   } catch (error) {
     console.error(
-      "❌ Admin login error:",
+      "Admin login error:",
       error,
     );
 
-    return res.status(500).json({
-      success: false,
-      message:
-        "Admin login failed.",
-    });
+    return res
+      .status(500)
+      .json({
+        success: false,
+        message:
+          "Admin login failed.",
+      });
   }
 }
 
 /*
 |--------------------------------------------------------------------------
-| Check Admin Session
+| CHECK SESSION
 |--------------------------------------------------------------------------
 */
 
@@ -160,31 +246,38 @@ export function checkAdmin(
   req,
   res,
 ) {
-  const token = getCookie(
-    req,
-    "it_admin_session",
-  );
-
-  if (!token) {
-    return res.json({
-      success: true,
-      authenticated: false,
-    });
-  }
-
-  const session =
-    getAdminSession(token);
+  const admin =
+    getAdminFromRequest(
+      req,
+    );
 
   return res.json({
     success: true,
+
     authenticated:
-      Boolean(session),
+      Boolean(admin),
+
+    admin: admin
+      ? {
+          username:
+            admin.username,
+
+          eventId:
+            admin.eventId,
+
+          eventLabel:
+            admin.eventLabel,
+
+          eventName:
+            admin.eventName,
+        }
+      : null,
   });
 }
 
 /*
 |--------------------------------------------------------------------------
-| Admin Logout
+| LOGOUT
 |--------------------------------------------------------------------------
 */
 
@@ -192,29 +285,14 @@ export function logoutAdmin(
   req,
   res,
 ) {
-  const token = getCookie(
-    req,
-    "it_admin_session",
-  );
-
-  if (token) {
-    destroyAdminSession(token);
-  }
-
   res.clearCookie(
     "it_admin_session",
-    {
-      httpOnly: true,
-      sameSite: "lax",
-      secure:
-        process.env.NODE_ENV ===
-        "production",
-      path: "/",
-    },
+    cookieOptions(),
   );
 
   return res.json({
     success: true,
+
     message:
       "Logged out successfully.",
   });
@@ -222,8 +300,15 @@ export function logoutAdmin(
 
 /*
 |--------------------------------------------------------------------------
-| Get Registrations
+| LIST REGISTRATIONS
 |--------------------------------------------------------------------------
+|
+| IMPORTANT:
+| We DO NOT accept an eventId from the frontend.
+|
+| The event comes from req.admin.eventId,
+| which came from the signed session.
+|
 */
 
 export async function listRegistrations(
@@ -231,31 +316,94 @@ export async function listRegistrations(
   res,
 ) {
   try {
+    const eventId =
+      req.admin?.eventId;
+
+    if (!eventId) {
+      return res
+        .status(401)
+        .json({
+          success: false,
+          message:
+            "Admin event session is missing.",
+        });
+    }
+
+    /*
+     * Only ONE spreadsheet is read.
+     */
     const registrations =
-      await getRegistrationRows();
+      await getRegistrationRows(
+        eventId,
+      );
+
+    const event =
+      getAdminEvent(
+        eventId,
+      );
 
     return res.json({
       success: true,
+
       registrations,
+
+      event: event
+        ? {
+            id:
+              event.id,
+
+            label:
+              event.label,
+
+            name:
+              event.name,
+          }
+        : null,
     });
   } catch (error) {
     console.error(
-      "❌ Failed to load registrations:",
+      "Failed to load registrations:",
       error,
     );
 
-    return res.status(500).json({
-      success: false,
-      message:
-        "Failed to load registrations.",
-    });
+    if (
+      error.code ===
+      "EVENT_SHEET_NOT_CONFIGURED"
+    ) {
+      return res
+        .status(503)
+        .json({
+          success: false,
+          message:
+            "This event's Google Sheet is not configured.",
+        });
+    }
+
+    return res
+      .status(500)
+      .json({
+        success: false,
+        message:
+          "Failed to load registrations for the selected event.",
+      });
   }
 }
 
 /*
 |--------------------------------------------------------------------------
-| Verify / Reject Registration
+| VERIFY / REJECT
 |--------------------------------------------------------------------------
+|
+| IMPORTANT:
+| The frontend does NOT provide the eventId.
+|
+| The backend uses:
+|
+|     req.admin.eventId
+|
+| Therefore an admin logged into Event 1 cannot update
+| a row from Event 2.
+|
 */
 
 export async function changeRegistrationStatus(
@@ -263,69 +411,80 @@ export async function changeRegistrationStatus(
   res,
 ) {
   try {
-    const rowNumber = Number(
-      req.params.rowNumber,
-    );
+    const rowNumber =
+      Number(
+        req.params
+          .rowNumber,
+      );
 
-    const { status } = req.body;
+    const {
+      status,
+    } =
+      req.body || {};
 
-    /*
-    |--------------------------------------------------------------------------
-    | Validate Row
-    |--------------------------------------------------------------------------
-    */
+    const eventId =
+      req.admin?.eventId;
 
-    if (
-      !Number.isInteger(rowNumber) ||
-      rowNumber < 2
-    ) {
-      return res.status(400).json({
-        success: false,
-        message:
-          "Invalid registration row.",
-      });
+    if (!eventId) {
+      return res
+        .status(401)
+        .json({
+          success: false,
+          message:
+            "Admin event session is missing.",
+        });
     }
 
-    /*
-    |--------------------------------------------------------------------------
-    | Validate Status
-    |--------------------------------------------------------------------------
-    */
+    if (
+      !Number.isInteger(
+        rowNumber,
+      ) ||
+      rowNumber < 2
+    ) {
+      return res
+        .status(400)
+        .json({
+          success: false,
+          message:
+            "Invalid registration row.",
+        });
+    }
 
     if (
-      !["VERIFIED", "REJECTED"].includes(
+      ![
+        "VERIFIED",
+        "REJECTED",
+      ].includes(
         status,
       )
     ) {
-      return res.status(400).json({
-        success: false,
-        message:
-          "Invalid registration status.",
-      });
+      return res
+        .status(400)
+        .json({
+          success: false,
+          message:
+            "Invalid registration status.",
+        });
     }
 
     /*
-    |--------------------------------------------------------------------------
-    | Update Google Sheets First
-    |--------------------------------------------------------------------------
-    */
-
+     * Uses ONLY the selected event from the session.
+     */
     const registration =
       await updateRegistrationStatus(
+        eventId,
         rowNumber,
         status,
       );
 
-    /*
-    |--------------------------------------------------------------------------
-    | Send Result Email
-    |--------------------------------------------------------------------------
-    */
-
-    let emailSent = false;
+    let emailSent =
+      false;
 
     try {
-      if (status === "VERIFIED") {
+      if (
+        status ===
+        "VERIFIED"
+      ) {
         await sendRegistrationSuccessEmail(
           registration,
         );
@@ -335,50 +494,33 @@ export async function changeRegistrationStatus(
         );
       }
 
-      emailSent = true;
-
-      console.log(
-        `📧 ${status} email sent to ${registration.email}`,
-      );
+      emailSent =
+        true;
     } catch (emailError) {
       console.error(
-        `⚠️ ${status} email failed:`,
-        emailError,
+        `${status} email failed:`,
+        emailError.message,
       );
-    }
-
-    /*
-    |--------------------------------------------------------------------------
-    | Response
-    |--------------------------------------------------------------------------
-    */
-
-    if (status === "VERIFIED") {
-      return res.json({
-        success: true,
-        message: emailSent
-          ? "Registration verified successfully and email sent."
-          : "Registration verified successfully, but the success email could not be sent.",
-        registration,
-        email: {
-          sent: emailSent,
-        },
-      });
     }
 
     return res.json({
       success: true,
-      message: emailSent
-        ? "Registration rejected and email sent."
-        : "Registration rejected, but the rejection email could not be sent.",
+
+      message:
+        emailSent
+          ? `Registration ${status.toLowerCase()} successfully and email sent.`
+          : `Registration ${status.toLowerCase()} successfully, but email could not be sent.`,
+
       registration,
+
       email: {
-        sent: emailSent,
+        sent:
+          emailSent,
       },
     });
   } catch (error) {
     console.error(
-      "❌ Registration status update error:",
+      "Registration status update error:",
       error,
     );
 
@@ -386,29 +528,76 @@ export async function changeRegistrationStatus(
       error.code ===
       "REGISTRATION_NOT_FOUND"
     ) {
-      return res.status(404).json({
-        success: false,
-        message:
-          "Registration was not found.",
-      });
+      return res
+        .status(404)
+        .json({
+          success: false,
+          message:
+            "Registration not found.",
+        });
     }
 
     if (
       error.code ===
       "REGISTRATION_ALREADY_PROCESSED"
     ) {
-      return res.status(409).json({
-        success: false,
-        message:
-          "This registration has already been processed.",
-      });
+      return res
+        .status(409)
+        .json({
+          success: false,
+          message:
+            "This registration has already been processed.",
+        });
     }
 
-    return res.status(500).json({
-      success: false,
-      message:
-        error.message ||
-        "Failed to update registration status.",
-    });
+    if (
+      error.code ===
+      "EVENT_SHEET_NOT_CONFIGURED"
+    ) {
+      return res
+        .status(503)
+        .json({
+          success: false,
+          message:
+            "This event's Google Sheet is not configured.",
+        });
+    }
+
+    return res
+      .status(500)
+      .json({
+        success: false,
+        message:
+          "Unable to update registration status.",
+      });
   }
+}
+
+/*
+|--------------------------------------------------------------------------
+| PUBLIC ADMIN EVENT LIST
+|--------------------------------------------------------------------------
+*/
+
+export function getAvailableAdminEvents(
+  req,
+  res,
+) {
+  return res.json({
+    success: true,
+
+    events:
+      ADMIN_EVENTS.map(
+        (event) => ({
+          id:
+            event.id,
+
+          label:
+            event.label,
+
+          name:
+            event.name,
+        }),
+      ),
+  });
 }
