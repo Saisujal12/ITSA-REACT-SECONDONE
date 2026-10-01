@@ -1,4 +1,5 @@
 import react from "@vitejs/plugin-react";
+
 import {
   defineConfig,
   loadEnv,
@@ -6,17 +7,39 @@ import {
 
 export default defineConfig(
   ({ mode }) => {
-    const env =
-      loadEnv(
-        mode,
-        process.cwd(),
-        "",
-      );
+    const env = loadEnv(
+      mode,
+      process.cwd(),
+      "",
+    );
 
     return {
+      /*
+      |--------------------------------------------------------------------------
+      | React
+      |--------------------------------------------------------------------------
+      */
+
       plugins: [
         react(),
       ],
+
+      /*
+      |--------------------------------------------------------------------------
+      | BASE PATH
+      |--------------------------------------------------------------------------
+      |
+      | Important for Vercel deployment.
+      |--------------------------------------------------------------------------
+      */
+
+      base: "/",
+
+      /*
+      |--------------------------------------------------------------------------
+      | CSS MODULES
+      |--------------------------------------------------------------------------
+      */
 
       css: {
         modules: {
@@ -24,6 +47,12 @@ export default defineConfig(
             "camelCaseOnly",
         },
       },
+
+      /*
+      |--------------------------------------------------------------------------
+      | LOCAL DEVELOPMENT SERVER
+      |--------------------------------------------------------------------------
+      */
 
       server: {
         proxy: {
@@ -39,6 +68,12 @@ export default defineConfig(
         },
       },
 
+      /*
+      |--------------------------------------------------------------------------
+      | VITE PREVIEW
+      |--------------------------------------------------------------------------
+      */
+
       preview: {
         proxy: {
           "/api": {
@@ -53,8 +88,32 @@ export default defineConfig(
         },
       },
 
+      /*
+      |--------------------------------------------------------------------------
+      | PRODUCTION BUILD
+      |--------------------------------------------------------------------------
+      */
+
       build: {
         sourcemap: false,
+
+        assetsDir: "assets",
+
+        rollupOptions: {
+          output: {
+            /*
+             * Keep generated asset names predictable.
+             */
+            entryFileNames:
+              "assets/[name]-[hash].js",
+
+            chunkFileNames:
+              "assets/[name]-[hash].js",
+
+            assetFileNames:
+              "assets/[name]-[hash][extname]",
+          },
+        },
       },
     };
   },

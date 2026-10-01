@@ -1,60 +1,107 @@
-import { Navigate, createBrowserRouter } from 'react-router'
-import { RouterProvider } from 'react-router/dom'
-import AdminLayout from './components/layout/AdminLayout'
-import SiteLayout from './components/layout/SiteLayout'
-import PageLoader from './components/ui/PageLoader'
-import Home from './pages/Home'
-import LegacyRedirect from './pages/LegacyRedirect'
-import NotFound from './pages/NotFound'
-import RouteError from './pages/RouteError'
+import { Navigate, createBrowserRouter } from "react-router";
+import { RouterProvider } from "react-router/dom";
 
-const page = (load) => async () => ({
-  Component: (await load()).default,
-})
+import AdminLayout from "./components/layout/AdminLayout";
+import SiteLayout from "./components/layout/SiteLayout";
+import PageLoader from "./components/ui/PageLoader";
+
+import About from "./pages/About";
+import Association from "./pages/Association";
+import Contact from "./pages/Contact";
+import Events from "./pages/Events";
+import Gallery from "./pages/Gallery";
+import Home from "./pages/Home";
+import LegacyRedirect from "./pages/LegacyRedirect";
+import NotFound from "./pages/NotFound";
+import Register from "./pages/Register";
+import RouteError from "./pages/RouteError";
+import Sumshodhini from "./pages/Sumshodhini";
+import Workshops from "./pages/Workshops";
+
+import AdminDashboard from "./pages/admin/AdminDashboard";
+import AdminLogin from "./pages/admin/AdminLogin";
+
+/*
+|--------------------------------------------------------------------------
+| ROUTER
+|--------------------------------------------------------------------------
+|
+| All pages are imported directly.
+|
+| This intentionally avoids lazy-loaded route chunks so that
+| direct Vercel refreshes are more reliable.
+|--------------------------------------------------------------------------
+*/
 
 const router = createBrowserRouter([
+  /*
+  |--------------------------------------------------------------------------
+  | ADMIN
+  |--------------------------------------------------------------------------
+  */
+
   {
-    path: 'admin',
+    path: "admin",
+
     Component: AdminLayout,
+
     HydrateFallback: PageLoader,
+
     errorElement: <RouteError />,
 
     children: [
       /*
-       * When the user opens:
-       * http://localhost:5173/admin
-       *
-       * send them to the admin login page.
-       */
+      |--------------------------------------------------------------------------
+      | /admin
+      |--------------------------------------------------------------------------
+      */
+
       {
         index: true,
-        element: <Navigate to="/admin/login" replace />,
-      },
 
-      /*
-       * Admin login
-       */
-      {
-        path: 'login',
-        lazy: page(() =>
-          import('./pages/admin/AdminLogin'),
+        element: (
+          <Navigate
+            to="/admin/login"
+            replace
+          />
         ),
       },
 
       /*
-       * Admin dashboard
-       */
+      |--------------------------------------------------------------------------
+      | /admin/login
+      |--------------------------------------------------------------------------
+      */
+
       {
-        path: 'dashboard',
-        lazy: page(() =>
-          import('./pages/admin/AdminDashboard'),
-        ),
+        path: "login",
+
+        Component: AdminLogin,
+      },
+
+      /*
+      |--------------------------------------------------------------------------
+      | /admin/dashboard
+      |--------------------------------------------------------------------------
+      */
+
+      {
+        path: "dashboard",
+
+        Component: AdminDashboard,
       },
     ],
   },
 
+  /*
+  |--------------------------------------------------------------------------
+  | WEBSITE
+  |--------------------------------------------------------------------------
+  */
+
   {
     Component: SiteLayout,
+
     HydrateFallback: PageLoader,
 
     children: [
@@ -62,118 +109,197 @@ const router = createBrowserRouter([
         errorElement: <RouteError />,
 
         children: [
+          /*
+          |--------------------------------------------------------------------------
+          | HOME
+          |--------------------------------------------------------------------------
+          */
+
           {
             index: true,
+
             Component: Home,
           },
 
-          {
-            path: 'sumshodhini',
-            lazy: page(() =>
-              import('./pages/Sumshodhini'),
-            ),
-          },
+          /*
+          |--------------------------------------------------------------------------
+          | SUMSHODHINI
+          |--------------------------------------------------------------------------
+          */
 
           {
-            path: 'events',
-            lazy: page(() =>
-              import('./pages/Events'),
-            ),
-          },
+            path: "sumshodhini",
 
-          {
-            path: 'workshops',
-            lazy: page(() =>
-              import('./pages/Workshops'),
-            ),
-          },
-
-          {
-            path: 'register',
-            lazy: page(() =>
-              import('./pages/Register'),
-            ),
-          },
-
-          {
-            path: 'about',
-            lazy: page(() =>
-              import('./pages/About'),
-            ),
-          },
-
-          {
-            path: 'association',
-            lazy: page(() =>
-              import('./pages/Association'),
-            ),
-          },
-
-          {
-            path: 'gallery',
-            lazy: page(() =>
-              import('./pages/Gallery'),
-            ),
-          },
-
-          {
-            path: 'contact',
-            lazy: page(() =>
-              import('./pages/Contact'),
-            ),
+            Component: Sumshodhini,
           },
 
           /*
-           * Legacy routes
-           */
+          |--------------------------------------------------------------------------
+          | EVENTS
+          |--------------------------------------------------------------------------
+          */
+
           {
-            path: 'index.html',
-            element: <LegacyRedirect to="/" />,
+            path: "events",
+
+            Component: Events,
+          },
+
+          /*
+          |--------------------------------------------------------------------------
+          | WORKSHOPS
+          |--------------------------------------------------------------------------
+          */
+
+          {
+            path: "workshops",
+
+            Component: Workshops,
+          },
+
+          /*
+          |--------------------------------------------------------------------------
+          | REGISTER
+          |--------------------------------------------------------------------------
+          */
+
+          {
+            path: "register",
+
+            Component: Register,
+          },
+
+          /*
+          |--------------------------------------------------------------------------
+          | ABOUT
+          |--------------------------------------------------------------------------
+          */
+
+          {
+            path: "about",
+
+            Component: About,
+          },
+
+          /*
+          |--------------------------------------------------------------------------
+          | ASSOCIATION
+          |--------------------------------------------------------------------------
+          */
+
+          {
+            path: "association",
+
+            Component: Association,
+          },
+
+          /*
+          |--------------------------------------------------------------------------
+          | GALLERY
+          |--------------------------------------------------------------------------
+          */
+
+          {
+            path: "gallery",
+
+            Component: Gallery,
+          },
+
+          /*
+          |--------------------------------------------------------------------------
+          | CONTACT
+          |--------------------------------------------------------------------------
+          */
+
+          {
+            path: "contact",
+
+            Component: Contact,
+          },
+
+          /*
+          |--------------------------------------------------------------------------
+          | LEGACY REDIRECTS
+          |--------------------------------------------------------------------------
+          */
+
+          {
+            path: "index.html",
+
+            element: (
+              <LegacyRedirect
+                to="/"
+              />
+            ),
           },
 
           {
-            path: 'pages/:file',
+            path: "pages/:file",
+
             Component: LegacyRedirect,
           },
 
           {
-            path: 'samshodini',
+            path: "samshodini",
+
             element: (
-              <LegacyRedirect to="/sumshodhini" />
+              <LegacyRedirect
+                to="/sumshodhini"
+              />
             ),
           },
 
           {
-            path: 'sumshodini',
+            path: "samshodhini",
+
             element: (
-              <LegacyRedirect to="/sumshodhini" />
+              <LegacyRedirect
+                to="/sumshodhini"
+              />
             ),
           },
 
           {
-            path: 'samshodhini',
+            path: "samshodhini",
+
             element: (
-              <LegacyRedirect to="/sumshodhini" />
+              <LegacyRedirect
+                to="/sumshodhini"
+              />
             ),
           },
 
           {
-            path: 'workshop',
+            path: "workshop",
+
             element: (
-              <LegacyRedirect to="/workshops" />
+              <LegacyRedirect
+                to="/workshops"
+              />
             ),
           },
 
+          /*
+          |--------------------------------------------------------------------------
+          | NOT FOUND
+          |--------------------------------------------------------------------------
+          */
+
           {
-            path: '*',
+            path: "*",
+
             Component: NotFound,
           },
         ],
       },
     ],
   },
-])
+]);
 
 export default function App() {
-  return <RouterProvider router={router} />
+  return (
+    <RouterProvider
+      router={router}
+    />
+  );
 }
