@@ -1,11 +1,6 @@
-const BASE_URL =
-  (
-    import.meta.env
-      .VITE_API_URL ?? ""
-  ).replace(
-    /\/$/,
-    "",
-  );
+const BASE_URL = (
+  import.meta.env.VITE_API_URL ?? ""
+).replace(/\/$/, "");
 
 export class ApiError extends Error {
   constructor(
@@ -18,18 +13,39 @@ export class ApiError extends Error {
   ) {
     super(message);
 
-    this.name =
-      "ApiError";
+    this.name = "ApiError";
 
-    this.status =
-      status;
+    this.status = status;
 
-    this.data =
-      data;
+    this.data = data;
 
-    this.network =
-      network;
+    this.network = network;
   }
+}
+
+/*
+|--------------------------------------------------------------------------
+| API URL
+|--------------------------------------------------------------------------
+|
+| Production:
+|
+| If VITE_API_URL is empty:
+|
+|   /api/...
+|
+| This is important for Vercel because the
+| frontend and API are deployed together.
+|
+| Local development:
+|
+|   VITE_API_URL=http://localhost:5000
+|
+|--------------------------------------------------------------------------
+*/
+
+export function getApiBaseUrl() {
+  return BASE_URL;
 }
 
 export async function request(
@@ -40,41 +56,42 @@ export async function request(
     signal,
   } = {},
 ) {
+  const url =
+    `${BASE_URL}${path}`;
+
   let response;
 
   try {
     response =
-      await fetch(
-        `${BASE_URL}${path}`,
-        {
-          method,
+      await fetch(url, {
+        method,
 
-          signal,
+        signal,
 
-          credentials:
-            "include",
+        /*
+         * Required for admin authentication
+         * because the admin session uses a cookie.
+         */
+        credentials: "include",
 
-          headers:
-            body ===
-            undefined
-              ? undefined
-              : {
-                  "Content-Type":
-                    "application/json",
-                },
+        headers:
+          body === undefined
+            ? undefined
+            : {
+                "Content-Type":
+                  "application/json",
+              },
 
-          body:
-            body ===
-            undefined
-              ? undefined
-              : JSON.stringify(
-                  body,
-                ),
-        },
-      );
+        body:
+          body === undefined
+            ? undefined
+            : JSON.stringify(
+                body,
+              ),
+      });
   } catch (error) {
     if (
-      error.name ===
+      error?.name ===
       "AbortError"
     ) {
       throw error;
