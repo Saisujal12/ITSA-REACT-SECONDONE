@@ -1,3 +1,4 @@
+
 import "dotenv/config";
 
 import express from "express";
@@ -11,23 +12,19 @@ const app = express();
 
 app.set("trust proxy", 1);
 
-/*
-|--------------------------------------------------------------------------
-| SECURITY HEADERS
-|--------------------------------------------------------------------------
-*/
+// --------------------------------------------------
+// Security headers
+// --------------------------------------------------
 
 app.use(
   helmet({
     crossOriginResourcePolicy: false,
-  }),
+  })
 );
 
-/*
-|--------------------------------------------------------------------------
-| CORS
-|--------------------------------------------------------------------------
-*/
+// --------------------------------------------------
+// CORS configuration
+// --------------------------------------------------
 
 const configuredOrigins = (
   process.env.FRONTEND_ORIGIN || ""
@@ -36,47 +33,31 @@ const configuredOrigins = (
   .map((origin) => origin.trim())
   .filter(Boolean);
 
+const localOrigins = [
+  "http://localhost:5173",
+  "http://127.0.0.1:5173",
+  "http://localhost:3000",
+  "http://127.0.0.1:3000",
+];
+
 function isAllowedOrigin(origin) {
-  /*
-   * Requests without an Origin header include:
-   * - direct browser navigation
-   * - server-to-server requests
-   * - health checks
-   */
+  // Allow requests without an Origin header,
+  // such as server-to-server requests.
   if (!origin) {
     return true;
   }
 
-  /*
-   * Explicitly configured origins.
-   */
+  // Explicitly configured frontend origins.
   if (configuredOrigins.includes(origin)) {
     return true;
   }
 
-  /*
-   * Local development.
-   */
-  const localOrigins = [
-    "http://localhost:5173",
-    "http://127.0.0.1:5173",
-    "http://localhost:3000",
-    "http://127.0.0.1:3000",
-  ];
-
+  // Local development.
   if (localOrigins.includes(origin)) {
     return true;
   }
 
-  /*
-   * Vercel deployments.
-   *
-   * This allows:
-   *
-   * https://your-project.vercel.app
-   * https://your-project-git-main.vercel.app
-   * https://your-project-preview.vercel.app
-   */
+  // Allow HTTPS Vercel deployment URLs.
   try {
     const url = new URL(origin);
 
@@ -93,238 +74,154 @@ function isAllowedOrigin(origin) {
   return false;
 }
 
-app.use(
-  cors({
-    origin(origin, callback) {
-      if (isAllowedOrigin(origin)) {
-        return callback(null, true);
-      }
+const corsOptions = {
+  origin(origin, callback) {
+    if (isAllowedOrigin(origin)) {
+      return callback(null, true);
+    }
 
-      console.error(
-        `CORS blocked origin: ${origin}`,
-      );
+    console.error(`CORS blocked origin: ${origin}`);
 
-      return callback(
-        new Error(
-          `CORS origin not allowed: ${origin}`,
-        ),
-      );
-    },
+    return callback(
+      new Error(`CORS origin not allowed: ${origin}`)
+    );
+  },
 
-    credentials: true,
+  credentials: true,
 
-    methods: [
-      "GET",
-      "POST",
-      "PUT",
-      "PATCH",
-      "DELETE",
-      "OPTIONS",
-    ],
+  methods: [
+    "GET",
+    "POST",
+    "PUT",
+    "PATCH",
+    "DELETE",
+    "OPTIONS",
+  ],
 
-    allowedHeaders: [
-      "Content-Type",
-      "Authorization",
-    ],
-  }),
-);
+  allowedHeaders: [
+    "Content-Type",
+    "Authorization",
+  ],
 
-/*
-|--------------------------------------------------------------------------
-| BODY PARSERS
-|--------------------------------------------------------------------------
-*/
+  optionsSuccessStatus: 204,
+};
+
+// CORS middleware also handles preflight OPTIONS
+// requests before the application routes.
+app.use(cors(corsOptions));
+
+// --------------------------------------------------
+// Body parsing
+// --------------------------------------------------
 
 app.use(
   express.json({
     limit: "1mb",
-  }),
+  })
 );
 
 app.use(
   express.urlencoded({
     extended: true,
-  }),
+  })
 );
 
-/*
-|--------------------------------------------------------------------------
-| REGISTRATION API
-|--------------------------------------------------------------------------
-|
-| Supports both:
-|
-| /api/registrations
-| /registrations
-|
-| The first is used by the React frontend.
-| The second makes the Express app tolerant of
-| Vercel function path handling.
-|--------------------------------------------------------------------------
-*/
+// --------------------------------------------------
+// Registration routes
+// --------------------------------------------------
 
-app.use(
-  [
-    "/api/registrations",
-    "/registrations",
-  ],
-  registrationRoutes,
-);
+// Both paths use exactly the same router and handler.
+app.use("/api/registrations", registrationRoutes);
+app.use("/registrations", registrationRoutes);
 
-/*
-|--------------------------------------------------------------------------
-| ADMIN API
-|--------------------------------------------------------------------------
-|
-| Supports both:
-|
-| /api/admin/...
-| /admin/...
-|--------------------------------------------------------------------------
-*/
+// --------------------------------------------------
+// Admin routes
+// --------------------------------------------------
 
-app.use(
-  [
-    "/api/admin",
-    "/admin",
-  ],
-  adminRoutes,
-);
+app.use("/api/admin", adminRoutes);
 
-/*
-|--------------------------------------------------------------------------
-| HEALTH CHECK
-|--------------------------------------------------------------------------
-*/
+// --------------------------------------------------
+// Health check
+// --------------------------------------------------
 
-app.get(
-  [
-    "/api/health",
-    "/health",
-  ],
-  (req, res) => {
-    return res.status(200).json({
-      success: true,
+app.get("/api/health", (req, res) => {
+  res.status(200).json({
+    success: true,
+    message: "IT Association backend is running.",
+    timestamp: new Date().toISOString(),
+  });
+});
 
-      message:
-        "IT Association backend is running.",
+// --------------------------------------------------
+// Root endpoint
+// --------------------------------------------------
 
-      timestamp:
-        new Date().toISOString(),
-    });
-  },
-);
+app.get("/", (req, res) => {
+  res.status(200).json({
+    success: true,
+    message: "IT Association backend is running.",
+  });
+});
 
-/*
-|--------------------------------------------------------------------------
-| ROOT BACKEND CHECK
-|--------------------------------------------------------------------------
-*/
+// --------------------------------------------------
+// 404 handler
+// --------------------------------------------------
 
-app.get(
-  "/",
-  (req, res) => {
-    return res.status(200).json({
-      success: true,
+app.use((req, res) => {
+  res.status(404).json({
+    success: false,
+    message: "API endpoint not found.",
+    path: req.originalUrl,
+    method: req.method,
+  });
+});
 
-      message:
-        "IT Association backend is running.",
-    });
-  },
-);
+// --------------------------------------------------
+// Central error handler
+// --------------------------------------------------
 
-/*
-|--------------------------------------------------------------------------
-| CORS ERROR HANDLER
-|--------------------------------------------------------------------------
-*/
+app.use((error, req, res, next) => {
+  console.error("API error:", error);
 
-app.use(
-  (
-    error,
-    req,
-    res,
-    next,
-  ) => {
-    if (
-      error?.message?.startsWith(
-        "CORS origin not allowed",
-      )
-    ) {
-      return res.status(403).json({
-        success: false,
-
-        message:
-          "This frontend origin is not allowed to access the API.",
-
-        origin:
-          req.headers.origin || null,
-      });
-    }
-
-    return next(error);
-  },
-);
-
-/*
-|--------------------------------------------------------------------------
-| API 404 HANDLER
-|--------------------------------------------------------------------------
-*/
-
-app.use(
-  (req, res, next) => {
-    if (
-      req.path.startsWith("/api/") ||
-      req.path === "/api"
-    ) {
-      return res.status(404).json({
-        success: false,
-
-        message:
-          "API endpoint not found.",
-
-        path: req.path,
-      });
-    }
-
-    return next();
-  },
-);
-
-/*
-|--------------------------------------------------------------------------
-| FINAL ERROR HANDLER
-|--------------------------------------------------------------------------
-|
-| This prevents Express from returning an
-| unhelpful HTML error page to the React app.
-|--------------------------------------------------------------------------
-*/
-
-app.use(
-  (
-    error,
-    req,
-    res,
-    next,
-  ) => {
-    console.error(
-      "Unhandled Express error:",
-      error,
-    );
-
-    if (res.headersSent) {
-      return next(error);
-    }
-
-    return res.status(500).json({
+  if (
+    error?.message?.startsWith(
+      "CORS origin not allowed"
+    )
+  ) {
+    return res.status(403).json({
       success: false,
-
       message:
-        "Internal server error.",
+        "This frontend origin is not allowed to access the API.",
+      origin: req.headers.origin || null,
     });
-  },
-);
+  }
+
+  if (error?.type === "entity.too.large") {
+    return res.status(413).json({
+      success: false,
+      message: "Request body is too large.",
+    });
+  }
+
+  if (
+    error instanceof SyntaxError &&
+    error.status === 400 &&
+    "body" in error
+  ) {
+    return res.status(400).json({
+      success: false,
+      message: "Invalid JSON request body.",
+    });
+  }
+
+  return res.status(error.status || 500).json({
+    success: false,
+    message:
+      error.status && error.status < 500
+        ? error.message
+        : "Internal server error.",
+  });
+});
 
 export default app;
+

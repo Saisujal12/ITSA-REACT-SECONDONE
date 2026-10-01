@@ -1,15 +1,21 @@
+
 import express from "express";
 
 import {
   createRegistration,
 } from "../controllers/registrationController.js";
 
-const router =
-  express.Router();
+const router = express.Router();
 
-router.post(
-  "/",
-  createRegistration,
-);
+// POST /api/registrations
+// POST /api/registrations/
+//
+// Also works under /registrations and /registrations/.
+//
+// The controller and all existing validation,
+// email, and Google Sheets logic remain unchanged.
+
+router.post("/", createRegistration);
 
 export default router;
+
