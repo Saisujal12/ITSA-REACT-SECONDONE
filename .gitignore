@@ -1,3 +1,4 @@
+@"
 # ============================================================
 # Dependencies
 # ============================================================
@@ -14,11 +15,15 @@ server/node_modules/
 .env.*
 !.env.example
 
+server/.env
 
 
+# ============================================================
 # Google service account credentials
-config/google-service-account.json
+# ============================================================
 
+config/google-service-account.json
+server/config/google-service-account.json
 
 
 # ============================================================
@@ -66,17 +71,4 @@ Thumbs.db
 *.njsproj
 *.sln
 *.sw?
-
-
-node_modules/
-dist/
-
-.env
-.env.*
-!.env.example
-
-server/.env
-server/config/google-service-account.json
-
-*.log
-.DS_Store
+"@ | Set-Content .gitignore
