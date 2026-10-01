@@ -1,45 +1,29 @@
-@"
-# ============================================================
 # Dependencies
-# ============================================================
-
 node_modules/
 server/node_modules/
 
-
-# ============================================================
-# Environment / Secrets
-# ============================================================
-
+# Environment / secrets
 .env
 .env.*
 !.env.example
-
 server/.env
 
+# Google credentials
+**/google-service-account.json
+**/service-account*.json
+*.pem
+*.key
 
-# ============================================================
-# Google service account credentials
-# ============================================================
+# Vercel
+.vercel/
 
-config/google-service-account.json
-server/config/google-service-account.json
-
-
-# ============================================================
-# Build Output
-# ============================================================
-
+# Build output
 dist/
 dist-ssr/
 .dist/
 server/dist/
 
-
-# ============================================================
 # Logs
-# ============================================================
-
 logs/
 *.log
 npm-debug.log*
@@ -48,27 +32,13 @@ yarn-error.log*
 pnpm-debug.log*
 lerna-debug.log*
 
-
-# ============================================================
-# Local / Temporary Files
-# ============================================================
-
+# Local / temporary
 *.local
 .DS_Store
 Thumbs.db
+coverage/
 
-
-# ============================================================
-# Editors / IDEs
-# ============================================================
-
+# Editors
 .vscode/*
 !.vscode/extensions.json
-
 .idea/
-*.suo
-*.ntvs*
-*.njsproj
-*.sln
-*.sw?
-"@ | Set-Content .gitignore
