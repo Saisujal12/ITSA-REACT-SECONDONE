@@ -1,4 +1,4 @@
-/* Navbar and mobile menu (legacy style.css §5–6 and the transparent-logo override). */
+/* Navbar and mobile menu. */
 
 .navbar {
   position: relative;
@@ -14,7 +14,9 @@
 
 .scrolled {
   background: rgba(250, 249, 244, 0.99);
-  box-shadow: 0 8px 30px rgba(30, 25, 20, 0.07);
+  box-shadow:
+    0 8px 30px
+    rgba(30, 25, 20, 0.07);
 }
 
 .nav-container {
@@ -50,7 +52,10 @@
   width: 58px;
   height: 58px;
   object-fit: contain;
-  filter: grayscale(0.78) contrast(1.08) saturate(0.45);
+  filter:
+    grayscale(0.78)
+    contrast(1.08)
+    saturate(0.45);
   mix-blend-mode: multiply;
 }
 
@@ -63,7 +68,7 @@
 
 .brand-text strong {
   color: #272522;
-  font-size: 11px;
+  font-size: 15px;
   font-weight: 900;
   letter-spacing: 0.5px;
 }
@@ -105,12 +110,22 @@
 
 .nav-link:hover {
   color: var(--primary);
-  background: rgba(146, 23, 47, 0.045);
+  background: rgba(
+    146,
+    23,
+    47,
+    0.045
+  );
 }
 
 .nav-link.active {
   color: var(--primary);
-  background: rgba(146, 23, 47, 0.04);
+  background: rgba(
+    146,
+    23,
+    47,
+    0.04
+  );
 }
 
 .nav-link-text {
@@ -133,8 +148,10 @@
   transition: width var(--transition);
 }
 
-.nav-link:hover .nav-link-text::after,
-.nav-link.active .nav-link-text::after {
+.nav-link:hover
+  .nav-link-text::after,
+.nav-link.active
+  .nav-link-text::after {
   width: 70%;
 }
 
@@ -160,7 +177,9 @@
   color: white;
   font-size: 11px;
   font-weight: 800;
-  box-shadow: 0 8px 20px rgba(146, 23, 47, 0.13);
+  box-shadow:
+    0 8px 20px
+    rgba(146, 23, 47, 0.13);
   transition:
     transform var(--transition),
     background var(--transition),
@@ -169,7 +188,9 @@
 
 .register-btn:hover {
   background: var(--primary-dark);
-  box-shadow: 0 12px 26px rgba(146, 23, 47, 0.2);
+  box-shadow:
+    0 12px 26px
+    rgba(146, 23, 47, 0.2);
 }
 
 .register-arrow {
@@ -179,12 +200,19 @@
   align-items: center;
   justify-content: center;
   border-radius: 50%;
-  background: rgba(255, 255, 255, 0.13);
+  background: rgba(
+    255,
+    255,
+    255,
+    0.13
+  );
   font-size: 15px;
-  transition: transform var(--transition);
+  transition:
+    transform var(--transition);
 }
 
-.register-btn:hover .register-arrow {
+.register-btn:hover
+  .register-arrow {
   transform: translateX(2px);
 }
 
@@ -214,16 +242,23 @@
     opacity 0.25s ease;
 }
 
-.menu-button.active span:nth-child(1) {
-  transform: translateY(6.5px) rotate(45deg);
+.menu-button.active
+  span:nth-child(1) {
+  transform:
+    translateY(6.5px)
+    rotate(45deg);
 }
 
-.menu-button.active span:nth-child(2) {
+.menu-button.active
+  span:nth-child(2) {
   opacity: 0;
 }
 
-.menu-button.active span:nth-child(3) {
-  transform: translateY(-6.5px) rotate(-45deg);
+.menu-button.active
+  span:nth-child(3) {
+  transform:
+    translateY(-6.5px)
+    rotate(-45deg);
 }
 
 .mobile-menu {
@@ -237,7 +272,12 @@
   opacity: 0;
   visibility: hidden;
   pointer-events: none;
-  background: rgba(250, 249, 244, 0.99);
+  background: rgba(
+    250,
+    249,
+    244,
+    0.99
+  );
   border-bottom: 1px solid var(--border);
   transform: translateY(-10px);
   transition:
@@ -253,8 +293,9 @@
   visibility: visible;
   pointer-events: auto;
   transform: translateY(0);
-  box-shadow: 0 20px 40px rgba(30, 25, 20, 0.08);
-  /* Become visible immediately so the first link can receive focus on open. */
+  box-shadow:
+    0 20px 40px
+    rgba(30, 25, 20, 0.08);
   transition:
     max-height 0.35s ease,
     opacity 0.25s ease,
@@ -263,7 +304,11 @@
 }
 
 .mobile-menu-inner {
-  width: min(1380px, calc(100% - 40px));
+  width:
+    min(
+      1380px,
+      calc(100% - 40px)
+    );
   margin: 0 auto;
   padding: 25px 0 28px;
 }
@@ -288,10 +333,12 @@
 .mobile-nav-link {
   min-height: 58px;
   display: grid;
-  grid-template-columns: 40px 1fr 25px;
+  grid-template-columns:
+    40px 1fr 25px;
   align-items: center;
   gap: 10px;
-  border-bottom: 1px solid var(--border-light);
+  border-bottom: 1px solid
+    var(--border-light);
   color: #373431;
   transition:
     color var(--transition),
@@ -319,10 +366,12 @@
 .mobile-nav-arrow {
   text-align: right;
   font-size: 17px;
-  transition: transform var(--transition);
+  transition:
+    transform var(--transition);
 }
 
-.mobile-nav-link:hover .mobile-nav-arrow {
+.mobile-nav-link:hover
+  .mobile-nav-arrow {
   transform: translateX(4px);
 }
 
@@ -360,7 +409,7 @@
 
 @media (max-width: 600px) {
   .brand-text strong {
-    font-size: 10px;
+    font-size: 13px;
   }
 
   .brand-text span {

@@ -1,8 +1,6 @@
-/* 3D ID card (legacy style.css §11–16). */
-
 .area {
   position: relative;
-  min-height: 500px;
+  min-height: 560px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -13,8 +11,8 @@
 .scene {
   --scene-scale: 1;
   position: relative;
-  width: 340px;
-  height: 490px;
+  width: 380px;
+  height: 530px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -27,15 +25,26 @@
   --pointer-x: 50%;
   --pointer-y: 35%;
   position: relative;
-  width: 300px;
-  height: 470px;
+  width: 330px;
+  height: 510px;
   overflow: hidden;
-  border-radius: 24px;
-  background: linear-gradient(145deg, #ffffff 0%, #f8f5ed 100%);
-  border: 1px solid rgba(255, 255, 255, 0.85);
+  border-radius: 25px;
+  background:
+    radial-gradient(
+      circle at 80% 12%,
+      rgba(146, 23, 47, 0.07),
+      transparent 25%
+    ),
+    linear-gradient(
+      145deg,
+      #ffffff 0%,
+      #f7f3ea 100%
+    );
+  border: 1px solid
+    rgba(255, 255, 255, 0.9);
   box-shadow:
-    0 30px 65px rgba(35, 27, 23, 0.2),
-    0 8px 20px rgba(35, 27, 23, 0.08);
+    0 34px 75px rgba(35, 27, 23, 0.2),
+    0 8px 22px rgba(35, 27, 23, 0.08);
   transform-style: preserve-3d;
   will-change: transform;
   transition: box-shadow 0.35s ease;
@@ -44,23 +53,27 @@
 .card::before {
   content: "";
   position: absolute;
-  z-index: 20;
+  z-index: 30;
   inset: 0;
   pointer-events: none;
-  background: radial-gradient(
-    circle at var(--pointer-x) var(--pointer-y),
-    rgba(255, 255, 255, 0.45),
-    rgba(255, 255, 255, 0.1) 18%,
-    transparent 45%
-  );
+  background:
+    radial-gradient(
+      circle at var(--pointer-x)
+        var(--pointer-y),
+      rgba(255, 255, 255, 0.42),
+      rgba(255, 255, 255, 0.08) 18%,
+      transparent 45%
+    );
   opacity: 0;
   transition: opacity 0.3s ease;
 }
 
 .is-hovering .card {
   box-shadow:
-    0 38px 75px rgba(35, 27, 23, 0.23),
-    0 12px 28px rgba(35, 27, 23, 0.1);
+    0 42px 85px
+      rgba(35, 27, 23, 0.24),
+    0 14px 30px
+      rgba(35, 27, 23, 0.1);
 }
 
 .is-hovering .card::before {
@@ -70,160 +83,237 @@
 .header {
   position: relative;
   z-index: 2;
-  height: 115px;
-  padding: 22px;
+  min-height: 100px;
+  padding: 18px 22px;
   display: flex;
-  align-items: flex-start;
+  align-items: center;
   justify-content: space-between;
-  background: linear-gradient(135deg, var(--primary-dark), var(--primary));
+  overflow: hidden;
+  background:
+    linear-gradient(
+      135deg,
+      var(--primary-dark),
+      var(--primary)
+    );
   color: white;
 }
 
 .header::after {
   content: "";
   position: absolute;
-  width: 140px;
-  height: 140px;
-  right: -55px;
-  top: -70px;
+  width: 170px;
+  height: 170px;
+  right: -75px;
+  top: -85px;
   border-radius: 50%;
-  background: rgba(255, 255, 255, 0.07);
+  background: rgba(255, 255, 255, 0.08);
 }
 
-.brand {
+.eventTitle {
   position: relative;
   z-index: 2;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.eventTitle strong {
+  font-size: 23px;
+  line-height: 1;
+  letter-spacing: -0.035em;
+}
+
+.eventTitle span {
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 3px;
+  opacity: 0.78;
+}
+
+.headerLogo {
+  position: relative;
+  z-index: 2;
+  width: 42px;
+  height: 43px;
+  object-fit: contain;
+  filter: brightness(0) invert(1);
+  opacity: 0.9;
+}
+
+.identity {
+  position: relative;
+  min-height: 220px;
+  padding: 22px 24px 17px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  background:
+    linear-gradient(
+      180deg,
+      rgba(146, 23, 47, 0.035),
+      transparent 65%
+    ),
+    #fffdf9;
+  border-bottom: 1px solid
+    var(--border-light);
+}
+
+.logoBox {
+  width: 136px;
+  height: 136px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 13px;
+  border-radius: 50%;
+  background: #ffffff;
+  border: 1px solid
+    rgba(146, 23, 47, 0.1);
+  box-shadow:
+    0 16px 35px
+      rgba(35, 27, 23, 0.09),
+    inset 0 0 0 9px
+      rgba(146, 23, 47, 0.025);
+}
+
+.logoBox img {
+  width: 105px;
+  height: 108px;
+  object-fit: contain;
+}
+
+.associationName {
   display: flex;
   flex-direction: column;
   gap: 4px;
 }
 
-.brand strong {
-  font-size: 12px;
-  font-weight: 900;
-  letter-spacing: 0.5px;
-}
-
-.brand span {
-  font-size: 7px;
-  font-weight: 700;
-  letter-spacing: 3px;
-  opacity: 0.75;
-}
-
-.year {
-  position: relative;
-  z-index: 2;
-  font-size: 9px;
-  font-weight: 800;
-  opacity: 0.75;
-}
-
-.photo-area {
-  position: relative;
-  z-index: 5;
-  margin-top: -45px;
-  display: flex;
-  justify-content: center;
-}
-
-.photo {
-  width: 120px;
-  height: 145px;
-  overflow: hidden;
-  border-radius: 14px;
-  border: 6px solid rgba(255, 255, 255, 0.95);
-  background: #e9e5dc;
-  box-shadow: 0 12px 25px rgba(0, 0, 0, 0.13);
-}
-
-.photo img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-}
-
-.info {
-  padding: 18px 25px 0;
-  text-align: center;
-}
-
-.info h3 {
-  font-size: 20px;
-  line-height: 1.2;
+.associationName strong {
   color: var(--text-dark);
+  font-size: 18px;
+  line-height: 1.15;
 }
 
-.info p {
-  margin-top: 5px;
+.associationName span {
   color: var(--primary);
-  font-size: 9px;
+  font-size: 11px;
   font-weight: 900;
-  letter-spacing: 1.8px;
+  letter-spacing: 1.3px;
   text-transform: uppercase;
 }
 
-.divider {
-  width: 45px;
-  height: 2px;
-  margin: 14px auto;
-  border-radius: 999px;
-  background: var(--primary);
-}
-
 .details {
-  padding: 0 28px;
-  display: flex;
-  flex-direction: column;
-  gap: 9px;
+  min-height: 108px;
+  padding: 12px 22px 10px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  column-gap: 18px;
+  row-gap: 7px;
+  background: #faf7f0;
 }
 
 .detail {
+  min-width: 0;
   display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 10px;
-  font-size: 9px;
-  border-bottom: 1px solid var(--border-light);
-  padding-bottom: 7px;
+  flex-direction: column;
+  gap: 3px;
+  padding-bottom: 6px;
+  border-bottom: 1px solid
+    rgba(35, 27, 23, 0.08);
 }
 
-.detail span:first-child {
-  color: var(--text-light);
-  font-weight: 700;
+.detail span {
+  color: var(--text-muted);
+  font-size: 7px;
+  font-weight: 900;
+  letter-spacing: 0.9px;
+  text-transform: uppercase;
 }
 
-.detail span:last-child {
+.detail strong {
+  overflow: hidden;
   color: var(--text-dark);
-  font-weight: 800;
-  text-align: right;
+  font-size: 9px;
+  line-height: 1.2;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
-.footer {
+.bottom {
   position: absolute;
+  z-index: 4;
   left: 0;
   right: 0;
   bottom: 0;
-  height: 45px;
-  padding: 0 22px;
+  min-height: 66px;
+  padding: 9px 16px 10px 21px;
   display: flex;
-  align-items: center;
+  align-items: flex-end;
   justify-content: space-between;
-  background: #f1eee6;
-  border-top: 1px solid var(--border-light);
+  gap: 12px;
+  background: #f1ece3;
+  border-top: 1px solid
+    var(--border-light);
 }
 
-.footer span {
-  color: var(--text-muted);
-  font-size: 7px;
-  font-weight: 800;
+.bottomBrand {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.bottomBrand span {
+  color: var(--primary);
+  font-size: 9px;
+  font-weight: 900;
   letter-spacing: 1px;
 }
 
-.footer strong {
-  color: var(--primary);
-  font-size: 8px;
+.bottomBrand small {
+  color: var(--text-muted);
+  font-size: 6px;
   font-weight: 900;
+  letter-spacing: 0.8px;
+}
+
+.barcodeWrap {
+  width: 112px;
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.barcode {
+  width: 112px;
+  height: 29px;
+  display: block;
+  background: white;
+  padding: 2px;
+}
+
+.barcode rect {
+  fill: #151311;
+}
+
+.barcodeWrap > span {
+  overflow: hidden;
+  color: #4b4540;
+  font-family:
+    ui-monospace,
+    SFMono-Regular,
+    Menlo,
+    Consolas,
+    monospace;
+  font-size: 6px;
+  font-weight: 800;
+  letter-spacing: 0.3px;
+  text-align: right;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 @media (max-width: 1200px) {
@@ -236,15 +326,25 @@
   .area {
     min-height: 540px;
   }
+
+  .scene {
+    --scene-scale: 0.96;
+  }
 }
 
 @media (max-width: 600px) {
   .area {
-    min-height: 430px;
+    min-height: 480px;
   }
 
   .scene {
     --scene-scale: 0.82;
+  }
+}
+
+@media (max-width: 380px) {
+  .scene {
+    --scene-scale: 0.76;
   }
 }
 

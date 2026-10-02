@@ -1,5 +1,8 @@
+import { BookOpen, Hammer, Rocket, Sparkles } from 'lucide-react'
 import { Link } from 'react-router'
+import AssociationHighlights from '../components/home/AssociationHighlights'
 import IdCard3D from '../components/home/IdCard3D'
+import LatestUpdates from '../components/home/LatestUpdates'
 import { LOGO, SITE } from '../data/site'
 import { useDocumentTitle } from '../hooks/useDocumentTitle'
 import s from './Home.module.css'
@@ -21,22 +24,22 @@ const APPROACH = [
   {
     title: 'Learn',
     text: 'Discover technologies, concepts and ideas that extend learning beyond the regular classroom.',
-    logo: true,
+    icon: BookOpen,
   },
   {
     title: 'Build',
     text: 'Apply knowledge through projects, practical activities and hands-on experiences.',
-    glyph: '⚡',
+    icon: Hammer,
   },
   {
     title: 'Experience',
     text: `Take part in workshops, technical activities, competitions and ${SITE.fest} events.`,
-    glyph: '◈',
+    icon: Sparkles,
   },
   {
     title: 'Grow',
     text: 'Develop confidence, communication, teamwork and leadership through real experiences.',
-    glyph: '↗',
+    icon: Rocket,
   },
 ]
 
@@ -49,7 +52,7 @@ export default function Home() {
       <section className={s.hero} aria-labelledby="home-title">
         <div className={s.heroContainer}>
           <div className={s.heroContent}>
-            <p className={s.heroSmallTitle}>I T S A</p>
+            <p className={s.heroSmallTitle}>ITSA</p>
 
             <h1 id="home-title">
               IT <span>Student&apos;s Association.</span>
@@ -66,6 +69,7 @@ export default function Home() {
               <Link to="/about" className="btn btn-primary">
                 Explore Association <span aria-hidden="true">→</span>
               </Link>
+
               <Link to="/sumshodhini" className="btn btn-outline">
                 Explore {SITE.fest}
               </Link>
@@ -74,13 +78,34 @@ export default function Home() {
             <dl className={s.heroStats}>
               {STATS.map((stat, index) => (
                 <div key={stat.label} className={s.heroStatGroup}>
-                  {index > 0 && <span className={s.heroStatDivider} aria-hidden="true" />}
+                  {index > 0 && (
+                    <span
+                      className={s.heroStatDivider}
+                      aria-hidden="true"
+                    />
+                  )}
+
                   <div className={s.heroStat}>
                     <dt className="visually-hidden">{stat.label}</dt>
+
                     <dd>
-                      <strong aria-hidden={stat.value === '∞' || undefined}>{stat.value}</strong>
-                      {stat.value === '∞' && <span className="visually-hidden">Infinite</span>}
-                      <span aria-hidden="true">{stat.label}</span>
+                      <strong
+                        aria-hidden={
+                          stat.value === '∞' || undefined
+                        }
+                      >
+                        {stat.value}
+                      </strong>
+
+                      {stat.value === '∞' && (
+                        <span className="visually-hidden">
+                          Infinite
+                        </span>
+                      )}
+
+                      <span aria-hidden="true">
+                        {stat.label}
+                      </span>
                     </dd>
                   </div>
                 </div>
@@ -92,8 +117,17 @@ export default function Home() {
         </div>
       </section>
 
+      {/* ASSOCIATION HIGHLIGHTS */}
+      <AssociationHighlights />
+
+      {/* LATEST UPDATES */}
+      <LatestUpdates />
+
       {/* ABOUT */}
-      <section className="section" aria-labelledby="home-about-title">
+      <section
+        className="section"
+        aria-labelledby="home-about-title"
+      >
         <div className="container">
           <div className={s.aboutGrid}>
             <div className={s.brandPanel}>
@@ -106,34 +140,58 @@ export default function Home() {
                   loading="lazy"
                   alt={LOGO.alt}
                 />
-                <div className={s.panelTitle}>{SITE.nameUpper}</div>
-                <div className={s.panelSubtitle}>{SITE.branch.toUpperCase()}</div>
+
+                <div className={s.panelTitle}>
+                  {SITE.nameUpper}
+                </div>
+
+                <div className={s.panelSubtitle}>
+                  {SITE.branch.toUpperCase()}
+                </div>
               </div>
             </div>
 
             <div className={s.aboutContent}>
-              <p className="section-label">ABOUT THE ASSOCIATION</p>
+              <p className="section-label">
+                ABOUT THE ASSOCIATION
+              </p>
+
               <h2 id="home-about-title">
-                A platform for <span className="text-primary">future technologists.</span>
+                A platform for{' '}
+                <span className="text-primary">
+                  future technologists.
+                </span>
               </h2>
+
               <p>
-                The IT Association is a student-driven platform of the Information Technology branch
-                that brings together technical learning, practical experiences, workshops, events and
-                creative ideas.
+                The IT Association is a student-driven platform
+                of the Information Technology branch that brings
+                together technical learning, practical
+                experiences, workshops, events and creative
+                ideas.
               </p>
+
               <p>
-                Through every academic year, the Association provides opportunities for students to
-                learn new technologies, build practical skills, participate in activities and
-                experience technology beyond the classroom.
+                Through every academic year, the Association
+                provides opportunities for students to learn new
+                technologies, build practical skills, participate
+                in activities and experience technology beyond
+                the classroom.
               </p>
+
               <ul className={s.aboutList}>
                 {ABOUT_POINTS.map((point) => (
                   <li key={point}>{point}</li>
                 ))}
               </ul>
+
               <div className={s.actions}>
-                <Link to="/about" className="btn btn-primary">
-                  Discover the Association <span aria-hidden="true">→</span>
+                <Link
+                  to="/about"
+                  className="btn btn-primary"
+                >
+                  Discover the Association{' '}
+                  <span aria-hidden="true">→</span>
                 </Link>
               </div>
             </div>
@@ -142,75 +200,144 @@ export default function Home() {
       </section>
 
       {/* APPROACH */}
-      <section className="section section-soft" aria-labelledby="home-approach-title">
+      <section
+        className="section section-soft"
+        aria-labelledby="home-approach-title"
+      >
         <div className="container">
           <div className="section-heading">
-            <p className="section-label">OUR APPROACH</p>
+            <p className="section-label">
+              OUR APPROACH
+            </p>
+
             <h2 id="home-approach-title">
-              Learn. <span className="text-primary">Build.</span> Grow.
+              Learn.{' '}
+              <span className="text-primary">
+                Build.
+              </span>{' '}
+              Grow.
             </h2>
+
             <p>
-              The IT Association is built around a simple idea: learn something new, turn that
-              knowledge into something practical and grow through the experience.
+              The IT Association is built around a simple idea:
+              learn something new, turn that knowledge into
+              something practical and grow through the
+              experience.
             </p>
           </div>
 
           <div className={s.grid4}>
-            {APPROACH.map((item) => (
-              <article key={item.title} className={`card ${s.featureCard}`}>
-                <div className={s.featureIcon} aria-hidden="true">
-                  {item.logo ? <img src={LOGO.src} width="34" height="35" alt="" /> : item.glyph}
-                </div>
-                <h3>{item.title}</h3>
-                <p>{item.text}</p>
-              </article>
-            ))}
+            {APPROACH.map((item) => {
+              const Icon = item.icon
+
+              return (
+                <article
+                  key={item.title}
+                  className={`card ${s.featureCard}`}
+                >
+                  <div
+                    className={s.featureIcon}
+                    aria-hidden="true"
+                  >
+                    <Icon
+                      size={25}
+                      strokeWidth={2.1}
+                    />
+                  </div>
+
+                  <h3>{item.title}</h3>
+
+                  <p>{item.text}</p>
+                </article>
+              )
+            })}
           </div>
         </div>
       </section>
 
       {/* SUMSHODHINI */}
-      <section className="section" aria-labelledby="home-fest-title">
+      <section
+        className="section"
+        aria-labelledby="home-fest-title"
+      >
         <div className="container">
           <div className={s.aboutGrid}>
             <div className={s.brandPanel}>
               <div>
-                <div className={s.panelDays}>01 · 02</div>
-                <div className={s.panelTitle}>{SITE.festUpper}</div>
-                <div className={s.panelSubtitle}>WORKSHOPS · EVENTS</div>
+                <div className={s.panelDays}>
+                  01 · 02
+                </div>
+
+                <div className={s.panelTitle}>
+                  {SITE.festUpper}
+                </div>
+
+                <div className={s.panelSubtitle}>
+                  WORKSHOPS · EVENTS
+                </div>
               </div>
             </div>
 
             <div className={s.aboutContent}>
-              <p className="section-label">ANNUAL IT BRANCH EVENT</p>
-              <h2 id="home-fest-title">
-                Experience <span className="text-primary">{SITE.fest}.</span>
-              </h2>
-              <p>
-                {SITE.fest} is the annual event of the IT branch, bringing together technical
-                workshops and engaging student events in a two-day technology-focused experience.
+              <p className="section-label">
+                ANNUAL IT BRANCH EVENT
               </p>
+
+              <h2 id="home-fest-title">
+                Experience{' '}
+                <span className="text-primary">
+                  {SITE.fest}.
+                </span>
+              </h2>
+
+              <p>
+                {SITE.fest} is the annual event of the IT
+                branch, bringing together technical workshops and
+                engaging student events in a two-day
+                technology-focused experience.
+              </p>
+
               <ul className={s.aboutList}>
                 <li>
                   <span>
-                    <strong>Day 01 — Workshops</strong>
+                    <strong>
+                      Day 01 — Workshops
+                    </strong>
                     <br />
-                    Learn through practical, technology-focused workshops.
+                    Learn through practical,
+                    technology-focused workshops.
                   </span>
                 </li>
+
                 <li>
                   <span>
-                    <strong>Day 02 — Events</strong>
+                    <strong>
+                      Day 02 — Events
+                    </strong>
                     <br />
-                    Participate in different technical and engaging events.
+                    Participate in different technical
+                    and engaging events.
                   </span>
                 </li>
-                <li>Explore new ideas and technologies through hands-on experiences.</li>
-                <li>Take part in activities designed to develop technical and creative skills.</li>
+
+                <li>
+                  Explore new ideas and technologies through
+                  hands-on experiences.
+                </li>
+
+                <li>
+                  Take part in activities designed to develop
+                  technical and creative skills.
+                </li>
               </ul>
+
               <div className={s.actions}>
-                <Link to="/sumshodhini" className="btn btn-primary">
-                  Explore {SITE.fest} <span aria-hidden="true">→</span>
+                <Link
+                  to="/sumshodhini"
+                  className="btn btn-primary"
+                >
+                  Explore {SITE.fest}{' '}
+                  <span aria-hidden="true">→</span>
                 </Link>
               </div>
             </div>
@@ -219,18 +346,35 @@ export default function Home() {
       </section>
 
       {/* CALL TO ACTION */}
-      <section className="section" aria-labelledby="home-cta-title">
+      <section
+        className="section"
+        aria-labelledby="home-cta-title"
+      >
         <div className="container">
           <div className={s.cta}>
-            <p className={s.ctaKicker}>LEARN · BUILD · GROW</p>
-            <h2 id="home-cta-title">Learn today. Build tomorrow. Grow through experience.</h2>
-            <p>
-              Discover the IT Association, explore {SITE.fest} and take part in the workshops and
-              events created for the Information Technology branch.
+            <p className={s.ctaKicker}>
+              LEARN · BUILD · GROW
             </p>
+
+            <h2 id="home-cta-title">
+              Learn today. Build tomorrow. Grow through
+              experience.
+            </h2>
+
+            <p>
+              Discover the IT Association, explore{' '}
+              {SITE.fest} and take part in the workshops and
+              events created for the Information Technology
+              branch.
+            </p>
+
             <div className={s.actions}>
-              <Link to="/sumshodhini" className="btn btn-light">
-                Explore {SITE.fest} <span aria-hidden="true">→</span>
+              <Link
+                to="/sumshodhini"
+                className="btn btn-light"
+              >
+                Explore {SITE.fest}{' '}
+                <span aria-hidden="true">→</span>
               </Link>
             </div>
           </div>

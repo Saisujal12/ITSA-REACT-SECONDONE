@@ -338,14 +338,17 @@ export default function AdminDashboard() {
       ],
     );
 
-  useEffect(
-    () => {
-      loadRegistrations();
-    },
-    [
-      loadRegistrations,
-    ],
-  );
+useEffect(
+  () => {
+    // The registration loader intentionally updates component state
+    // when the selected admin event/session changes.
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    loadRegistrations();
+  },
+  [
+    loadRegistrations,
+  ],
+);
 
   /*
   |--------------------------------------------------------------------------

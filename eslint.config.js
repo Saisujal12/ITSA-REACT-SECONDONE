@@ -6,20 +6,46 @@ import { defineConfig, globalIgnores } from 'eslint/config'
 
 export default defineConfig([
   globalIgnores(['dist']),
+
+  // Frontend + general JavaScript
   {
     files: ['**/*.{js,jsx}'],
+
     extends: [
       js.configs.recommended,
       reactHooks.configs.flat.recommended,
       reactRefresh.configs.vite,
     ],
+
     languageOptions: {
       globals: globals.browser,
-      parserOptions: { ecmaFeatures: { jsx: true } },
+
+      parserOptions: {
+        ecmaFeatures: {
+          jsx: true,
+        },
+      },
     },
   },
+
+  // Vite / ESLint configuration files
   {
-    files: ['vite.config.js', 'eslint.config.js'],
-    languageOptions: { globals: globals.node },
+    files: [
+      'vite.config.js',
+      'eslint.config.js',
+    ],
+
+    languageOptions: {
+      globals: globals.node,
+    },
+  },
+
+  // Backend / Node.js
+  {
+    files: ['server/**/*.js'],
+
+    languageOptions: {
+      globals: globals.node,
+    },
   },
 ])

@@ -1,4 +1,4 @@
-/* Home page (legacy index.html + style.css §7–10, §17–21; inline styles moved here). */
+/* Home page UI. Backend/API behavior is not involved in this stylesheet. */
 
 .hero {
   position: relative;
@@ -38,7 +38,9 @@
   width: var(--container);
   margin: 0 auto;
   display: grid;
-  grid-template-columns: minmax(0, 1.1fr) minmax(380px, 0.9fr);
+  grid-template-columns:
+    minmax(0, 1.1fr)
+    minmax(380px, 0.9fr);
   align-items: center;
   gap: 25px;
 }
@@ -54,7 +56,7 @@
   gap: 10px;
   margin-bottom: 16px;
   color: var(--primary);
-  font-size: 10px;
+  font-size: 13px;
   font-weight: 900;
   letter-spacing: 3px;
   text-transform: uppercase;
@@ -69,7 +71,7 @@
 }
 
 .hero h1 {
-  max-width: 700px;
+  max-width: 760px;
   font-size: clamp(48px, 6vw, 82px);
   line-height: 0.98;
   letter-spacing: -0.055em;
@@ -156,7 +158,11 @@
   overflow: hidden;
   padding: 40px;
   border-radius: var(--radius-large);
-  background: linear-gradient(145deg, #92172f, #731124);
+  background: linear-gradient(
+    145deg,
+    #92172f,
+    #731124
+  );
   box-shadow: var(--shadow-medium);
   color: white;
   text-align: center;
@@ -166,7 +172,9 @@
   width: 180px;
   height: auto;
   margin: 0 auto 24px;
-  filter: drop-shadow(0 12px 30px rgba(0, 0, 0, 0.25));
+  filter: drop-shadow(
+    0 12px 30px rgba(0, 0, 0, 0.25)
+  );
 }
 
 .panel-title {
@@ -241,7 +249,8 @@
 
 .grid-4 {
   display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
+  grid-template-columns:
+    repeat(4, minmax(0, 1fr));
   gap: 22px;
 }
 
@@ -259,12 +268,6 @@
   border-radius: 14px;
   background: rgba(146, 23, 47, 0.08);
   color: var(--primary);
-  font-size: 20px;
-}
-
-.feature-icon img {
-  width: 34px;
-  height: auto;
 }
 
 .feature-card h3 {
@@ -283,7 +286,11 @@
   padding: 60px;
   text-align: center;
   border-radius: var(--radius-medium);
-  background: linear-gradient(135deg, #92172f, #731124);
+  background: linear-gradient(
+    135deg,
+    #92172f,
+    #731124
+  );
   box-shadow: var(--shadow-small);
   color: white;
 }
@@ -311,7 +318,9 @@
 
 @media (max-width: 1200px) {
   .hero-container {
-    grid-template-columns: minmax(0, 1fr) minmax(330px, 0.8fr);
+    grid-template-columns:
+      minmax(0, 1fr)
+      minmax(330px, 0.8fr);
     gap: 35px;
   }
 
@@ -358,7 +367,8 @@
   }
 
   .grid-4 {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
+    grid-template-columns:
+      repeat(2, minmax(0, 1fr));
   }
 }
 

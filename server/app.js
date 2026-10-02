@@ -1,4 +1,3 @@
-
 import "dotenv/config";
 
 import express from "express";
@@ -180,7 +179,7 @@ app.use((req, res) => {
 // Central error handler
 // --------------------------------------------------
 
-app.use((error, req, res, next) => {
+app.use((error, req, res) => {
   console.error("API error:", error);
 
   if (
@@ -224,4 +223,3 @@ app.use((error, req, res, next) => {
 });
 
 export default app;
-
