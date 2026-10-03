@@ -49,9 +49,6 @@ export default function Contact() {
             Have a question about an event, workshop or the IT Association? Reach the department
             team through the details below.
           </p>
-          <div className={s.pageNumber} aria-hidden="true">
-            05
-          </div>
         </div>
       </section>
 

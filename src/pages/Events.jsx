@@ -1,7 +1,7 @@
 import { Link } from 'react-router'
 import { ArrowRight } from 'lucide-react'
 import EventCard from '../components/events/EventCard'
-import { EVENTS, eventsByDay, REGISTRATION_DAYS } from '../data/events'
+import { eventsByDay, REGISTRATION_DAYS } from '../data/events'
 import { SITE } from '../data/site'
 import { useDocumentTitle } from '../hooks/useDocumentTitle'
 import { cx } from '../utils/cx'
@@ -14,7 +14,7 @@ export default function Events() {
 
   const workshops = eventsByDay('day1')
   const dayTwoEvents = eventsByDay('day2')
-  const total = EVENTS.length
+  const total = dayTwoEvents.length
   const totalWord = NUMBER_WORDS[total] ?? String(total)
 
   return (
@@ -29,15 +29,12 @@ export default function Events() {
 
           <div className={s.eventsHeroGrid}>
             <div>
-              <div className={s.eventsIndex} aria-hidden="true">
-                02
-              </div>
               <h1 id="events-title">
                 EVENTS <em>THAT CONNECT.</em>
               </h1>
               <p>
-                {totalWord} events covering technology, creativity, problem solving and
-                collaboration. Select an event to open its dedicated registration flow.
+                {totalWord} Day-2 events covering technology, creativity, problem solving and
+                collaboration. The Day-1 workshop remains listed separately. Select an event to open its dedicated registration flow.
               </p>
             </div>
 
@@ -57,7 +54,6 @@ export default function Events() {
         <div className={s.eventsHeading}>
           <div>
             <div className={s.eventsEyebrow}>
-              <span>01</span>
               {SITE.festUpper} {SITE.year}
             </div>
             <h2 id="events-choose-title">

@@ -1,4 +1,5 @@
-import { Link } from 'react-router'
+import { useEffect } from 'react'
+import { Link, useLocation } from 'react-router'
 import {
   ArrowDown,
   ArrowUpRight,
@@ -25,8 +26,8 @@ const MINI_STATS = [
 
 const FLOAT_CARDS = [
   { className: s.floatCode, icon: CodeXml, title: 'CODE', text: 'CREATE' },
-  { className: s.floatInnovation, icon: Lightbulb, title: 'INNOVATE', text: 'EXPLORE' },
   { className: s.floatCommunity, icon: Users, title: 'CONNECT', text: 'GROW' },
+  { className: s.floatInnovation, icon: Lightbulb, title: 'INNOVATE', text: 'EXPLORE' },
 ]
 
 const WHAT_WE_DO = [
@@ -58,6 +59,18 @@ const WHAT_WE_DO = [
 
 export default function About() {
   useDocumentTitle('About Association')
+  const location = useLocation()
+
+  useEffect(() => {
+    if (!location.hash) return
+    const id = decodeURIComponent(location.hash.slice(1))
+    const target = document.getElementById(id)
+    if (!target) return
+    const frame = window.requestAnimationFrame(() => {
+      target.scrollIntoView({ block: 'start', behavior: 'smooth' })
+    })
+    return () => window.cancelAnimationFrame(frame)
+  }, [location.hash])
 
   return (
     <div className={s.page}>
@@ -68,9 +81,6 @@ export default function About() {
             <div className={s.aboutKicker}>
               <span className={s.kickerLine} aria-hidden="true" />
               {SITE.nameUpper} · {SITE.college}
-            </div>
-            <div className={s.aboutHeroNumber} aria-hidden="true">
-              01
             </div>
             <h1 id="about-title">
               ABOUT <span>US.</span>
@@ -133,7 +143,6 @@ export default function About() {
       {/* INTRODUCTION */}
       <section className={s.aboutIntro} id="about" aria-labelledby="about-intro-title">
         <div className={s.aboutSectionLabel} data-reveal="">
-          <span>02</span>
           <strong>WHO WE ARE</strong>
         </div>
         <div className={s.aboutIntroContent}>
@@ -167,7 +176,7 @@ export default function About() {
       {/* MISSION / VISION */}
       <section className={s.missionSection} aria-labelledby="mission-title">
         <div className={s.missionHeading} data-reveal="">
-          <span>03 · OUR DIRECTION</span>
+          <span>OUR DIRECTION</span>
           <h2 id="mission-title">
             What drives <em>us.</em>
           </h2>
@@ -175,7 +184,6 @@ export default function About() {
         <div className={s.missionGrid}>
           <article className={cx(s.missionCard, s.missionCardDark)} data-reveal="">
             <div className={s.missionCardTop}>
-              <span>01</span>
               <Target aria-hidden="true" />
             </div>
             <div className={s.missionCardContent}>
@@ -194,7 +202,6 @@ export default function About() {
           </article>
           <article className={cx(s.missionCard, s.missionCardLight)} data-reveal="">
             <div className={s.missionCardTop}>
-              <span>02</span>
               <Eye aria-hidden="true" />
             </div>
             <div className={s.missionCardContent}>
@@ -218,7 +225,7 @@ export default function About() {
       <section className={s.whatWeDo} aria-labelledby="what-title">
         <div className={s.whatHeading} data-reveal="">
           <div>
-            <span>04 · WHAT WE DO</span>
+            <span>WHAT WE DO</span>
             <h2 id="what-title">
               Creating <strong>experiences.</strong>
             </h2>
@@ -229,11 +236,8 @@ export default function About() {
           </p>
         </div>
         <div className={s.featureGrid}>
-          {WHAT_WE_DO.map(({ icon: Icon, tag, title, text }, index) => (
+          {WHAT_WE_DO.map(({ icon: Icon, tag, title, text }) => (
             <article key={title} className={s.featureCard} data-reveal="">
-              <div className={s.featureCardNumber} aria-hidden="true">
-                {String(index + 1).padStart(2, '0')}
-              </div>
               <div className={s.featureIcon} aria-hidden="true">
                 <Icon />
               </div>
@@ -248,11 +252,41 @@ export default function About() {
         </div>
       </section>
 
+      {/* ASSOCIATION HIGHLIGHTS */}
+      <section className={s.aboutHighlights} aria-labelledby="about-highlights-title">
+        <div className={s.aboutHighlightsHeading}>
+          <span>ASSOCIATION HIGHLIGHTS</span>
+          <h2 id="about-highlights-title">Recent moments, <strong>kept together.</strong></h2>
+        </div>
+        <div className={s.aboutHighlightsGrid}>
+          <article id="guest-lecture" className={s.aboutHighlightCard} tabIndex={-1}>
+            <span>GUEST LECTURE</span>
+            <h3>Exploring AI Applications Across Industries</h3>
+            <p>A guest lecture introduced students to practical applications, possibilities and impact of Artificial Intelligence across industries.</p>
+          </article>
+          <article id="teachers-day" className={s.aboutHighlightCard} tabIndex={-1}>
+            <span>ASSOCIATION ACTIVITY</span>
+            <h3>Teachers&apos; Day</h3>
+            <p>The IT Association celebrated Teachers&apos; Day with a special activity focused on appreciation, interaction and community.</p>
+          </article>
+          <article id="inaugural" className={s.aboutHighlightCard} tabIndex={-1}>
+            <span>ASSOCIATION</span>
+            <h3>IT Association 2026 Inaugural</h3>
+            <p>A new academic year of learning, collaboration, innovation and student activities began with the IT Association.</p>
+          </article>
+          <article id="workshops" className={s.aboutHighlightCard} tabIndex={-1}>
+            <span>LEARNING</span>
+            <h3>Workshops</h3>
+            <p>Practical sessions focused on modern technologies, tools and real-world applications give students opportunities to learn by doing.</p>
+          </article>
+        </div>
+      </section>
+
       {/* ASSOCIATION BODY */}
       <section className={s.teamSection} aria-labelledby="team-title">
         <div className={cx(s.teamHeading, s.associationBodyHeading)} data-reveal="">
           <div>
-            <span>05 · IT STUDENTS ASSOCIATION</span>
+            <span>IT STUDENTS ASSOCIATION</span>
             <h2 id="team-title">
               IT Students <strong>Association Body.</strong>
             </h2>
@@ -267,9 +301,6 @@ export default function About() {
 
       {/* FINAL CTA */}
       <section className={s.aboutFinalCta} aria-labelledby="about-cta-title" data-reveal="">
-        <div className={s.ctaNumber} aria-hidden="true">
-          07
-        </div>
         <div className={s.ctaContent}>
           <span>READY TO BE PART OF IT?</span>
           <h2 id="about-cta-title">

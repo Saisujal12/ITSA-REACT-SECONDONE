@@ -24,9 +24,6 @@ export default function Gallery() {
               <span className={s.kickerLine} aria-hidden="true" />
               MOMENTS · PEOPLE · EXPERIENCES
             </div>
-            <div className={s.galleryNumber} aria-hidden="true">
-              03
-            </div>
             <h1 id="gallery-title">
               OUR <span>GALLERY</span>
             </h1>

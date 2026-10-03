@@ -15,13 +15,36 @@ const GRID_LAYOUTS = { two: s.teamGroupGridTwo, four: s.teamGroupGridFour }
 function RoleCard({ card, wide }) {
   const Icon = card.icon
   const person = getPerson(card.person)
+  const showPhoto = person?.photo && (
+    card.person === 'hod' ||
+    card.person?.startsWith('facultyCoordinator') ||
+    card.person === 'president' ||
+    card.person === 'studentCoordinator' ||
+    card.person === 'vicePresident' ||
+    card.person === 'generalSecretary' ||
+    card.person === 'treasurer' ||
+    card.person === 'technicalHead' ||
+    card.person === 'spokesperson' ||
+    card.person === 'prMedia' ||
+    card.person === 'disciplinaryHead' ||
+    card.person === 'logisticsHead'
+  )
 
   return (
-    <article className={cx(s.teamCard, wide && s.teamCardWide)}>
+    <article className={cx(s.teamCard, wide && s.teamCardWide, showPhoto && s.teamCardHasPhoto)}>
       <div className={s.teamCardTop}>
-        <span aria-hidden="true">{card.code}</span>
         <Icon aria-hidden="true" />
       </div>
+      {showPhoto && (
+        <div className={s.rolePhoto}>
+          <ImageWithFallback
+            imageKey={person.photo}
+            alt={person.name ? `${person.name} — ${card.title}` : `${card.title} photo`}
+            sizes="(max-width: 700px) 100vw, 25vw"
+            fallback={<span aria-hidden="true">PHOTO</span>}
+          />
+        </div>
+      )}
       <div className={s.teamCardContent}>
         <span>{card.tag}</span>
         <h4>{card.title}</h4>
@@ -65,7 +88,6 @@ export default function AboutTeam() {
           data-reveal=""
         >
           <div className={s.teamGroupHeading}>
-            <span aria-hidden="true">{group.number}</span>
             <div>
               <small>{group.kicker}</small>
               <h3 id={`team-${group.id}`}>{group.title}</h3>

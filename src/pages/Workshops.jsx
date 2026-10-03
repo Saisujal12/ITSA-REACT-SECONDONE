@@ -43,7 +43,6 @@ export default function Workshops() {
           aria-labelledby="workshop-error-title"
         >
           <div className={s.sectionEyebrow}>
-            <span>01</span>
             CURRENT YEAR · {SITE.year}
           </div>
 
@@ -100,12 +99,6 @@ export default function Workshops() {
 
           <div className={s.workshopHeroGrid}>
             <div>
-              <div
-                className={s.workshopIndex}
-                aria-hidden="true"
-              >
-                01
-              </div>
 
               <h1 id="workshops-title">
                 WORKSHOPS <em>THAT BUILD.</em>
@@ -164,17 +157,10 @@ export default function Workshops() {
         aria-labelledby="current-title"
       >
         <div className={s.sectionEyebrow}>
-          <span>01</span>
           CURRENT YEAR · {SITE.year}
         </div>
 
         <article className={s.currentWorkshopCard}>
-          <div
-            className={s.currentNumber}
-            aria-hidden="true"
-          >
-            01
-          </div>
 
           <div className={s.currentMain}>
             <div className={s.statusPill}>
@@ -262,7 +248,6 @@ export default function Workshops() {
         <div className={s.historyHeading}>
           <div>
             <div className={s.sectionEyebrow}>
-              <span>02</span>
               PREVIOUS WORKSHOPS
             </div>
 

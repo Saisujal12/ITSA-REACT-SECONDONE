@@ -435,3 +435,6 @@
     padding: 23px;
   }
 }
+
+
+.eventRegisterDisabled { cursor:not-allowed; opacity:.58; }

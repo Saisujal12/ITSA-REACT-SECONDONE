@@ -282,8 +282,8 @@
 
 .sam-solar-system {
   position: relative;
-  width: min(570px, 100%);
-  height: 560px;
+  width: min(410px, 100%);
+  height: 410px;
   margin: 20px auto 0;
   display: grid;
   place-items: center;
@@ -301,21 +301,21 @@
 }
 
 .sam-orbit-one {
-  width: 96%;
-  height: 96%;
+  width: 94%;
+  height: 94%;
   animation: kf-samOrbitSlow 35s linear infinite;
 }
 
 .sam-orbit-two {
-  width: 75%;
-  height: 75%;
+  width: 72%;
+  height: 72%;
   border-color: rgba(182, 138, 69, .20);
   animation: kf-samOrbitSlow 24s linear infinite reverse;
 }
 
 .sam-orbit-three {
-  width: 54%;
-  height: 54%;
+  width: 50%;
+  height: 50%;
   border-color: rgba(38, 63, 91, .12);
   animation: kf-samOrbitSlow 17s linear infinite;
 }
@@ -325,8 +325,8 @@
   position: absolute;
   left: 50%;
   top: 50%;
-  width: 80%;
-  height: 80%;
+  width: 76%;
+  height: 76%;
   transform: translate(-50%, -50%);
   border-radius: 50%;
   animation: kf-samSolarRotation 22s linear infinite;
@@ -338,9 +338,9 @@
   position: absolute;
   left: 50%;
   top: 50%;
-  width: 105px;
-  min-height: 48px;
-  padding: 9px 11px;
+  width: 88px;
+  min-height: 36px;
+  padding: 7px 8px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -375,35 +375,35 @@
 
 .sam-card-1 {
   --orbit-x: 0px;
-  --orbit-y: -205px;
+  --orbit-y: -145px;
   transform: translate(-50%, -50%) translate(var(--orbit-x), var(--orbit-y));
   animation: kf-samCardCounter 22s linear infinite;
 }
 
 .sam-card-2 {
-  --orbit-x: 195px;
-  --orbit-y: -63px;
+  --orbit-x: 140px;
+  --orbit-y: -45px;
   transform: translate(-50%, -50%) translate(var(--orbit-x), var(--orbit-y));
   animation: kf-samCardCounter 22s linear infinite;
 }
 
 .sam-card-3 {
-  --orbit-x: 120px;
-  --orbit-y: 160px;
+  --orbit-x: 88px;
+  --orbit-y: 112px;
   transform: translate(-50%, -50%) translate(var(--orbit-x), var(--orbit-y));
   animation: kf-samCardCounter 22s linear infinite;
 }
 
 .sam-card-4 {
-  --orbit-x: -120px;
-  --orbit-y: 160px;
+  --orbit-x: -88px;
+  --orbit-y: 112px;
   transform: translate(-50%, -50%) translate(var(--orbit-x), var(--orbit-y));
   animation: kf-samCardCounter 22s linear infinite;
 }
 
 .sam-card-5 {
-  --orbit-x: -195px;
-  --orbit-y: -63px;
+  --orbit-x: -140px;
+  --orbit-y: -45px;
   transform: translate(-50%, -50%) translate(var(--orbit-x), var(--orbit-y));
   animation: kf-samCardCounter 22s linear infinite;
 }
@@ -411,8 +411,8 @@
 
 .sam-floating-circle {
   position: relative;
-  width: clamp(185px, 22vw, 250px);
-  height: clamp(185px, 22vw, 250px);
+  width: clamp(118px, 13vw, 138px);
+  height: clamp(118px, 13vw, 138px);
   display: grid;
   place-items: center;
   border-radius: 50%;
@@ -426,7 +426,7 @@
 .sam-floating-circle::before {
   content: "";
   position: absolute;
-  inset: 10px;
+  inset: 8px;
   border: 1px solid rgba(215, 185, 124, .38);
   border-radius: 50%;
 }
@@ -434,7 +434,7 @@
 .sam-floating-circle::after {
   content: "";
   position: absolute;
-  inset: 21px;
+  inset: 16px;
   border: 1px solid rgba(255, 255, 255, .10);
   border-radius: 50%;
 }
@@ -1815,4 +1815,162 @@
 
 .sam-day-heading span {
   color: #8a6526;
+}
+
+
+/* Final compact visual tuning */
+.sam-hero-inner { min-height: 690px; }
+.sam-hero-content { margin-top: 14px; gap: 12px; }
+.sam-day-item { grid-template-columns: 1fr; min-height: 92px; padding: 16px 20px; }
+.sam-day-number, .sam-day-arrow { display: none; }
+.sam-day-text strong { font-size: clamp(24px, 2.3vw, 34px); }
+.sam-day-label { font-size: 10px; }
+.sam-solar-system { width: min(410px, 100%); height: 410px; margin-top: 0; }
+.sam-floating-circle { width: 132px; height: 132px; }
+.sam-circle-glow { width: 62%; height: 62%; filter: blur(24px); }
+.sam-circle-inner { width: 100%; height: 100%; }
+.sam-circle-logo { width: 72%; height: 72%; object-fit: contain; }
+.sam-circle-logo-fallback { width: 62%; aspect-ratio: 1; border: 1px dashed rgba(215,185,124,.45); border-radius: 50%; background: rgba(255,255,255,.08); }
+.sam-orbit-card { width: 84px; min-height: 34px; padding: 6px 7px; gap: 5px; border-radius: 9px; }
+.sam-card-icon { font-size: 8px; }
+.sam-card-word { font-size: 6px; letter-spacing: .12em; }
+.sam-card-1 { --orbit-x: 0px; --orbit-y: -138px; }
+.sam-card-2 { --orbit-x: 132px; --orbit-y: -42px; }
+.sam-card-3 { --orbit-x: 82px; --orbit-y: 106px; }
+.sam-card-4 { --orbit-x: -82px; --orbit-y: 106px; }
+.sam-card-5 { --orbit-x: -132px; --orbit-y: -42px; }
+.sam-satellite-one { top: 8%; right: 12%; }
+.sam-satellite-two { bottom: 9%; right: 10%; }
+.sam-satellite-three { bottom: 14%; left: 9%; }
+.sam-mobile-orbit-card { width: 250px; height: 250px; }
+.sam-mobile-logo { width: 62%; height: 62%; object-fit: contain; }
+.sam-mobile-logo-fallback { width: 58%; aspect-ratio: 1; border: 1px dashed rgba(142,24,50,.25); border-radius: 50%; background: rgba(255,255,255,.55); }
+@media (max-width: 900px) { .sam-solar-system { width: min(460px, 100%); height: 460px; } .sam-hero-inner { min-height: 700px; } }
+@media (max-width: 600px) { .sam-hero-inner { min-height: 0; padding-bottom: 22px; } .sam-hero-content { grid-template-columns: 1fr; margin-top: 12px; } .sam-solar-system { display: none; } .sam-mobile-orbit-card { width: 210px; height: 210px; margin: 10px auto 0; } }
+
+/* Give the schedule links and event orbit more presence on wide screens. */
+.sam-day-item {
+  grid-template-columns: minmax(0, 1fr) 28px;
+  align-items: center;
+  min-height: 100px;
+  padding: 18px 24px;
+}
+
+.sam-day-arrow { display: block; font-size: 18px; }
+
+.sam-solar-system {
+  width: min(550px, 100%);
+  height: 550px;
+  margin-inline: auto;
+}
+
+.sam-floating-circle { width: 154px; height: 154px; }
+.sam-orbit-card { width: 104px; min-height: 40px; padding: 7px 9px; gap: 6px; border-radius: 9px; }
+.sam-card-icon { font-size: 11px; }
+.sam-card-word { font-size: 8px; letter-spacing: .1em; }
+.sam-card-1 { --orbit-x: 0px; --orbit-y: -184px; }
+.sam-card-2 { --orbit-x: 174px; --orbit-y: -56px; }
+.sam-card-3 { --orbit-x: 108px; --orbit-y: 148px; }
+.sam-card-4 { --orbit-x: -108px; --orbit-y: 148px; }
+.sam-card-5 { --orbit-x: -174px; --orbit-y: -56px; }
+
+/* Center the event details in a balanced text-and-icon layout. */
+.sam-detail-section {
+  width: min(1320px, calc(100% - 100px));
+  min-height: 330px;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: clamp(28px, 5vw, 80px);
+  padding: 58px 0;
+}
+
+.sam-detail-content { max-width: 850px; }
+.sam-detail-content h2 { font-size: clamp(52px, 6vw, 84px); }
+.sam-detail-content p { max-width: 720px; font-size: 15px; }
+.sam-detail-icon { width: 112px; height: 112px; font-size: 32px; }
+
+.sam-floating-circle { width: 190px; height: 190px; }
+.sam-orbit-card { box-shadow: 0 10px 24px rgba(40, 34, 31, .16); }
+.sam-orbit-card:hover { transform: translate(-50%, -50%) translate(var(--orbit-x), var(--orbit-y)) scale(1.06); }
+
+@media (max-width: 900px) {
+  .sam-floating-circle { width: 168px; height: 168px; }
+  .sam-orbit-card { width: 92px; min-height: 36px; }
+  .sam-card-word { font-size: 7px; }
+  .sam-card-1 { --orbit-x: 0px; --orbit-y: -158px; }
+  .sam-card-2 { --orbit-x: 156px; --orbit-y: -50px; }
+  .sam-card-3 { --orbit-x: 96px; --orbit-y: 132px; }
+  .sam-card-4 { --orbit-x: -96px; --orbit-y: 132px; }
+  .sam-card-5 { --orbit-x: -156px; --orbit-y: -50px; }
+  .sam-detail-section { width: calc(100% - 64px); }
+}
+
+@media (max-width: 760px) {
+  .sam-detail-section {
+    width: calc(100% - 40px);
+    min-height: 0;
+    grid-template-columns: minmax(0, 1fr) 64px;
+    align-items: center;
+    gap: 18px;
+    padding: 64px 0;
+  }
+
+  .sam-detail-content { min-width: 0; }
+  .sam-detail-content h2 { font-size: clamp(40px, 10vw, 58px); }
+  .sam-detail-content p { font-size: 13px; }
+  .sam-detail-icon { width: 60px; height: 60px; font-size: 20px; }
+}
+
+@media (max-width: 900px) {
+  .sam-solar-system { width: min(460px, 100%); height: 460px; }
+  .sam-floating-circle { width: 138px; height: 138px; }
+  .sam-card-1 { --orbit-x: 0px; --orbit-y: -158px; }
+  .sam-card-2 { --orbit-x: 150px; --orbit-y: -48px; }
+  .sam-card-3 { --orbit-x: 94px; --orbit-y: 122px; }
+  .sam-card-4 { --orbit-x: -94px; --orbit-y: 122px; }
+  .sam-card-5 { --orbit-x: -150px; --orbit-y: -48px; }
+}
+
+@media (max-width: 600px) {
+  .sam-day-item { grid-template-columns: minmax(0, 1fr) 24px; min-height: 76px; padding: 13px 16px; }
+  .sam-day-arrow { display: block; font-size: 16px; }
+}
+
+/* Circular logo treatment: blend a black-backed upload into the event core. */
+.sam-circle-inner {
+  width: 82%;
+  height: 82%;
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+  border: 1px solid rgba(215, 185, 124, 0.34);
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.025);
+  box-shadow: inset 0 0 0 5px rgba(255, 255, 255, 0.025);
+}
+
+.sam-circle-logo {
+  width: 100%;
+  height: 100%;
+  display: block;
+  border-radius: 50%;
+  object-fit: contain;
+  mix-blend-mode: screen;
+  filter: drop-shadow(0 4px 10px rgba(0, 0, 0, 0.2));
+}
+
+.sam-mobile-orbit-core {
+  overflow: hidden;
+  border-color: rgba(215, 185, 124, 0.48);
+  background: radial-gradient(circle at 38% 28%, #4a3435, #292020 62%, #171414 100%);
+  box-shadow: 0 12px 28px rgba(40, 34, 31, 0.2), inset 0 0 0 5px rgba(255, 255, 255, 0.035);
+}
+
+.sam-mobile-logo {
+  width: 84%;
+  height: 84%;
+  display: block;
+  border-radius: 50%;
+  object-fit: contain;
+  mix-blend-mode: screen;
+  filter: drop-shadow(0 3px 8px rgba(0, 0, 0, 0.2));
 }

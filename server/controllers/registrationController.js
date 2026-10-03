@@ -6,11 +6,21 @@ import {
   sendRegistrationPendingEmail,
 } from "../services/emailService.js";
 
+import {
+  commitTransactionId,
+  normalizeTransactionId,
+  releaseTransactionId,
+  reserveTransactionId,
+} from "../services/transactionRegistry.js";
+
 const EMAIL_REGEX =
   /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 const PHONE_REGEX =
-  /^\+?[0-9\s()-]{10,20}$/;
+  /^\d{10}$/;
+
+const TRANSACTION_ID_REGEX =
+  /^[A-Za-z0-9][A-Za-z0-9._/-]*$/;
 
 /*
 |--------------------------------------------------------------------------
@@ -23,9 +33,6 @@ const EVENT_IDS = new Set([
   "code-build",
   "innovation",
   "cyber-quest",
-  "design-deploy",
-  "tech-connect",
-  "event6",
 ]);
 
 /*
@@ -164,10 +171,16 @@ export async function createRegistration(
     |--------------------------------------------------------------------------
     */
 
+    const normalizedEmail =
+      String(email ?? "")
+        .trim()
+        .toLowerCase();
+
     if (
-      !email?.trim() ||
+      !normalizedEmail ||
+      normalizedEmail.length > 120 ||
       !EMAIL_REGEX.test(
-        email.trim(),
+        normalizedEmail,
       )
     ) {
       return res.status(400).json({
@@ -184,19 +197,26 @@ export async function createRegistration(
     |--------------------------------------------------------------------------
     */
 
+    const normalizedPhone =
+      String(phone ?? "").trim();
+
     if (
-      !phone?.trim() ||
       !PHONE_REGEX.test(
-        phone.trim(),
+        normalizedPhone,
       )
     ) {
       return res.status(400).json({
         success: false,
 
         message:
-          "Please enter a valid phone number.",
+          "Phone number must contain exactly 10 digits.",
       });
     }
+
+    const normalizedTransactionId =
+      normalizeTransactionId(
+        transactionId,
+      );
 
     /*
     |--------------------------------------------------------------------------
@@ -204,7 +224,14 @@ export async function createRegistration(
     |--------------------------------------------------------------------------
     */
 
-    if (!transactionId?.trim()) {
+    if (
+      !normalizedTransactionId ||
+      normalizedTransactionId.length < 4 ||
+      normalizedTransactionId.length > 50 ||
+      !TRANSACTION_ID_REGEX.test(
+        normalizedTransactionId,
+      )
+    ) {
       return res.status(400).json({
         success: false,
 
@@ -312,19 +339,15 @@ export async function createRegistration(
           ),
 
       email:
-        String(email)
-          .trim()
-          .toLowerCase(),
+        normalizedEmail,
 
       phone:
-        String(phone).trim(),
+        normalizedPhone,
 
       amount,
 
       transactionId:
-        String(
-          transactionId,
-        ).trim(),
+        normalizedTransactionId,
 
       status:
         "PENDING",
@@ -332,14 +355,54 @@ export async function createRegistration(
 
     /*
     |--------------------------------------------------------------------------
-    | Save to event-specific Google Sheet
+    | Atomically reserve the transaction ID in persistent storage.
+    | The registry uses a database-like persistent sheet protected by
+    | Google Apps Script LockService, so concurrent requests cannot both
+    | reserve the same transaction ID.
     |--------------------------------------------------------------------------
     */
 
-    const savedRegistration =
-      await appendRegistration(
-        registration,
+    await reserveTransactionId(
+      registration.transactionId,
+      registration.registrationId,
+    );
+
+    let savedRegistration;
+
+    try {
+      savedRegistration =
+        await appendRegistration(
+          registration,
+        );
+    } catch (appendError) {
+      try {
+        await releaseTransactionId(
+          registration.transactionId,
+          registration.registrationId,
+        );
+      } catch (releaseError) {
+        console.error(
+          "Transaction registry release failed after registration save failure:",
+          releaseError.message,
+        );
+      }
+      throw appendError;
+    }
+
+    try {
+      await commitTransactionId(
+        registration.transactionId,
+        registration.registrationId,
       );
+    } catch (commitError) {
+      // The transaction remains RESERVED in persistent storage. Keeping the
+      // reservation is safer than releasing it after the registration row was
+      // already written, because it still prevents a duplicate submission.
+      console.error(
+        "Transaction registry commit failed after registration was saved:",
+        commitError.message,
+      );
+    }
 
     /*
     |--------------------------------------------------------------------------
@@ -465,6 +528,47 @@ export async function createRegistration(
 
           message:
             "The Google Sheet for this event is not accessible. Please contact the administrator.",
+        });
+    }
+
+    if (
+      error.code ===
+      "TRANSACTION_ID_ALREADY_USED"
+    ) {
+      return res
+        .status(409)
+        .json({
+          success: false,
+          message:
+            "This transaction ID has already been used. Please check your payment details or contact support.",
+        });
+    }
+
+    if (
+      error.code ===
+      "TRANSACTION_REGISTRY_NOT_CONFIGURED"
+    ) {
+      return res
+        .status(503)
+        .json({
+          success: false,
+          message:
+            "Registration is temporarily unavailable because duplicate-payment protection is not configured.",
+        });
+    }
+
+    if (
+      error.code ===
+      "TRANSACTION_REGISTRY_UNAVAILABLE" ||
+      error.code ===
+      "TRANSACTION_REGISTRY_ERROR"
+    ) {
+      return res
+        .status(503)
+        .json({
+          success: false,
+          message:
+            "Registration is temporarily unavailable. Please try again shortly.",
         });
     }
 

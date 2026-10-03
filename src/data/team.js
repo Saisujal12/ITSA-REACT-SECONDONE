@@ -59,6 +59,21 @@ export const PEOPLE = {
     photo: 'team/technical-head',
     nameImage: 'team/technical-head-name',
   },
+  spokesperson: {
+    name: null,
+    photo: 'team/spokesperson',
+    nameImage: 'team/spokesperson-name',
+  },
+  disciplinaryHead: {
+    name: null,
+    photo: 'team/disciplinary-head',
+    nameImage: 'team/disciplinary-head-name',
+  },
+  logisticsHead: {
+    name: null,
+    photo: 'team/logistics-head',
+    nameImage: 'team/logistics-head-name',
+  },
 }
 
 const pad = (n) => String(n).padStart(2, '0')
@@ -164,38 +179,14 @@ export const ABOUT_TEAM_GROUPS = [
     title: 'Coordination Teams',
     layout: 'four',
     cards: [
-      {
-        code: '04A',
-        icon: Users,
-        tag: 'COORDINATION',
-        title: 'Vice President',
-        text: 'Supporting association leadership and student initiatives.',
-        person: 'vicePresident',
-      },
-      {
-        code: '04B',
-        icon: WalletCards,
-        tag: 'COORDINATION',
-        title: 'Treasurer',
-        text: 'Supporting financial coordination and association activities.',
-        person: 'treasurer',
-      },
-      {
-        code: '04C',
-        icon: Terminal,
-        tag: 'TECHNICAL',
-        title: 'Technical Head',
-        text: 'Managing technical activities, digital work and initiatives.',
-        person: 'technicalHead',
-      },
-      {
-        code: '04D',
-        icon: Megaphone,
-        tag: 'PUBLIC RELATIONS',
-        title: 'PR Head',
-        text: 'Managing communication, outreach and association visibility.',
-        person: 'prMedia',
-      },
+      { code: '04A', icon: Users, tag: 'COORDINATION', title: 'Vice President', text: 'Supporting association leadership and student initiatives.', person: 'vicePresident' },
+      { code: '04B', icon: Users, tag: 'COORDINATION', title: 'General Secretary', text: 'Supporting documentation, coordination and association communication.', person: 'generalSecretary' },
+      { code: '04C', icon: WalletCards, tag: 'COORDINATION', title: 'Treasurer', text: 'Supporting financial coordination and association activities.', person: 'treasurer' },
+      { code: '04D', icon: Terminal, tag: 'TECHNICAL', title: 'Technical Head', text: 'Managing technical activities, digital work and initiatives.', person: 'technicalHead' },
+      { code: '04E', icon: Megaphone, tag: 'PUBLIC RELATIONS', title: 'Spokesperson', text: 'Representing association communication and public-facing coordination.', person: 'spokesperson' },
+      { code: '04F', icon: Megaphone, tag: 'PUBLIC RELATIONS', title: 'PR and Media Head', text: 'Managing communication, outreach and association visibility.', person: 'prMedia' },
+      { code: '04G', icon: UserCheck, tag: 'DISCIPLINE', title: 'Disciplinary Head', text: 'Supporting discipline, conduct and orderly event participation.', person: 'disciplinaryHead' },
+      { code: '04H', icon: Users, tag: 'LOGISTICS', title: 'Logistics Head', text: 'Supporting venue, materials and operational coordination.', person: 'logisticsHead' },
     ],
   },
   {

@@ -1,5 +1,6 @@
 import { useMemo, useRef } from 'react'
 import { LOGO, SITE } from '../../data/site'
+import ImageWithFallback from '../ui/ImageWithFallback'
 import { useTilt3d } from '../../hooks/useTilt3d'
 import s from './IdCard3D.module.css'
 
@@ -152,19 +153,26 @@ export default function IdCard3D({
         >
           <div className={s.header}>
             <div className={s.eventTitle}>
-              <strong>
-                SUMSHODHINI {SITE.year}
-              </strong>
-
+              <strong>SUMSHODHINI {SITE.year}</strong>
               <span>KITSW</span>
             </div>
 
-            <img
+            <ImageWithFallback
+              imageKey="sumshodhini/sumshodhini-logo-512"
               className={s.headerLogo}
-              src={LOGO.src}
-              width="42"
-              height="43"
-              alt=""
+              width="64"
+              height="66"
+              alt={`${SITE.festUpper} ${SITE.year} logo`}
+              loading="lazy"
+              fallback={
+                <img
+                  className={s.headerLogoFallback}
+                  src={LOGO.src}
+                  width="64"
+                  height="66"
+                  alt="IT Association logo"
+                />
+              }
             />
           </div>
 

@@ -1,12 +1,9 @@
 /*
-  Gallery content (legacy pages/gallery.html).
+  Gallery content.
 
-  Photos are image keys under src/assets/images (see utils/assets.js).
-  Keys whose files do not exist yet render a designed placeholder frame:
-    gallery/inaugural-1, gallery/inaugural-2,
-    gallery/sumshodini-workshop-1 … gallery/sumshodini-workshop-6
-  Drive links set to `null` were "YOUR_GOOGLE_DRIVE_LINK_HERE" placeholders in
-  the legacy page; their buttons are hidden until a real link is added.
+  Missing image keys intentionally render as labelled placeholders. Upload the
+  correct photos to the paths listed in the delivery asset table before
+  publishing them as real workshop imagery.
 */
 
 export const GALLERY_HERO_SLIDES = [
@@ -64,8 +61,8 @@ export const GALLERY_SECTIONS = [
         description:
           'The beginning of another exciting year of learning, collaboration, innovation and student activities with the IT Association.',
         photos: [
-          { image: 'gallery/inaugural-1', alt: 'Inaugural of IT Association 2026' },
-          { image: 'gallery/inaugural-2', alt: 'Inaugural of IT Association 2026' },
+          { image: 'gallery/inaugural-1', alt: 'Inaugural of IT Association 2026 placeholder' },
+          { image: 'gallery/inaugural-2', alt: 'Inaugural of IT Association 2026 placeholder' },
         ],
         driveLabel: 'VIEW EVENT PHOTOS',
         driveUrl: null,
@@ -74,52 +71,49 @@ export const GALLERY_SECTIONS = [
   },
   {
     id: 'sumshodhini-workshops',
-    eyebrow: "SUMSHODHINI '26",
-    titleLead: 'Recent Sumshodhini',
-    titleStrong: 'workshop photos.',
+    eyebrow: 'SUMSHODHINI WORKSHOPS',
+    titleLead: 'Recent workshop',
+    titleStrong: 'groups.',
     intro:
-      "Explore highlights from the workshops, learning sessions and hands-on experiences of Sumshodhini '26.",
+      'Recent SUMSHODHINI workshop groups are listed by year. Upload the correct photos to the configured asset paths to replace the placeholders.',
     driveLabel: 'VIEW WORKSHOP PHOTOS',
     driveUrl: null,
     albums: [
       {
-        id: 'sumshodhini-llm',
-        date: "SUMSHODHINI '26",
+        id: 'sumshodhini-agentic-ai-2025',
+        date: '2025',
         category: 'WORKSHOP',
-        title: 'Introduction to LLMs',
-        description:
-          'Highlights from the Sumshodhini workshop focused on learning, exploring and understanding Large Language Models.',
+        title: 'Agentic AI Workshop',
+        description: 'SUMSHODHINI workshop group — 2025.',
         photos: [
-          { image: 'gallery/sumshodini-workshop-1', alt: 'Sumshodhini workshop photo 1' },
-          { image: 'gallery/sumshodini-workshop-2', alt: 'Sumshodhini workshop photo 2' },
+          { image: 'gallery/sumshodhini/agentic-ai-2025-1', alt: 'Agentic AI Workshop 2025 placeholder' },
+          { image: 'gallery/sumshodhini/agentic-ai-2025-2', alt: 'Agentic AI Workshop 2025 placeholder' },
         ],
         driveLabel: 'VIEW WORKSHOP PHOTOS',
         driveUrl: null,
       },
       {
-        id: 'sumshodhini-hands-on',
-        date: "SUMSHODHINI '26",
+        id: 'sumshodhini-mobile-app-2024',
+        date: '2024',
         category: 'WORKSHOP',
-        title: 'Hands-on Learning Workshop',
-        description:
-          'Moments from an interactive Sumshodhini workshop where students explored concepts through practical and engaging activities.',
+        title: 'Mobile Application Development Workshop',
+        description: 'SUMSHODHINI workshop group — 2024.',
         photos: [
-          { image: 'gallery/sumshodini-workshop-3', alt: 'Sumshodhini workshop photo 3' },
-          { image: 'gallery/sumshodini-workshop-4', alt: 'Sumshodhini workshop photo 4' },
+          { image: 'gallery/sumshodhini/mobile-app-development-2024-1', alt: 'Mobile Application Development Workshop 2024 placeholder' },
+          { image: 'gallery/sumshodhini/mobile-app-development-2024-2', alt: 'Mobile Application Development Workshop 2024 placeholder' },
         ],
         driveLabel: 'VIEW WORKSHOP PHOTOS',
         driveUrl: null,
       },
       {
-        id: 'sumshodhini-recent',
-        date: "SUMSHODHINI '26",
+        id: 'sumshodhini-ethical-hacking-2023',
+        date: '2023',
         category: 'WORKSHOP',
-        title: 'Recent Sumshodhini Workshop',
-        description:
-          "A visual collection of memorable moments from the learning, collaboration and participation at Sumshodhini '26.",
+        title: 'Ethical Hacking Workshop',
+        description: 'SUMSHODHINI workshop group — 2023.',
         photos: [
-          { image: 'gallery/sumshodini-workshop-5', alt: 'Sumshodhini workshop photo 5' },
-          { image: 'gallery/sumshodini-workshop-6', alt: 'Sumshodhini workshop photo 6' },
+          { image: 'gallery/sumshodhini/ethical-hacking-2023-1', alt: 'Ethical Hacking Workshop 2023 placeholder' },
+          { image: 'gallery/sumshodhini/ethical-hacking-2023-2', alt: 'Ethical Hacking Workshop 2023 placeholder' },
         ],
         driveLabel: 'VIEW WORKSHOP PHOTOS',
         driveUrl: null,

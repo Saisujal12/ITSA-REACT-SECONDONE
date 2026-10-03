@@ -23,6 +23,10 @@ import {
 } from "../../data/events";
 
 import {
+  PAYMENT_SUPPORT_PHONE,
+} from "../../data/payment";
+
+import {
   LOGO,
   SITE,
 } from "../../data/site";
@@ -220,9 +224,9 @@ export default function RegistrationForm({
         const next = {
           ...values,
           [name]:
-            changeEvent
-              .target
-              .value,
+            name === "phone"
+              ? changeEvent.target.value.replace(/\D/g, "").slice(0, 10)
+              : changeEvent.target.value,
         };
 
         /*
@@ -730,6 +734,7 @@ export default function RegistrationForm({
               error={
                 errors.email
               }
+              hint="Format validation does not verify email ownership."
             >
               {(aria) => (
                 <input
@@ -755,7 +760,7 @@ export default function RegistrationForm({
               error={
                 errors.phone
               }
-              hint="Demo: +91 90000 00000"
+              hint="Enter exactly 10 digits."
             >
               {(aria) => (
                 <input
@@ -764,10 +769,20 @@ export default function RegistrationForm({
                   )}
                   {...aria}
                   type="tel"
-                  placeholder="+91 XXXXXXXXXX"
+                  placeholder="XXXXXXXXXX"
                   autoComplete="tel"
-                  inputMode="tel"
-                  maxLength={20}
+                  inputMode="numeric"
+                  pattern="[0-9]{10}"
+                  maxLength={10}
+                  minLength={10}
+                  onPaste={(pasteEvent) => {
+                    pasteEvent.preventDefault();
+                    const digits = pasteEvent.clipboardData.getData("text").replace(/\D/g, "").slice(0, 10);
+                    const syntheticEvent = {
+                      target: { value: digits },
+                    };
+                    register("phone").onChange(syntheticEvent);
+                  }}
                   required
                 />
               )}
@@ -872,6 +887,10 @@ export default function RegistrationForm({
             )}
           </span>
         </button>
+
+        <p className={s.paymentSupportText}>
+          If you face any payment issues or delays, please contact: {PAYMENT_SUPPORT_PHONE}
+        </p>
 
         <div
           ref={

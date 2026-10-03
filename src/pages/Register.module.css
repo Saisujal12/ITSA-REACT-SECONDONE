@@ -1503,3 +1503,10 @@
     padding: 20px;
   }
 }
+
+
+/* Registration states and payment support */
+.paymentSupportText { margin:12px 0 0; color:var(--text-muted); font-size:12px; line-height:1.6; text-align:center; }
+.registrationEventCardDisabled { cursor:default; opacity:.72; }
+.registrationEventCardDisabled .registrationEventAction { color:var(--text-muted); }
+.eventRegisterDisabled { cursor:not-allowed; opacity:.58; }

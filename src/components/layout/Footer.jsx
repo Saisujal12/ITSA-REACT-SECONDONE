@@ -99,31 +99,22 @@ export default function Footer() {
             </a>
           </div>
 
-          {FOOTER_COLUMNS.map(
-            (column) => (
+          <div className={s.navColumns}>
+            {FOOTER_COLUMNS.map((column) => (
               <nav
                 key={column.title}
                 className={s.column}
                 aria-label={column.title}
               >
                 <h2>{column.title}</h2>
-
-                {column.links.map(
-                  (link) => (
-                    <Link
-                      key={
-                        link.to +
-                        link.label
-                      }
-                      to={link.to}
-                    >
-                      {link.label}
-                    </Link>
-                  ),
-                )}
+                {column.links.map((link) => (
+                  <Link key={link.to + link.label} to={link.to}>
+                    {link.label}
+                  </Link>
+                ))}
               </nav>
-            ),
-          )}
+            ))}
+          </div>
         </div>
 
         <div className={s.bottom}>
@@ -132,7 +123,6 @@ export default function Footer() {
             All rights reserved.
           </p>
 
-          <p>{SITE.motto}</p>
         </div>
       </div>
     </footer>

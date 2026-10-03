@@ -1571,7 +1571,8 @@
 }
 
 .team-group-grid-four {
-  grid-template-columns: repeat(4, minmax(0, 1fr));
+  /* Wider cards keep role descriptions readable beside their photo frames. */
+  grid-template-columns: repeat(2, minmax(0, 1fr));
 }
 
 .team-group .team-card {
@@ -1838,3 +1839,312 @@
 .mission-card-light p {
   opacity: 1;
 }
+
+
+/* Association highlight cards */
+.aboutHighlights { width: min(1380px, calc(100% - 120px)); margin: 0 auto; padding: 0 0 100px; scroll-margin-top: calc(var(--nav-height) + 24px); }
+.aboutHighlightsHeading { margin-bottom: 34px; }
+.aboutHighlightsHeading > span { color: var(--about-red); font-size: 9px; font-weight: 900; letter-spacing: .2em; }
+.aboutHighlightsHeading h2 { margin-top: 12px; color: var(--about-dark); font-size: clamp(42px, 5vw, 68px); line-height: .92; letter-spacing: -.06em; }
+.aboutHighlightsHeading h2 strong { color: var(--about-red); }
+.aboutHighlightsGrid { display: grid; grid-template-columns: repeat(2, minmax(0,1fr)); gap: 14px; }
+.aboutHighlightCard { min-width: 0; min-height: 190px; padding: 25px; border: 1px solid var(--about-border); background: #fff; scroll-margin-top: calc(var(--nav-height) + 24px); transition: transform .3s ease, border-color .3s ease, box-shadow .3s ease; }
+.aboutHighlightCard:hover, .aboutHighlightCard:focus-visible { transform: translateY(-4px); border-color: rgba(146,23,47,.22); box-shadow: var(--about-shadow-small); outline: none; }
+.aboutHighlightCard > span { color: var(--about-red); font-size: 8px; font-weight: 900; letter-spacing: .18em; }
+.aboutHighlightCard h3 { margin: 12px 0 9px; color: var(--about-dark); font-size: 23px; line-height: 1.05; letter-spacing: -.035em; }
+.aboutHighlightCard p { max-width: 560px; color: var(--about-muted); font-size: 13px; line-height: 1.7; }
+
+/* Compact About hero */
+.about-hero { min-height: 640px; padding: 54px 6vw 58px; }
+.about-hero-grid { grid-template-columns: minmax(0,1fr) minmax(360px,.78fr); gap: 38px; }
+.about-hero-description { max-width: 560px; margin-top: 24px; font-size: 15px; line-height: 1.75; }
+.about-hero h1 { font-family: Georgia, 'Times New Roman', serif; font-size: clamp(56px, 7vw, 94px); line-height: .84; font-weight: 500; letter-spacing: -.055em; color: #2a2522; }
+.about-hero h1 span { color: var(--about-red); font-style: italic; }
+.about-hero-actions { margin-top: 24px; }
+.about-mini-stats { margin-top: 30px; }
+.about-hero-visual { width: min(410px, 100%); }
+.visual-back-number { display: none; }
+.visual-orbit.orbit-outer { width: 88%; height: 88%; border-color: rgba(146,23,47,.12); animation: none; }
+.visual-orbit.orbit-middle { width: 66%; height: 66%; border-color: rgba(182,138,69,.18); animation: none; }
+.visual-orbit.orbit-inner { width: 46%; height: 46%; border-color: rgba(146,23,47,.09); animation: none; }
+.visual-core { width: 146px; height: 146px; border: 6px solid rgba(255,255,255,.82); border-radius: 24px; transform: rotate(-6deg); animation: none; box-shadow: 0 24px 48px rgba(82,17,32,.18), inset 0 0 0 1px rgba(255,255,255,.2); }
+.visual-core::before { inset: 10px; border-radius: 16px; }
+.about-core-logo { width: 104px; height: 104px; }
+.core-inner span, .core-inner small { display: none; }
+.about-float-card { min-width: 118px; padding: 9px 10px; gap: 8px; border-radius: 12px; box-shadow: 0 12px 28px rgba(30,25,20,.09); animation: none; }
+.float-icon { width: 30px; height: 30px; flex-basis: 30px; border-radius: 8px; }
+.float-icon svg { width: 15px; height: 15px; }
+.about-float-card strong { font-size: 8px; }
+.about-float-card span { font-size: 7px; }
+.float-code { top: 14%; right: -2%; }
+.float-innovation { top: 43%; left: -2%; }
+.float-community { right: 0; bottom: 10%; }
+.visual-caption { font-size: 6px; bottom: 2%; }
+/* Small leadership / coordination photo frames */
+.rolePhoto { position: relative; z-index: 3; width: 88px; height: 88px; margin: 14px 0 -42px auto; overflow: hidden; border: 3px solid #fff; border-radius: 50%; background: #e9e2d8; box-shadow: 0 10px 22px rgba(30,25,20,.12); }
+.rolePhoto img { width: 100%; height: 100%; display: block; object-fit: cover; }
+.rolePhoto span { position: absolute; inset: 0; display: grid; place-items: center; color: rgba(37,35,33,.38); font-size: 7px; font-weight: 900; letter-spacing: .14em; }
+.team-group-hod .team-card-wide .team-card-content, .team-group-faculty .team-card .team-card-content, .team-group-leadership .team-card .team-card-content, .team-group-coordination .team-card .team-card-content { margin-top: 24px; }
+.member-photo { width: 84px; height: 84px; aspect-ratio: 1; margin: 0 auto 10px; border-radius: 50%; border: 3px solid #fff; box-shadow: 0 8px 18px rgba(30,25,20,.09); }
+.team-member-card { padding-top: 14px; }
+.team-member-info { padding: 10px 16px 18px; text-align: center; }
+.team-member-info h4 { font-size: 16px; }
+
+@media (max-width: 1000px) { .about-hero { min-height: 600px; } .about-hero-grid { grid-template-columns: 1fr .75fr; gap: 24px; } .about-hero-visual { width: min(350px,100%); } }
+@media (max-width: 700px) { .about-hero { min-height: auto; padding: 34px 20px 46px; } .about-hero-grid { grid-template-columns: 1fr; gap: 30px; } .about-hero-content { text-align: left; } .about-hero-visual { width: min(310px,100%); margin: 0 auto; } .about-hero h1 { font-size: clamp(50px, 15vw, 72px); } .aboutHighlights { width: calc(100% - 40px); padding-bottom: 70px; } .aboutHighlightsGrid { grid-template-columns: 1fr; } .aboutHighlightCard { min-height: 0; } .rolePhoto { width: 74px; height: 74px; } .member-photo { width: 72px; height: 72px; } }
+
+/* Reference inspired About hero and upload ready association photos. */
+.about-hero {
+  min-height: min(900px, max(680px, calc(100svh - var(--nav-height, 80px))));
+  padding: clamp(42px, 5vw, 76px) 6vw;
+}
+
+.about-hero-grid {
+  grid-template-columns: minmax(0, 1.08fr) minmax(380px, 0.92fr);
+  gap: clamp(24px, 4vw, 64px);
+}
+
+.about-kicker {
+  margin-bottom: 34px;
+  font-size: 11px;
+}
+
+.about-hero h1 {
+  max-width: 760px;
+  font-family: var(--font-outfit), Arial, sans-serif;
+  font-size: clamp(76px, 9.5vw, 150px);
+  line-height: 0.78;
+  font-weight: 900;
+  letter-spacing: -0.085em;
+  color: #181615;
+}
+
+.about-hero h1 span {
+  margin-top: 5px;
+  color: var(--about-red);
+  font-style: normal;
+}
+
+.about-hero-description {
+  max-width: 690px;
+  margin-top: 42px;
+  font-size: clamp(16px, 1.2vw, 20px);
+  line-height: 1.8;
+}
+
+.about-hero-actions { margin-top: 34px; }
+.about-primary-btn, .about-secondary-btn { min-height: 58px; padding-inline: 26px; font-size: 11px; }
+.about-mini-stats { margin-top: 54px; }
+.about-mini-stat strong { font-size: 10px; }
+.about-mini-stat span { font-size: 12px; }
+.about-hero-visual { width: min(570px, 100%); }
+.visual-back-number { display: block; }
+.visual-orbit.orbit-outer { width: 96%; height: 96%; }
+.visual-orbit.orbit-middle { width: 70%; height: 70%; }
+.visual-orbit.orbit-inner { width: 48%; height: 48%; }
+.visual-core { width: 190px; height: 190px; border-radius: 30px; }
+.about-core-logo { width: 132px; height: 132px; }
+.about-float-card { min-width: 138px; padding: 9px 11px; gap: 9px; border-radius: 11px; animation: kf-aboutFloatCard 5s ease-in-out infinite; }
+.float-icon { width: 30px; height: 30px; flex-basis: 30px; border-radius: 8px; }
+.about-float-card strong { font-size: 8px; }
+.about-float-card span { font-size: 7px; }
+
+/* Portrait placeholders stay large enough for real headshots and preserve a consistent frame. */
+.team-member-card { padding-top: 0; }
+.member-photo {
+  width: 100%;
+  height: auto;
+  aspect-ratio: 4 / 3;
+  margin: 0;
+  border: 0;
+  border-radius: 0;
+}
+.team-member-info { padding: 18px 20px 22px; text-align: left; }
+
+@media (max-width: 1000px) {
+  .about-hero { min-height: 620px; }
+  .about-hero-grid { grid-template-columns: minmax(0, 1fr) minmax(320px, 0.8fr); gap: 24px; }
+  .about-hero-visual { width: min(440px, 100%); }
+}
+
+@media (max-width: 700px) {
+  .about-hero { min-height: auto; padding: 48px 20px 54px; }
+  .about-hero-grid { grid-template-columns: 1fr; gap: 34px; }
+  .about-kicker { margin-bottom: 24px; font-size: 9px; }
+  .about-hero h1 { font-size: clamp(68px, 17vw, 104px); line-height: 0.8; }
+  .about-hero-description { margin-top: 26px; font-size: 15px; }
+  .about-mini-stats { margin-top: 38px; gap: 13px; }
+  .about-mini-stat span { font-size: 10px; }
+  .about-hero-visual { width: min(380px, 100%); }
+  .visual-back-number { font-size: clamp(190px, 48vw, 280px); }
+  .visual-core { width: 150px; height: 150px; }
+  .about-core-logo { width: 104px; height: 104px; }
+  .about-float-card { min-width: 122px; padding: 9px 10px; gap: 8px; animation: none; }
+  .float-icon { width: 30px; height: 30px; flex-basis: 30px; }
+  .about-float-card strong { font-size: 8px; }
+  .about-float-card span { font-size: 7px; }
+  .team-member-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .member-photo { aspect-ratio: 4 / 3; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .about-float-card { animation: none; }
+}
+
+/* Role cards use a dedicated photo column so images never cover the copy. */
+.team-group .team-card-has-photo {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 170px;
+  grid-template-rows: auto 1fr;
+  align-items: center;
+  column-gap: clamp(18px, 3vw, 34px);
+  min-height: 258px;
+  padding: 26px 30px;
+}
+
+.team-group .team-card-has-photo .team-card-top {
+  grid-column: 1;
+  grid-row: 1;
+  align-self: start;
+}
+
+.team-group .team-card-has-photo .rolePhoto {
+  position: relative;
+  z-index: 3;
+  grid-column: 2;
+  grid-row: 1 / span 2;
+  justify-self: end;
+  align-self: center;
+  width: 158px;
+  height: 158px;
+  margin: 0;
+  overflow: hidden;
+  border: 3px solid rgba(255, 255, 255, 0.94);
+  border-radius: 16px;
+  background: #e9e2d8;
+  box-shadow: 0 12px 26px rgba(30, 25, 20, 0.12);
+  transition: transform 0.4s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.35s ease;
+}
+
+.team-group-hod .team-card-has-photo { grid-template-columns: minmax(0, 1fr) 200px; min-height: 270px; }
+.team-group-hod .team-card-has-photo .rolePhoto { width: 184px; height: 184px; }
+.team-group-faculty .team-card-has-photo { grid-template-columns: minmax(0, 1fr) 180px; }
+.team-group-faculty .team-card-has-photo .rolePhoto { width: 168px; height: 168px; }
+
+.team-group .team-card-has-photo .rolePhoto img {
+  width: 100%;
+  height: 100%;
+  display: block;
+  object-fit: cover;
+  transition: transform 0.55s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.team-group .team-card-has-photo .rolePhoto span {
+  font-size: 9px;
+  letter-spacing: 0.16em;
+}
+
+.team-group .team-card-has-photo:hover .rolePhoto {
+  transform: translateY(-4px) rotate(1deg);
+  box-shadow: 0 18px 34px rgba(30, 25, 20, 0.2);
+}
+
+.team-group .team-card-has-photo:hover .rolePhoto img { transform: scale(1.06); }
+
+.team-group .team-card-has-photo .team-card-content,
+.team-group-hod .team-card-wide.team-card-has-photo .team-card-content {
+  grid-column: 1;
+  grid-row: 2;
+  align-self: center;
+  max-width: 100%;
+  margin: 18px 0 0;
+}
+
+.team-group .team-card-has-photo .team-card-content > span {
+  font-size: 9px;
+  line-height: 1.5;
+}
+
+.team-group .team-card-has-photo h4 {
+  font-size: clamp(21px, 2vw, 27px);
+  line-height: 1.12;
+}
+
+.team-group .team-card-has-photo p {
+  max-width: 48ch;
+  font-size: 13px;
+  line-height: 1.7;
+}
+
+/* Compact orbit labels with clear space around the center logo. */
+.about-hero-visual .about-float-card {
+  box-sizing: border-box;
+  width: 172px;
+  min-width: 0;
+  height: 66px;
+  padding: 9px 11px;
+  gap: 9px;
+}
+
+.about-hero-visual .float-icon {
+  width: 42px;
+  height: 42px;
+  flex-basis: 42px;
+  border-radius: 11px;
+}
+
+.about-hero-visual .about-float-card strong { font-size: 8px; }
+.about-hero-visual .about-float-card span { font-size: 7px; }
+.about-hero-visual .float-code { top: 12%; right: -2%; }
+.about-hero-visual .float-innovation { top: 43%; left: -8%; bottom: auto; }
+.about-hero-visual .float-community { right: -2%; bottom: 10%; }
+
+@media (max-width: 700px) {
+  .team-group .team-card-has-photo {
+    grid-template-columns: minmax(0, 1fr) 104px;
+    min-height: 230px;
+    padding: 22px;
+    column-gap: 14px;
+  }
+
+  .team-group .team-card-has-photo .rolePhoto { width: 98px; height: 98px; border-radius: 14px; }
+  .team-group-hod .team-card-has-photo { grid-template-columns: minmax(0, 1fr) 128px; min-height: 248px; }
+  .team-group-hod .team-card-has-photo .rolePhoto { width: 118px; height: 118px; }
+  .team-group-faculty .team-card-has-photo { grid-template-columns: minmax(0, 1fr) 108px; }
+  .team-group-faculty .team-card-has-photo .rolePhoto { width: 102px; height: 102px; }
+  .team-group .team-card-has-photo .team-card-content,
+  .team-group-hod .team-card-wide.team-card-has-photo .team-card-content { margin-top: 14px; }
+  .team-group .team-card-has-photo h4 { font-size: 18px; }
+
+  .about-hero-visual .about-float-card {
+    width: 126px;
+    height: 56px;
+    padding: 7px 8px;
+    gap: 7px;
+  }
+
+  .about-hero-visual .float-icon {
+    width: 32px;
+    height: 32px;
+    flex-basis: 32px;
+    border-radius: 9px;
+  }
+
+  .about-hero-visual .float-icon svg { width: 14px; height: 14px; }
+  .about-hero-visual .about-float-card strong { font-size: 7px; }
+  .about-hero-visual .about-float-card span { font-size: 6px; }
+  .about-hero-visual .float-innovation {
+    top: 43%;
+    left: -7%;
+    width: 110px;
+    padding-inline: 7px;
+    gap: 6px;
+  }
+
+  .about-hero-visual .float-innovation .float-icon {
+    width: 28px;
+    height: 28px;
+    flex-basis: 28px;
+  }
+}
+

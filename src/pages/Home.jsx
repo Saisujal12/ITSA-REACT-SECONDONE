@@ -264,10 +264,6 @@ export default function Home() {
           <div className={s.aboutGrid}>
             <div className={s.brandPanel}>
               <div>
-                <div className={s.panelDays}>
-                  01 · 02
-                </div>
-
                 <div className={s.panelTitle}>
                   {SITE.festUpper}
                 </div>

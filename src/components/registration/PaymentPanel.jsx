@@ -10,6 +10,7 @@ import {
 } from "../../data/events";
 
 import ImageWithFallback from "../ui/ImageWithFallback";
+import { resolveImage } from "../../utils/assets";
 
 import s from "../../pages/Register.module.css";
 
@@ -24,16 +25,10 @@ export default function PaymentPanel({
    * Event can have its own QR.
    * Otherwise use the day QR.
    */
-  const qrKey =
-    event.qr || day.qr;
-
-  const qrAlt =
-    event.qrAlt ||
-    day.qrAlt;
-
-  const fallbackText =
-    event.qrFallbackText ||
-    day.fallbackText;
+  const qrKey = event.qr || day.qr;
+  const qrAlt = event.qrAlt || day.qrAlt;
+  const fallbackText = event.qrFallbackText || day.qrFallbackText || 'Payment QR image is not uploaded yet.';
+  const qrAvailable = Boolean(resolveImage(qrKey));
 
   return (
     <div
@@ -56,7 +51,9 @@ export default function PaymentPanel({
           </span>
 
           <h3>
-            Scan the QR code and complete the payment.
+            {qrAvailable
+              ? 'Scan the QR code and complete the payment.'
+              : 'Payment QR image is not uploaded yet.'}
           </h3>
         </div>
 

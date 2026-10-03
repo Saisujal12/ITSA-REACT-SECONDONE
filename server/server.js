@@ -1,6 +1,10 @@
+import dotenv from "dotenv";
 
-import "dotenv/config";
-import app from "./app.js";
+dotenv.config({
+  path: "./server/.env",
+});
+
+const { default: app } = await import("./app.js");
 
 const PORT = process.env.PORT || 5000;
 
@@ -9,4 +13,3 @@ app.listen(PORT, () => {
     `IT Association backend running on http://localhost:${PORT}`
   );
 });
-

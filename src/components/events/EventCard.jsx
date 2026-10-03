@@ -38,14 +38,21 @@ export default function EventCard({ event, featured = false, from = 'events' }) 
         </span>
       </div>
 
-      <Link
-        to={registrationPath(event.id, from)}
-        className={s.eventRegister}
-        aria-label={`Register for ${event.title}`}
-      >
-        Register
-        <ArrowRight size="1.3em" aria-hidden="true" />
-      </Link>
+      {event.registrationEnabled ? (
+        <Link
+          to={registrationPath(event.id, from)}
+          className={s.eventRegister}
+          aria-label={`Register for ${event.title}`}
+        >
+          Register
+          <ArrowRight size="1.3em" aria-hidden="true" />
+        </Link>
+      ) : (
+        <span className={`${s.eventRegister} ${s.eventRegisterDisabled}`} aria-disabled="true">
+          Registration not configured
+        </span>
+      )}
     </article>
   )
 }
+

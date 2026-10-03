@@ -32,8 +32,8 @@ export default function EventSelector() {
       <div className={s.registrationEventsGrid}>
         {events.map((event, index) => {
           const Icon = event.icon
-          return (
-            <Link key={event.id} to={registrationPath(event.id, 'day2')} className={s.registrationEventCard}>
+          const content = (
+            <>
               <span className={s.registrationEventNumber}>
                 EVENT {String(index + 1).padStart(2, '0')}
               </span>
@@ -44,10 +44,20 @@ export default function EventSelector() {
               <h2>{event.title}</h2>
               <p>{event.selectorDescription ?? event.description}</p>
               <span className={s.registrationEventAction}>
-                <span>Register for event</span>
+                <span>{event.registrationEnabled ? 'Register for event' : 'Details coming soon'}</span>
                 <span aria-hidden="true">→</span>
               </span>
+            </>
+          )
+
+          return event.registrationEnabled ? (
+            <Link key={event.id} to={registrationPath(event.id, 'day2')} className={s.registrationEventCard}>
+              {content}
             </Link>
+          ) : (
+            <article key={event.id} className={`${s.registrationEventCard} ${s.registrationEventCardDisabled}`} aria-label={`${event.title} — registration not configured`}>
+              {content}
+            </article>
           )
         })}
       </div>

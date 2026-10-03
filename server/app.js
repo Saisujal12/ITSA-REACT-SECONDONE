@@ -1,8 +1,14 @@
-import "dotenv/config";
-
+import dotenv from "dotenv";
 import express from "express";
 import cors from "cors";
 import helmet from "helmet";
+import { fileURLToPath } from "node:url";
+
+const SERVER_ENV_PATH = fileURLToPath(new URL("./.env", import.meta.url));
+
+dotenv.config({
+  path: SERVER_ENV_PATH,
+});
 
 import registrationRoutes from "./routes/registrationRoutes.js";
 import adminRoutes from "./routes/adminRoutes.js";

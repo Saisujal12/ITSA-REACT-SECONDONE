@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from 'react'
+import { Link } from 'react-router'
 import {
   ChevronLeft,
   ChevronRight,
@@ -13,26 +14,25 @@ const HIGHLIGHTS = [
     image: 'gallery/guest-lecture-1',
     title: 'Guest Lecture on AI Applications',
     label: 'Guest Lecture',
-  },
-  {
-    image: 'gallery/guest-lecture-2',
-    title: 'Learning Beyond the Classroom',
-    label: 'Association Activity',
+    to: '/about#guest-lecture',
   },
   {
     image: 'gallery/gallery-1',
     title: "Teachers' Day",
     label: 'Celebration',
+    to: '/about#teachers-day',
   },
   {
     image: 'gallery/gallery-2',
-    title: 'IT Association Moments',
-    label: 'Campus Life',
+    title: 'IT Association 2026 Inaugural',
+    label: 'Association',
+    to: '/about#inaugural',
   },
   {
     image: 'gallery/gallery-3',
-    title: 'Building Together',
-    label: 'Student Activity',
+    title: 'Workshops & Learning',
+    label: 'Learning',
+    to: '/about#workshops',
   },
 ]
 
@@ -149,11 +149,10 @@ export default function AssociationHighlights() {
 
               <div className={s.overlay} />
 
-              <div className={s.caption}>
+              <Link to={active.to} className={s.caption} aria-label={`Open ${active.label}: ${active.title} on the About page`}>
                 <span>{active.label}</span>
-
                 <h3>{active.title}</h3>
-              </div>
+              </Link>
 
               <button
                 type="button"
@@ -248,19 +247,13 @@ export default function AssociationHighlights() {
                   slide,
                   index,
                 ) => (
-                  <button
+                  <Link
                     key={slide.image}
-                    type="button"
+                    to={slide.to}
                     className={`${s.thumb} ${
-                      index ===
-                      activeIndex
-                        ? s.thumbActive
-                        : ''
+                      index === activeIndex ? s.thumbActive : ''
                     }`}
-                    onClick={() =>
-                      goTo(index)
-                    }
-                    aria-label={`Open ${slide.title}`}
+                    aria-label={`Open ${slide.label}: ${slide.title} on the About page`}
                   >
                     <img
                       src={slide.asset.src}
@@ -278,7 +271,7 @@ export default function AssociationHighlights() {
 
                       {slide.title}
                     </span>
-                  </button>
+                  </Link>
                 ),
               )}
           </div>

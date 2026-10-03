@@ -15,6 +15,7 @@ import {
 } from 'lucide-react'
 import MobileOrbitCard from '../components/sumshodhini/MobileOrbitCard'
 import { SITE } from '../data/site'
+import ImageWithFallback from '../components/ui/ImageWithFallback'
 import { useDocumentTitle } from '../hooks/useDocumentTitle'
 import { cx } from '../utils/cx'
 import s from './Sumshodhini.module.css'
@@ -30,7 +31,6 @@ const ORBIT_WORDS = [
 const DAYS = [
   {
     id: 'day1',
-    number: '01',
     label: 'DAY-1',
     title: 'WORKSHOP',
     heading: 'Workshop',
@@ -40,7 +40,6 @@ const DAYS = [
   },
   {
     id: 'day2',
-    number: '02',
     label: 'DAY-2',
     title: 'EVENTS',
     heading: 'Events',
@@ -139,16 +138,11 @@ export default function Sumshodhini() {
               </div>
               {DAYS.map((day) => (
                 <Link key={day.id} to={day.to} className={s.samDayItem}>
-                  <div className={s.samDayNumber} aria-hidden="true">
-                    {day.number}
-                  </div>
                   <div className={s.samDayText}>
                     <span className={s.samDayLabel}>{day.label}</span>
                     <strong>{day.title}</strong>
                   </div>
-                  <div className={s.samDayArrow} aria-hidden="true">
-                    <ArrowRight size="1em" />
-                  </div>
+                  <ArrowRight className={s.samDayArrow} aria-hidden="true" />
                 </Link>
               ))}
             </nav>
@@ -172,11 +166,12 @@ export default function Sumshodhini() {
               <div className={s.samFloatingCircle}>
                 <div className={s.samCircleGlow} />
                 <div className={s.samCircleInner}>
-                  <div className={s.samCircleTop}>IT · {SITE.college}</div>
-                  <div className={s.samCircleName}>{SITE.festUpper}</div>
-                  <div className={s.samCircleYear}>{SITE.year}</div>
-                  <div className={s.samCircleLine} />
-                  <div className={s.samCircleCaption}>QUESTION · CREATE · DISCOVER</div>
+                  <ImageWithFallback
+                    imageKey="sumshodhini/sumshodhini-logo-512"
+                    alt={`${SITE.festUpper} ${SITE.year} logo`}
+                    className={s.samCircleLogo}
+                    loading="eager"
+                  />
                 </div>
               </div>
 
@@ -185,7 +180,7 @@ export default function Sumshodhini() {
               <span className={cx(s.samSatellite, s.samSatelliteThree)} />
             </div>
 
-            <MobileOrbitCard words={ORBIT_WORDS.map((item) => item.word)} />
+            <MobileOrbitCard />
           </div>
 
           <div className={s.samScrollIndicator} aria-hidden="true">
@@ -201,9 +196,6 @@ export default function Sumshodhini() {
           const Icon = day.icon
           return (
             <section key={day.id} id={day.id} className={s.samDetailSection} aria-labelledby={`${day.id}-title`}>
-              <div className={s.samDetailNumber} aria-hidden="true">
-                {day.number}
-              </div>
               <div className={s.samDetailContent}>
                 <span className={s.samDetailLabel}>{day.label}</span>
                 <h2 id={`${day.id}-title`}>{day.heading}</h2>
@@ -221,7 +213,6 @@ export default function Sumshodhini() {
       <section className={s.samIntro} id="about" aria-labelledby="sam-about-title">
         <div className={s.samIntroGrid}>
           <div className={s.samSectionLabel}>
-            <span>03</span>
             ABOUT THE EVENT
           </div>
           <div className={s.samIntroContent}>
@@ -254,11 +245,8 @@ export default function Sumshodhini() {
         </div>
 
         <div className={s.samFeatureGrid}>
-          {FEATURES.map(({ tone, icon: Icon, tag, title, text }, index) => (
+          {FEATURES.map(({ tone, icon: Icon, tag, title, text }) => (
             <article key={tag} className={cx(s.samFeature, tone)}>
-              <div className={s.featureNumber} aria-hidden="true">
-                {String(index + 1).padStart(2, '0')}
-              </div>
               <div className={s.featureIcon} aria-hidden="true">
                 <Icon size="1em" />
               </div>
@@ -322,3 +310,5 @@ export default function Sumshodhini() {
     </div>
   )
 }
+
+

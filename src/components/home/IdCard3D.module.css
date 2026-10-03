@@ -1,6 +1,6 @@
 .area {
   position: relative;
-  min-height: 560px;
+  min-height: 470px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -11,8 +11,8 @@
 .scene {
   --scene-scale: 1;
   position: relative;
-  width: 380px;
-  height: 530px;
+  width: 330px;
+  height: 470px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -25,8 +25,8 @@
   --pointer-x: 50%;
   --pointer-y: 35%;
   position: relative;
-  width: 330px;
-  height: 510px;
+  width: 292px;
+  height: 450px;
   overflow: hidden;
   border-radius: 25px;
   background:
@@ -83,11 +83,12 @@
 .header {
   position: relative;
   z-index: 2;
-  min-height: 100px;
-  padding: 18px 22px;
+  min-height: 82px;
+  padding: 14px 17px;
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  justify-content: flex-start;
+  gap: 10px;
   overflow: hidden;
   background:
     linear-gradient(
@@ -118,14 +119,17 @@
 }
 
 .eventTitle strong {
-  font-size: 23px;
+  font-size: 19px;
+  font-weight: 900;
   line-height: 1;
   letter-spacing: -0.035em;
+  letter-spacing: -0.02em;
 }
 
 .eventTitle span {
-  font-size: 11px;
+  font-size: 9px;
   font-weight: 800;
+  font-weight: 900;
   letter-spacing: 3px;
   opacity: 0.78;
 }
@@ -133,17 +137,35 @@
 .headerLogo {
   position: relative;
   z-index: 2;
-  width: 42px;
-  height: 43px;
+  width: 58px;
+  height: 60px;
+  flex: 0 0 58px;
+  width: 68px;
+  height: 68px;
+  flex: 0 0 68px;
+  object-fit: contain;
+  border-radius: 50%;
+  mix-blend-mode: screen;
+  filter: saturate(1.4) contrast(1.12) brightness(1.3) drop-shadow(0 3px 7px rgba(0, 0, 0, 0.2));
+  filter: saturate(1.55) contrast(1.18) brightness(1.55) drop-shadow(0 3px 8px rgba(0, 0, 0, 0.2));
+  opacity: 1;
+}
+
+.headerLogoFallback {
+  position: relative;
+  z-index: 2;
+  width: 48px;
+  height: 50px;
+  flex: 0 0 48px;
   object-fit: contain;
   filter: brightness(0) invert(1);
-  opacity: 0.9;
+  opacity: 1;
 }
 
 .identity {
   position: relative;
-  min-height: 220px;
-  padding: 22px 24px 17px;
+  min-height: 188px;
+  padding: 16px 18px 13px;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -161,8 +183,8 @@
 }
 
 .logoBox {
-  width: 136px;
-  height: 136px;
+  width: 92px;
+  height: 112px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -172,15 +194,13 @@
   border: 1px solid
     rgba(146, 23, 47, 0.1);
   box-shadow:
-    0 16px 35px
-      rgba(35, 27, 23, 0.09),
-    inset 0 0 0 9px
-      rgba(146, 23, 47, 0.025);
+    0 16px 35px rgba(35, 27, 23, 0.09),
+    inset 0 0 0 9px rgba(146, 23, 47, 0.025);
 }
 
 .logoBox img {
-  width: 105px;
-  height: 108px;
+  width: 86px;
+  height: 88px;
   object-fit: contain;
 }
 
@@ -192,7 +212,7 @@
 
 .associationName strong {
   color: var(--text-dark);
-  font-size: 18px;
+  font-size: 15px;
   line-height: 1.15;
 }
 
@@ -205,11 +225,11 @@
 }
 
 .details {
-  min-height: 108px;
-  padding: 12px 22px 10px;
+  min-height: 94px;
+  padding: 10px 17px 8px;
   display: grid;
   grid-template-columns: 1fr 1fr;
-  column-gap: 18px;
+  column-gap: 12px;
   row-gap: 7px;
   background: #faf7f0;
 }
@@ -247,8 +267,8 @@
   left: 0;
   right: 0;
   bottom: 0;
-  min-height: 66px;
-  padding: 9px 16px 10px 21px;
+  min-height: 58px;
+  padding: 8px 13px 8px 16px;
   display: flex;
   align-items: flex-end;
   justify-content: space-between;
@@ -288,8 +308,8 @@
 }
 
 .barcode {
-  width: 112px;
-  height: 29px;
+  width: 92px;
+  height: 25px;
   display: block;
   background: white;
   padding: 2px;
@@ -337,6 +357,37 @@
     min-height: 480px;
   }
 
+  .header {
+    padding: 15px 18px;
+    gap: 12px;
+  }
+
+  .headerLogo,
+  .headerLogoFallback {
+    width: 54px;
+    height: 56px;
+    flex-basis: 54px;
+    width: 62px;
+    height: 62px;
+    flex-basis: 62px;
+  }
+
+  .eventTitle {
+    min-width: 0;
+    align-items: flex-start;
+  }
+
+  .eventTitle strong {
+    font-size: 20px;
+    font-size: 16px;
+    line-height: 1.05;
+    text-align: left;
+  }
+
+  .eventTitle span {
+    text-align: left;
+  }
+
   .scene {
     --scene-scale: 0.82;
   }
@@ -354,3 +405,13 @@
     transition: none !important;
   }
 }
+
+/* Compact home ID card so the complete card remains visible in the hero. */
+.header { justify-content: space-between; }
+.eventTitle { min-width: 0; align-items: flex-start; }
+.headerLogo { margin-left: auto; }
+@media (max-width: 1200px) { .scene { --scene-scale: .94; } }
+@media (max-width: 900px) { .area { min-height: 450px; } .scene { --scene-scale: .88; } }
+@media (max-width: 600px) { .area { min-height: 410px; } .scene { --scene-scale: .78; } .header { padding: 13px 15px; } .headerLogo, .headerLogoFallback { width:50px; height:52px; flex-basis:50px; } .eventTitle strong { font-size:18px; } }
+@media (max-width: 600px) { .area { min-height: 410px; } .scene { --scene-scale: .78; } .header { padding: 13px 15px; } .headerLogo, .headerLogoFallback { width:58px; height:58px; flex-basis:58px; } .eventTitle strong { font-size:15px; } .eventTitle span { font-size:7px; letter-spacing:2px; } }
+@media (max-width:380px) { .scene { --scene-scale: .72; } }

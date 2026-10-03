@@ -42,7 +42,7 @@ export const ADMIN_EVENTS = [
 
     label: "Event 4",
 
-    name: "Design to Deploy",
+    name: "Design to Deploy — Details Pending",
   },
 
   {
@@ -50,7 +50,7 @@ export const ADMIN_EVENTS = [
 
     label: "Event 5",
 
-    name: "Tech Connect",
+    name: "Tech Connect — Details Pending",
   },
 
   {
@@ -58,7 +58,7 @@ export const ADMIN_EVENTS = [
 
     label: "Event 6",
 
-    name: "Event 6",
+    name: "Event 6 — Details Pending",
   },
 ];
 
