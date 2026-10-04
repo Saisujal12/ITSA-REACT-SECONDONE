@@ -1,580 +1,230 @@
-import {
-  useEffect,
-  useState,
-} from "react";
-
-import {
-  Link,
-  useNavigate,
-  useSearchParams,
-} from "react-router";
-
+import { useEffect, useState } from "react";
+import { Link, useNavigate, useSearchParams } from "react-router";
 import {
   ArrowLeft,
   ArrowRight,
   CalendarDays,
+  ChevronDown,
+  Eye,
+  EyeOff,
   LoaderCircle,
   Lock,
   ShieldHalf,
   User,
 } from "lucide-react";
-
-import {
-  useDocumentTitle,
-} from "../../hooks/useDocumentTitle";
-
-import {
-  checkAdmin,
-  loginAdmin,
-} from "../../services/admin";
-
-import {
-  cx,
-} from "../../utils/cx";
-
+import { useDocumentTitle } from "../../hooks/useDocumentTitle";
+import { checkAdmin, loginAdmin } from "../../services/admin";
+import { cx } from "../../utils/cx";
 import s from "./Admin.module.css";
 
-/*
-|--------------------------------------------------------------------------
-| ADMIN EVENTS
-|--------------------------------------------------------------------------
-*/
-
 const EVENTS = [
-  {
-    id: "llm",
-    label: "Workshop",
-  },
-
-  {
-    id: "code-build",
-    label: "Event 1",
-  },
-
-  {
-    id: "innovation",
-    label: "Event 2",
-  },
-
-  {
-    id: "cyber-quest",
-    label: "Event 3",
-  },
-
-  {
-    id: "design-deploy",
-    label: "Event 4",
-  },
-
-  {
-    id: "tech-connect",
-    label: "Event 5",
-  },
-
-  {
-    id: "event6",
-    label: "Event 6",
-  },
+  { id: "llm", label: "Workshop" },
+  { id: "code-build", label: "Event 1" },
+  { id: "innovation", label: "Event 2" },
+  { id: "cyber-quest", label: "Event 3" },
+  { id: "design-deploy", label: "Event 4" },
+  { id: "tech-connect", label: "Event 5" },
+  { id: "event6", label: "Event 6" },
+  { id: "event7", label: "Event 7" },
+  { id: "event8", label: "Event 8" },
+  { id: "event9", label: "Event 9" },
+  { id: "event10", label: "Event 10" },
 ];
 
 export default function AdminLogin() {
-  useDocumentTitle(
-    "Admin Login | IT Association",
-    {
-      raw: true,
-    },
+  useDocumentTitle("Admin Login | IT Association");
+
+  const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+  const [username, setUsername] = useState("admin");
+  const [password, setPassword] = useState("");
+  const [eventId, setEventId] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
+  const [checkingSession, setCheckingSession] = useState(true);
+  const [status, setStatus] = useState(() =>
+    searchParams.get("expired")
+      ? { tone: "error", message: "Your session expired. Please sign in again." }
+      : null,
   );
 
-  const navigate =
-    useNavigate();
-
-  const [
-    searchParams,
-  ] =
-    useSearchParams();
-
-  const [
-    username,
-    setUsername,
-  ] =
-    useState("");
-
-  const [
-    password,
-    setPassword,
-  ] =
-    useState("");
-
-  const [
-    eventId,
-    setEventId,
-  ] =
-    useState("");
-
-  const [
-    submitting,
-    setSubmitting,
-  ] =
-    useState(false);
-
-  const [
-    checkingSession,
-    setCheckingSession,
-  ] =
-    useState(true);
-
-  const [
-    status,
-    setStatus,
-  ] =
-    useState(
-      searchParams.get(
-        "expired",
-      )
-        ? {
-            tone:
-              "error",
-
-            text:
-              "Your admin session has expired. Please login again.",
-          }
-        : null,
-    );
-
-  /*
-  |--------------------------------------------------------------------------
-  | Check existing session
-  |--------------------------------------------------------------------------
-  */
-
   useEffect(() => {
-    let active =
-      true;
+    let active = true;
 
-    async function checkExistingSession() {
-      try {
-        const result =
-          await checkAdmin();
-
-        if (
-          active &&
-          result?.authenticated &&
-          result?.admin?.eventId
-        ) {
-          navigate(
-            "/admin/dashboard",
-            {
-              replace:
-                true,
-            },
-          );
-
-          return;
+    checkAdmin()
+      .then((session) => {
+        if (active && session?.authenticated && session?.eventId) {
+          navigate("/admin/dashboard", { replace: true });
         }
-      } catch {
-        /*
-         * Keep login form available.
-         */
-      } finally {
-        if (active) {
-          setCheckingSession(
-            false,
-          );
-        }
-      }
-    }
-
-    checkExistingSession();
+      })
+      .catch(() => {
+        // A missing session is expected on the login page.
+      })
+      .finally(() => {
+        if (active) setCheckingSession(false);
+      });
 
     return () => {
-      active =
-        false;
+      active = false;
     };
-  }, [
-    navigate,
-  ]);
+  }, [navigate]);
 
-  /*
-  |--------------------------------------------------------------------------
-  | Login
-  |--------------------------------------------------------------------------
-  */
-
-  async function handleSubmit(
-    event,
-  ) {
+  async function handleSubmit(event) {
     event.preventDefault();
 
-    if (submitting) {
-      return;
-    }
-
-    if (
-      !username.trim() ||
-      !password ||
-      !eventId
-    ) {
+    if (!username.trim() || !password || !eventId) {
       setStatus({
-        tone:
-          "error",
-
-        text:
-          "Please enter username, password, and choose your event.",
+        tone: "error",
+        message: "Enter the username and password, and select a workshop or event.",
       });
-
       return;
     }
 
-    setSubmitting(
-      true,
-    );
-
-    setStatus(
-      null,
-    );
+    setSubmitting(true);
+    setStatus(null);
 
     try {
-      await loginAdmin(
-        username.trim(),
-        password,
-        eventId,
-      );
-
-      navigate(
-        "/admin/dashboard",
-        {
-          replace:
-            true,
-        },
-      );
+      await loginAdmin(username.trim(), password, eventId);
+      navigate("/admin/dashboard", { replace: true });
     } catch (error) {
       setStatus({
-        tone:
-          "error",
-
-        text:
-          error.message ||
-          "Unable to login. Please check your details and try again.",
+        tone: "error",
+        message: error?.message || "Unable to sign in. Check your details and try again.",
       });
-
-      setSubmitting(
-        false,
-      );
+    } finally {
+      setSubmitting(false);
     }
   }
 
-  /*
-  |--------------------------------------------------------------------------
-  | Loading
-  |--------------------------------------------------------------------------
-  */
-
   if (checkingSession) {
     return (
-      <div
-        className={
-          s.loginPage
-        }
-        aria-busy="true"
-      >
-        <div
-          className={
-            s.loginCard
-          }
-        >
-          <div
-            className={
-              s.loginIcon
-            }
-          >
-            <LoaderCircle
-              className={
-                s.spin
-              }
-            />
+      <main className={s.loginPage}>
+        <section className={s.loginCard} aria-label="Checking admin session">
+          <div className={s.loginIcon}>
+            <ShieldHalf aria-hidden="true" />
           </div>
-
-          <h1>
-            IT{" "}
-            <span>
-              ASSOCIATION
-            </span>
-          </h1>
-
-          <p
-            className={
-              s.loginTitle
-            }
-          >
-            ADMIN PANEL
-          </p>
-
-          <p
-            className={
-              s.loginDescription
-            }
-          >
-            Checking your admin
-            session…
-          </p>
-        </div>
-      </div>
+          <p className={s.loginTitle}>IT Association</p>
+          <h1>Admin sign in</h1>
+          <p className={s.loginDescription}>Checking your session…</p>
+          <LoaderCircle className={s.loginSpinner} aria-label="Loading" />
+        </section>
+      </main>
     );
   }
 
   return (
-    <div
-      className={
-        s.loginPage
-      }
-    >
-      <div
-        className={
-          s.loginCard
-        }
-      >
-        <div
-          className={
-            s.loginIcon
-          }
-        >
-          <ShieldHalf />
+    <main className={s.loginPage}>
+      <section className={s.loginCard}>
+        <div className={s.loginIcon}>
+          <ShieldHalf aria-hidden="true" />
         </div>
-
-        <h1>
-          IT{" "}
-          <span>
-            ASSOCIATION
-          </span>
-        </h1>
-
-        <p
-          className={
-            s.loginTitle
-          }
-        >
-          ADMIN PANEL
+        <p className={s.loginTitle}>IT Association</p>
+        <h1>Admin sign in</h1>
+        <p className={s.loginDescription}>
+          Use the admin username and the unique password for the selected workshop or event.
         </p>
 
-        <p
-          className={
-            s.loginDescription
-          }
-        >
-          Login with your admin
-          credentials and select
-          the event you want to
-          manage.
-        </p>
-
-        <form
-          onSubmit={
-            handleSubmit
-          }
-          noValidate
-        >
-          {/* USERNAME */}
-
-          <div
-            className={
-              s.field
-            }
-          >
-            <label htmlFor="admin-username">
-              Username
-            </label>
-
-            <div
-              className={
-                s.fieldInput
-              }
-            >
-              <User />
-
+        <form className={s.loginForm} onSubmit={handleSubmit}>
+          <label className={s.field}>
+            <span className={s.fieldLabel}>Username</span>
+            <span className={s.fieldInput}>
+              <User aria-hidden="true" />
               <input
-                id="admin-username"
-                type="text"
                 autoComplete="username"
-                placeholder="Enter admin username"
-                value={
-                  username
-                }
-                onChange={(
-                  event,
-                ) =>
-                  setUsername(
-                    event.target
-                      .value,
-                  )
-                }
+                name="username"
+                onChange={(event) => setUsername(event.target.value)}
+                placeholder="Enter username"
                 required
+                value={username}
               />
-            </div>
-          </div>
+            </span>
+          </label>
 
-          {/* PASSWORD */}
-
-          <div
-            className={
-              s.field
-            }
-          >
-            <label htmlFor="admin-password">
-              Password
-            </label>
-
-            <div
-              className={
-                s.fieldInput
-              }
-            >
-              <Lock />
-
-              <input
-                id="admin-password"
-                type="password"
-                autoComplete="current-password"
-                placeholder="Enter admin password"
-                value={
-                  password
-                }
-                onChange={(
-                  event,
-                ) =>
-                  setPassword(
-                    event.target
-                      .value,
-                  )
-                }
-                required
-              />
-            </div>
-          </div>
-
-          {/* EVENT */}
-
-          <div
-            className={
-              s.field
-            }
-          >
-            <label htmlFor="admin-event">
-              Choose your event
-            </label>
-
-            <div
-              className={
-                s.fieldInput
-              }
-            >
-              <CalendarDays />
-
+          <label className={s.field}>
+            <span className={s.fieldLabel}>Workshop or event</span>
+            <span className={s.fieldInput}>
+              <CalendarDays aria-hidden="true" />
               <select
-                id="admin-event"
-                className={
-                  s.eventSelect
-                }
-                value={
-                  eventId
-                }
-                onChange={(
-                  event,
-                ) =>
-                  setEventId(
-                    event.target
-                      .value,
-                  )
-                }
+                className={s.eventSelect}
+                name="eventId"
+                onChange={(event) => setEventId(event.target.value)}
                 required
+                value={eventId}
               >
-                <option value="">
-                  Select an event
+                <option disabled value="">
+                  Select workshop or event
                 </option>
-
-                {EVENTS.map(
-                  (
-                    event,
-                  ) => (
-                    <option
-                      key={
-                        event.id
-                      }
-                      value={
-                        event.id
-                      }
-                    >
-                      {
-                        event.label
-                      }
-                    </option>
-                  ),
-                )}
+                {EVENTS.map((item) => (
+                  <option key={item.id} value={item.id}>
+                    {item.label}
+                  </option>
+                ))}
               </select>
-            </div>
-          </div>
-
-          <div aria-live="polite">
-            {status && (
-              <p
-                className={cx(
-                  s.loginStatus,
-                  status.tone ===
-                    "success" &&
-                    s.loginStatusSuccess,
-                )}
-                role={
-                  status.tone ===
-                  "error"
-                    ? "alert"
-                    : "status"
-                }
-              >
-                {
-                  status.text
-                }
-              </p>
-            )}
-          </div>
-
-          <button
-            type="submit"
-            className={cx(
-              s.button,
-              s.loginButton,
-            )}
-            disabled={
-              submitting
-            }
-          >
-            {submitting
-              ? "Logging in…"
-              : "Login"}
-
-            {submitting ? (
-              <LoaderCircle
-                className={
-                  s.spin
-                }
+              <ChevronDown
+                aria-hidden="true"
+                className={s.selectChevron}
               />
+            </span>
+          </label>
+
+          <label className={s.field}>
+            <span className={s.fieldLabel}>Password</span>
+            <span className={cx(s.fieldInput, s.passwordInput)}>
+              <Lock aria-hidden="true" />
+              <input
+                autoComplete="current-password"
+                name="password"
+                onChange={(event) => setPassword(event.target.value)}
+                placeholder="Enter password"
+                required
+                type={showPassword ? "text" : "password"}
+                value={password}
+              />
+              <button
+                aria-label={showPassword ? "Hide password" : "Show password"}
+                aria-pressed={showPassword}
+                className={s.passwordToggle}
+                onClick={() => setShowPassword((visible) => !visible)}
+                title={showPassword ? "Hide password" : "Show password"}
+                type="button"
+              >
+                {showPassword ? <EyeOff aria-hidden="true" /> : <Eye aria-hidden="true" />}
+              </button>
+            </span>
+          </label>
+
+          {status && (
+            <p
+              className={cx(
+                s.loginStatus,
+                status.tone === "success" && s.loginStatusSuccess,
+              )}
+              role={status.tone === "error" ? "alert" : "status"}
+            >
+              {status.message}
+            </p>
+          )}
+
+          <button className={cx(s.button, s.loginButton)} disabled={submitting} type="submit">
+            {submitting ? (
+              <>
+                <LoaderCircle className={s.loginSpinner} aria-hidden="true" />
+                Signing in…
+              </>
             ) : (
-              <ArrowRight />
+              <>
+                Sign in
+                <ArrowRight aria-hidden="true" />
+              </>
             )}
           </button>
         </form>
 
-        <Link
-          to="/"
-          className={
-            s.backHome
-          }
-        >
-          <ArrowLeft
-            size={14}
-          />
-
-          Back to Website
+        <Link className={s.backHome} to="/">
+          <ArrowLeft aria-hidden="true" />
+          Back to website
         </Link>
-      </div>
-    </div>
+      </section>
+    </main>
   );
 }

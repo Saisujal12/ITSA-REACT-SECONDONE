@@ -5,7 +5,7 @@ import { Navigate, useLocation, useParams } from 'react-router'
 const LEGACY_PAGES = {
   'index.html': '/',
   'about.html': '/about',
-  'association.html': '/association',
+  'association.html': '/about',
   'contact.html': '/contact',
   'events.html': '/events',
   'gallery.html': '/gallery',

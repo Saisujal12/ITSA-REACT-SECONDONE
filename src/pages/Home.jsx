@@ -2,9 +2,9 @@ import { BookOpen, Hammer, Rocket, Sparkles } from 'lucide-react'
 import { Link } from 'react-router'
 import AssociationHighlights from '../components/home/AssociationHighlights'
 import IdCard3D from '../components/home/IdCard3D'
-import LatestUpdates from '../components/home/LatestUpdates'
 import { LOGO, SITE } from '../data/site'
 import { useDocumentTitle } from '../hooks/useDocumentTitle'
+import ImageWithFallback from '../components/ui/ImageWithFallback'
 import s from './Home.module.css'
 
 const STATS = [
@@ -119,9 +119,6 @@ export default function Home() {
 
       {/* ASSOCIATION HIGHLIGHTS */}
       <AssociationHighlights />
-
-      {/* LATEST UPDATES */}
-      <LatestUpdates />
 
       {/* ABOUT */}
       <section
@@ -264,6 +261,14 @@ export default function Home() {
           <div className={s.aboutGrid}>
             <div className={s.brandPanel}>
               <div>
+                <div className={s.festLogoCircle}>
+                  <ImageWithFallback
+                    imageKey="sumshodhini/sumshodhini-logo-512"
+                    alt={`${SITE.festUpper} ${SITE.year} logo`}
+                    className={s.festLogoMark}
+                    loading="lazy"
+                  />
+                </div>
                 <div className={s.panelTitle}>
                   {SITE.festUpper}
                 </div>

@@ -159,11 +159,11 @@
 .current-workshop-card {
   position: relative;
   margin-top: 22px;
-  min-height: 300px;
-  padding: 38px 42px;
+  min-height: 320px;
+  padding: clamp(28px, 4vw, 48px);
   display: grid;
-  grid-template-columns: 60px 1fr 250px;
-  gap: 25px;
+  grid-template-columns: minmax(0, 1fr) minmax(250px, 300px);
+  gap: clamp(30px, 5vw, 72px);
   align-items: center;
   border: 1px solid rgba(148,24,47,.14);
   border-radius: 24px;
@@ -199,9 +199,10 @@
 .current-main h2 {
   margin-top: 12px;
   font-family: Georgia,"Times New Roman",serif;
-  font-size: clamp(40px,5vw,66px);
-  line-height: .9;
-  letter-spacing: -.065em;
+  font-size: clamp(38px, 4.4vw, 64px);
+  line-height: 1;
+  letter-spacing: -.055em;
+  overflow-wrap: anywhere;
 }
 
 .current-main h2 strong {
@@ -209,11 +210,11 @@
 }
 
 .current-main p {
-  max-width: 680px;
-  margin-top: 18px;
+  max-width: 62ch;
+  margin-top: 20px;
   color: var(--w-muted);
-  font-size: 12px;
-  line-height: 1.8;
+  font-size: 15px;
+  line-height: 1.75;
 }
 
 .workshop-meta-grid {
@@ -250,8 +251,8 @@
 }
 
 .due-tab {
-  padding: 22px;
-  border-radius: 16px;
+  padding: 24px;
+  border-radius: 18px;
   background: #f0e7d8;
   border: 1px solid rgba(184,138,61,.25);
 }
@@ -259,23 +260,23 @@
 .due-tab span {
   display: block;
   color: #7a5d1f;
-  font-size: 8px;
+  font-size: 10px;
   font-weight: 900;
   letter-spacing: .18em;
 }
 
 .due-tab strong {
   display: block;
-  margin-top: 7px;
+  margin-top: 10px;
   font-family: Georgia,"Times New Roman",serif;
-  font-size: 34px;
+  font-size: 38px;
 }
 
 .due-tab small {
   display: block;
-  margin-top: 5px;
+  margin-top: 8px;
   color: var(--w-muted);
-  font-size: 9px;
+  font-size: 12px;
   line-height: 1.5;
 }
 
@@ -486,11 +487,15 @@
     gap: 35px;
   }
   .current-workshop-card {
-    grid-template-columns: 50px 1fr;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 28px;
   }
   .current-side {
-    grid-column: 2;
+    grid-column: 1;
     height: auto;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(200px, 260px);
+    align-items: stretch;
   }
   .workshop-cta {
     flex-direction: column;
@@ -525,6 +530,8 @@
   }
   .current-side {
     grid-column: 1;
+    display: flex;
+    flex-direction: column;
   }
   .completed-workshop {
     grid-template-columns: 45px 1fr;

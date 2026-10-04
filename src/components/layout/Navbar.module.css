@@ -34,9 +34,33 @@
 .brand {
   display: inline-flex;
   align-items: center;
-  gap: 11px;
+  gap: 9px;
   flex-shrink: 0;
   color: var(--text-dark);
+}
+
+.college-symbol {
+  width: 58px;
+  height: 58px;
+  min-width: 58px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.college-symbol img {
+  display: block;
+  width: 46px;
+  height: auto;
+  max-width: none;
+  object-fit: contain;
+}
+
+.brand-divider {
+  width: 1px;
+  height: 40px;
+  flex: 0 0 1px;
+  background: var(--border);
 }
 
 .brand-symbol {
@@ -52,6 +76,7 @@
   width: 58px;
   height: 58px;
   object-fit: contain;
+  transform: translateY(-3px);
   filter:
     grayscale(0.78)
     contrast(1.08)
@@ -334,7 +359,7 @@
   min-height: 58px;
   display: grid;
   grid-template-columns:
-    40px 1fr 25px;
+    1fr 25px;
   align-items: center;
   gap: 10px;
   border-bottom: 1px solid
@@ -352,10 +377,7 @@
 }
 
 .mobile-nav-number {
-  color: #7d7870;
-  font-size: 9px;
-  font-weight: 900;
-  letter-spacing: 1px;
+  display: none;
 }
 
 .mobile-nav-link strong {
@@ -405,6 +427,20 @@
     height: 50px;
     min-width: 50px;
   }
+
+  .college-symbol {
+    width: 50px;
+    height: 50px;
+    min-width: 50px;
+  }
+
+  .college-symbol img {
+    width: 41px;
+  }
+
+  .brand-divider {
+    height: 36px;
+  }
 }
 
 @media (max-width: 600px) {
@@ -424,10 +460,38 @@
 }
 
 @media (max-width: 520px) {
+  .brand {
+    gap: 4px;
+  }
+
   .brand-symbol,
   .brand-symbol img {
-    width: 45px;
-    height: 45px;
-    min-width: 45px;
+    width: 40px;
+    height: 40px;
+    min-width: 40px;
+  }
+
+  .college-symbol {
+    width: 40px;
+    height: 40px;
+    min-width: 40px;
+  }
+
+  .college-symbol img {
+    width: 32px;
+  }
+
+  .brand-divider {
+    height: 27px;
+  }
+
+  .brand-text strong {
+    font-size: 11px;
+    letter-spacing: 0.3px;
+  }
+
+  .brand-text span {
+    font-size: 5px;
+    letter-spacing: 2px;
   }
 }

@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
 import { Link, NavLink, useLocation } from 'react-router'
+import kitswLogo from '../../assets/images/brand/kitsw-logo-transparent.png'
 import { MAIN_NAV, REGISTER_LINK } from '../../data/navigation'
 import { LOGO, SITE } from '../../data/site'
 import { useMagnetic } from '../../hooks/useMagnetic'
@@ -63,6 +64,10 @@ export default function Navbar() {
     <header ref={headerRef} className={cx(s.navbar, scrolled && s.scrolled)} onBlur={onBlur}>
       <div className={s.navContainer}>
         <Link to="/" className={s.brand} aria-label={`${SITE.name} ${SITE.college} — home`}>
+          <span className={s.collegeSymbol}>
+            <img src={kitswLogo} width="38" height="54" alt="" />
+          </span>
+          <span className={s.brandDivider} aria-hidden="true" />
           <span className={s.brandSymbol}>
             <img src={LOGO.src} srcSet={LOGO.srcSet} sizes="58px" width="58" height="58" alt="" />
           </span>

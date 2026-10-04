@@ -8,8 +8,8 @@
                                  exact legacy placeholder text
     - `photo` / `nameImage`   → image key under src/assets/images; the file
                                  is picked up automatically once added
-  The About and Association pages below only describe layout and role copy,
-  and point into PEOPLE by id, so a name added here appears on both pages.
+  The About page describes the association body and points into PEOPLE by id,
+  so a name added here appears on the About page.
 */
 
 import {
@@ -24,15 +24,19 @@ import {
 } from 'lucide-react'
 
 export const PEOPLE = {
-  hod: { name: null, placeholderName: 'HOD NAME', photo: 'team/hod' },
+  hod: {
+    name: 'Dr. T.Senthil Murugan',
+    designation: 'Professor',
+    photo: 'team/hod',
+  },
   facultyCoordinator1: {
-    name: null,
-    placeholderName: 'FACULTY NAME',
+    name: 'M.Kishore',
+    designation: 'Assistant Professor',
     photo: 'team/faculty-coordinator-1',
   },
   facultyCoordinator2: {
-    name: null,
-    placeholderName: 'FACULTY NAME',
+    name: 'Puranam Yuvaraj',
+    designation: 'Assistant Professor',
     photo: 'team/faculty-coordinator-2',
   },
   president: { name: null, photo: 'team/president', nameImage: 'team/president-name' },
@@ -52,7 +56,7 @@ export const PEOPLE = {
     nameImage: 'team/general-secretary-name',
   },
   treasurer: { name: null, photo: 'team/treasurer', nameImage: 'team/treasurer-name' },
-  // VERIFY: About calls this role "PR Head"; Association calls it "PR & Media Club".
+  // VERIFY: About calls this role "PR Head"; older copy called it "PR & Media Club".
   prMedia: { name: null, photo: 'team/pr-media', nameImage: 'team/pr-media-name' },
   technicalHead: {
     name: null,
@@ -117,7 +121,7 @@ export const ABOUT_TEAM_GROUPS = [
         icon: GraduationCap,
         tag: 'FACULTY',
         title: 'Head of Department',
-        text: 'Department of Information Technology',
+        text: '',
         person: 'hod',
       },
     ],
@@ -134,7 +138,7 @@ export const ABOUT_TEAM_GROUPS = [
         icon: UserRound,
         tag: 'FACULTY COORDINATOR',
         title: 'Faculty Coordinator',
-        text: 'Guiding and supporting student activities.',
+        text: '',
         person: 'facultyCoordinator1',
       },
       {
@@ -142,7 +146,7 @@ export const ABOUT_TEAM_GROUPS = [
         icon: UserRound,
         tag: 'FACULTY COORDINATOR',
         title: 'Faculty Coordinator',
-        text: 'Supporting coordination, mentoring and association initiatives.',
+        text: '',
         person: 'facultyCoordinator2',
       },
     ],
@@ -203,24 +207,6 @@ export const ABOUT_TEAM_GROUPS = [
     title: 'Executive Members',
     members: EXECUTIVE_MEMBERS,
   },
-]
-
-/* Association page — faculty leadership (legacy association.html) */
-export const ASSOCIATION_FACULTY = [
-  { role: 'HEAD OF THE DEPARTMENT', alt: 'Head of Department', person: 'hod', featured: true },
-  { role: 'FACULTY COORDINATOR', alt: 'Faculty Coordinator', person: 'facultyCoordinator1' },
-  { role: 'FACULTY COORDINATOR', alt: 'Faculty Coordinator', person: 'facultyCoordinator2' },
-]
-
-/* Association page — fourth-year core body */
-export const ASSOCIATION_CORE_BODY = [
-  { role: 'PRESIDENT', alt: 'President', person: 'president', featured: true },
-  { role: 'STUDENT COORDINATOR', alt: 'Student Coordinator', person: 'studentCoordinator', featured: true },
-  { role: 'VICE PRESIDENT', alt: 'Vice President', person: 'vicePresident' },
-  { role: 'GENERAL SECRETARY', alt: 'General Secretary', person: 'generalSecretary' },
-  { role: 'TREASURER', alt: 'Treasurer', person: 'treasurer' },
-  { role: 'PR & MEDIA CLUB', alt: 'PR and Media Club', person: 'prMedia' },
-  { role: 'TECHNICAL HEAD', alt: 'Technical Head', person: 'technicalHead' },
 ]
 
 export const getPerson = (id) => PEOPLE[id] ?? null

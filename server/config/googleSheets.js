@@ -15,6 +15,10 @@ import { google } from "googleapis";
 | Event 4       → EVENT_SHEET_ID_DESIGN_DEPLOY
 | Event 5       → EVENT_SHEET_ID_TECH_CONNECT
 | Event 6       → EVENT_SHEET_ID_EVENT6
+| Event 7       → EVENT_SHEET_ID_EVENT7
+| Event 8       → EVENT_SHEET_ID_EVENT8
+| Event 9       → EVENT_SHEET_ID_EVENT9
+| Event 10      → EVENT_SHEET_ID_EVENT10
 |
 | IMPORTANT:
 |
@@ -66,6 +70,22 @@ const EVENT_CONFIG = {
     sheetId:
       process.env.EVENT_SHEET_ID_EVENT6 ||
       "",
+  },
+
+  event7: {
+    sheetId: process.env.EVENT_SHEET_ID_EVENT7 || "",
+  },
+
+  event8: {
+    sheetId: process.env.EVENT_SHEET_ID_EVENT8 || "",
+  },
+
+  event9: {
+    sheetId: process.env.EVENT_SHEET_ID_EVENT9 || "",
+  },
+
+  event10: {
+    sheetId: process.env.EVENT_SHEET_ID_EVENT10 || "",
   },
 };
 

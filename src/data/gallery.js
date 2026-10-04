@@ -65,7 +65,7 @@ export const GALLERY_SECTIONS = [
           { image: 'gallery/inaugural-2', alt: 'Inaugural of IT Association 2026 placeholder' },
         ],
         driveLabel: 'VIEW EVENT PHOTOS',
-        driveUrl: null,
+        driveUrl: 'https://drive.google.com/drive/folders/1CiqzQzL5T4E9hDXC7iRFI_p6QHiktTVo',
       },
     ],
   },

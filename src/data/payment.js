@@ -40,8 +40,28 @@ export const PAYMENT_QR_CONFIG = {
   },
   event6: {
     qr: 'qr/event6-2026',
-    qrAlt: 'Event 6 payment QR code placeholder',
-    qrFallbackText: 'EVENT 6 QR — UPLOAD REAL QR IMAGE',
+    qrAlt: 'Future Forge payment QR code placeholder',
+    qrFallbackText: 'FUTURE FORGE QR — UPLOAD REAL QR IMAGE',
+  },
+  event7: {
+    qr: 'qr/event7-2026',
+    qrAlt: 'App Innovators payment QR code placeholder',
+    qrFallbackText: 'APP INNOVATORS QR — UPLOAD REAL QR IMAGE',
+  },
+  event8: {
+    qr: 'qr/event8-2026',
+    qrAlt: 'Data Quest payment QR code placeholder',
+    qrFallbackText: 'DATA QUEST QR — UPLOAD REAL QR IMAGE',
+  },
+  event9: {
+    qr: 'qr/event9-2026',
+    qrAlt: 'Pixel Perfect payment QR code placeholder',
+    qrFallbackText: 'PIXEL PERFECT QR — UPLOAD REAL QR IMAGE',
+  },
+  event10: {
+    qr: 'qr/event10-2026',
+    qrAlt: 'Tech Trivia payment QR code placeholder',
+    qrFallbackText: 'TECH TRIVIA QR — UPLOAD REAL QR IMAGE',
   },
 }
 

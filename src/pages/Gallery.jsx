@@ -24,13 +24,16 @@ export default function Gallery() {
               <span className={s.kickerLine} aria-hidden="true" />
               MOMENTS · PEOPLE · EXPERIENCES
             </div>
+
             <h1 id="gallery-title">
               OUR <span>GALLERY</span>
             </h1>
+
             <p>
               Snapshots of the ideas, energy and people that turn the IT Association into a living
               community.
             </p>
+
             <div className={s.galleryHeroMeta}>
               {HERO_META.map(({ icon: Icon, label }) => (
                 <span key={label}>
@@ -47,6 +50,7 @@ export default function Gallery() {
       {GALLERY_SECTIONS.map((section, sectionIndex) => (
         <section
           key={section.id}
+          id={section.id}
           className={cx(s.galleryContent, sectionIndex > 0 && s.sumshodiniWorkshopSection)}
           aria-labelledby={`${section.id}-title`}
         >
@@ -57,21 +61,35 @@ export default function Gallery() {
                 {section.titleLead} <strong>{section.titleStrong}</strong>
               </h2>
             </div>
+
             <div className={s.recentEventsIntro}>
               <p>{section.intro}</p>
+
               {section.driveUrl && (
-                <a href={section.driveUrl} target="_blank" rel="noopener noreferrer" className={s.galleryDriveButton}>
+                <a
+                  href={section.driveUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className={s.galleryDriveButton}
+                >
                   <FolderOpen size={15} aria-hidden="true" />
                   <span>{section.driveLabel}</span>
                   <SquareArrowOutUpRight size={14} aria-hidden="true" />
-                  <span className="visually-hidden">(Google Drive, opens in a new tab)</span>
+                  <span className="visually-hidden">
+                    (Google Drive, opens in a new tab)
+                  </span>
                 </a>
               )}
             </div>
           </div>
 
           {section.albums.map((album, albumIndex) => (
-            <AlbumCard key={album.id} album={album} number={String(albumIndex + 1).padStart(2, '0')} reverse={albumIndex % 2 === 1} />
+            <AlbumCard
+              key={album.id}
+              album={album}
+              number={String(albumIndex + 1).padStart(2, '0')}
+              reverse={albumIndex % 2 === 1}
+            />
           ))}
         </section>
       ))}

@@ -1965,6 +1965,83 @@
   box-shadow: 0 12px 28px rgba(40, 34, 31, 0.2), inset 0 0 0 5px rgba(255, 255, 255, 0.035);
 }
 
+@media (max-width: 600px) {
+  .sam-day-item {
+    min-height: 62px;
+    margin-bottom: 5px;
+    padding: 10px 13px;
+  }
+
+  .sam-scroll-indicator {
+    display: none;
+  }
+}
+
+/* Keep the event title, day links and universe together in the first desktop viewport. */
+@media (min-width: 761px) {
+  .sam-hero {
+    min-height: calc(100svh - var(--nav-height, 78px));
+  }
+
+  .sam-hero-inner {
+    height: calc(100svh - var(--nav-height, 78px));
+    min-height: 0;
+    padding: 14px 0 10px;
+  }
+
+  .sam-hero-content {
+    min-height: 0;
+    margin-top: 8px;
+    padding-top: 0;
+    grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr);
+    gap: 18px;
+  }
+
+  .sam-day-item {
+    min-height: 86px;
+    padding: 14px 20px;
+  }
+
+  .sam-day-text strong {
+    font-size: clamp(23px, 2.2vw, 32px);
+  }
+
+  .sam-solar-system {
+    justify-self: end;
+    margin-right: clamp(24px, 3vw, 44px);
+    width: min(480px, 62svh);
+    height: min(480px, 62svh);
+  }
+
+  .sam-floating-circle {
+    width: clamp(128px, 20svh, 154px);
+    height: clamp(128px, 20svh, 154px);
+  }
+
+  .sam-card-1 { --orbit-x: 0px; --orbit-y: -150px; }
+  .sam-card-2 { --orbit-x: 142px; --orbit-y: -46px; }
+  .sam-card-3 { --orbit-x: 88px; --orbit-y: 120px; }
+  .sam-card-4 { --orbit-x: -88px; --orbit-y: 120px; }
+  .sam-card-5 { --orbit-x: -142px; --orbit-y: -46px; }
+
+  .sam-scroll-indicator {
+    display: none;
+  }
+}
+
+@media (min-width: 761px) and (max-width: 1050px) {
+  .sam-solar-system {
+    width: min(410px, 54svh);
+    height: min(410px, 54svh);
+  }
+
+  .sam-card-1 { --orbit-y: -128px; }
+  .sam-card-2 { --orbit-x: 122px; --orbit-y: -40px; }
+  .sam-card-3 { --orbit-x: 76px; --orbit-y: 102px; }
+  .sam-card-4 { --orbit-x: -76px; --orbit-y: 102px; }
+  .sam-card-5 { --orbit-x: -122px; --orbit-y: -40px; }
+}
+
 .sam-mobile-logo {
   width: 84%;
   height: 84%;

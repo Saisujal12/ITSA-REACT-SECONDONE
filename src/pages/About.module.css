@@ -1441,6 +1441,7 @@
     font-size: 90px;
   }
 }
+
 /* SMALL MOBILE */
 
 @media (max-width: 420px) {
@@ -2108,10 +2109,24 @@
   }
 
   .team-group .team-card-has-photo .rolePhoto { width: 98px; height: 98px; border-radius: 14px; }
-  .team-group-hod .team-card-has-photo { grid-template-columns: minmax(0, 1fr) 128px; min-height: 248px; }
-  .team-group-hod .team-card-has-photo .rolePhoto { width: 118px; height: 118px; }
-  .team-group-faculty .team-card-has-photo { grid-template-columns: minmax(0, 1fr) 108px; }
-  .team-group-faculty .team-card-has-photo .rolePhoto { width: 102px; height: 102px; }
+  .team-group-hod .team-card-has-photo { grid-template-columns: minmax(0, 1fr) 92px; min-height: 200px; padding: 16px; }
+  .team-group-hod .team-card-has-photo .rolePhoto { width: 86px; height: 86px; }
+  .team-group-faculty .team-card-has-photo { grid-template-columns: minmax(0, 1fr) 92px; min-height: 190px; padding: 16px; }
+  .team-group-faculty .team-card-has-photo .rolePhoto { width: 86px; height: 86px; }
+  .team-group-hod .team-card-has-photo .rolePhoto,
+  .team-group-faculty .team-card-has-photo .rolePhoto {
+    grid-column: 2;
+    grid-row: 1 / span 2;
+    align-self: center;
+  }
+  .team-group-hod .team-card-has-photo .team-card-content,
+  .team-group-faculty .team-card-has-photo .team-card-content {
+    grid-column: 1;
+    grid-row: 2;
+    align-self: center;
+    min-width: 0;
+    margin: 0;
+  }
   .team-group .team-card-has-photo .team-card-content,
   .team-group-hod .team-card-wide.team-card-has-photo .team-card-content { margin-top: 14px; }
   .team-group .team-card-has-photo h4 { font-size: 18px; }
@@ -2148,3 +2163,83 @@
   }
 }
 
+/* Keep the About hero title, actions, and complete universe graphic in the first desktop view. */
+@media (min-width: 701px) {
+  .about-hero {
+    box-sizing: border-box;
+    min-height: calc(100svh - var(--nav-height, 80px));
+    padding: clamp(24px, 4vh, 42px) 6vw;
+  }
+
+  .about-hero-grid {
+    grid-template-columns: minmax(0, 1.08fr) minmax(360px, 0.92fr);
+    gap: clamp(24px, 3vw, 48px);
+  }
+
+  .about-kicker {
+    margin-bottom: clamp(16px, 2.4vh, 24px);
+  }
+
+  .about-hero h1 {
+    font-size: clamp(76px, 7.2vw, 116px);
+    line-height: 0.82;
+  }
+
+  .about-hero-description {
+    max-width: 650px;
+    margin-top: clamp(22px, 3vh, 30px);
+    font-size: clamp(15px, 1.05vw, 18px);
+    line-height: 1.65;
+  }
+
+  .about-hero-actions {
+    margin-top: clamp(20px, 3vh, 28px);
+  }
+
+  .about-primary-btn,
+  .about-secondary-btn {
+    min-height: 54px;
+  }
+
+  .about-mini-stats {
+    margin-top: clamp(24px, 3.5vh, 34px);
+  }
+
+  .about-hero-visual {
+    width: min(500px, 100%);
+  }
+
+  .about-hero-visual .about-float-card {
+    width: 154px;
+    height: 58px;
+    padding: 8px 9px;
+    gap: 7px;
+    width: 138px;
+    height: 52px;
+    padding: 7px 8px;
+    gap: 6px;
+  }
+
+  .about-hero-visual .float-icon {
+    width: 36px;
+    height: 36px;
+    flex-basis: 36px;
+    width: 30px;
+    height: 30px;
+    flex-basis: 30px;
+  }
+
+  .about-hero-visual .visual-core {
+    width: 220px;
+    height: 220px;
+    width: 190px;
+    height: 190px;
+  }
+
+  .about-hero-visual .about-core-logo {
+    width: 150px;
+    height: 150px;
+    width: 120px;
+    height: 120px;
+  }
+}

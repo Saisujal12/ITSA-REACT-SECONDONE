@@ -1,10 +1,8 @@
 /*
   Sumshodhini 2026 — single source of truth for workshops and events.
 
-  Existing registration fees are preserved from the project. The three new
-  Day-2 entries are explicitly placeholders: they have no fee, no confirmed
-  date/venue, and registration is disabled until their configuration is
-  replaced with verified details.
+  Day 2 currently lists six events. Each event has its own payment QR asset
+  key; replace the expected image files with the event's real QR codes.
 */
 
 import {
@@ -63,13 +61,6 @@ const openEventDefaults = {
   status: 'open',
   statusLabel: 'REGISTRATION OPEN',
   registrationEnabled: true,
-}
-
-const placeholderEventDefaults = {
-  status: 'placeholder',
-  statusLabel: 'DETAILS COMING SOON',
-  registrationEnabled: false,
-  fee: null,
 }
 
 export const EVENTS = [
@@ -180,13 +171,18 @@ export const EVENTS = [
     category: 'DESIGN · DEVELOPMENT',
     title: 'Design to Deploy',
     description:
-      'Placeholder event. Final format, schedule, venue, fee and registration details are not configured yet.',
+      'Bring a creative idea to life by designing and building a solution ready to share.',
     selectorDescription:
-      'Placeholder event — final details will be published after confirmation.',
+      'Register for Design to Deploy and submit your event details.',
     icon: Palette,
-    date: '2026 · To be announced',
-    meta: { icon: Users, label: 'Details pending' },
-    ...placeholderEventDefaults,
+    date: '2026 · TBD',
+    meta: { icon: Users, label: 'Students' },
+    fee: 1,
+    ...openEventDefaults,
+    formHeading: 'Register for Design to Deploy',
+    formDescription: 'Complete the registration form for Design to Deploy.',
+    poster: 'posters/design-deploy-poster',
+    posterAlt: 'Design to Deploy event poster',
     ...getPaymentQr('design-deploy', 'day2'),
   },
   {
@@ -197,13 +193,18 @@ export const EVENTS = [
     category: 'TECH COMMUNITY',
     title: 'Tech Connect',
     description:
-      'Placeholder event. Final format, schedule, venue, fee and registration details are not configured yet.',
+      'Meet fellow technology enthusiasts and take part in an engaging community event.',
     selectorDescription:
-      'Placeholder event — final details will be published after confirmation.',
+      'Register for Tech Connect and submit your event details.',
     icon: Radio,
-    date: '2026 · To be announced',
-    meta: { icon: Users, label: 'Details pending' },
-    ...placeholderEventDefaults,
+    date: '2026 · TBD',
+    meta: { icon: Users, label: 'Students' },
+    fee: 1,
+    ...openEventDefaults,
+    formHeading: 'Register for Tech Connect',
+    formDescription: 'Complete the registration form for Tech Connect.',
+    poster: 'posters/tech-connect-poster',
+    posterAlt: 'Tech Connect event poster',
     ...getPaymentQr('tech-connect', 'day2'),
   },
   {
@@ -212,16 +213,101 @@ export const EVENTS = [
     type: 'event',
     number: '06',
     category: 'SPECIAL EVENT',
-    title: 'Event 6 — Details Pending',
+    title: 'Future Forge',
     description:
-      'Placeholder event. Final title, format, schedule, venue, fee and registration details are not configured yet.',
+      'Join this special event and take part in the activities planned for the day.',
     selectorDescription:
-      'Placeholder event — final details will be published after confirmation.',
+      'Register for this event and submit your details.',
     icon: Sparkles,
-    date: '2026 · To be announced',
-    meta: { icon: Users, label: 'Details pending' },
-    ...placeholderEventDefaults,
+    date: '2026 · TBD',
+    meta: { icon: Users, label: 'Students' },
+    fee: 1,
+    ...openEventDefaults,
+    formHeading: 'Register for Future Forge',
+    formDescription: 'Complete the registration form for Future Forge.',
+    poster: 'posters/future-forge-poster',
+    posterAlt: 'Future Forge event poster',
     ...getPaymentQr('event6', 'day2'),
+  },
+  {
+    id: 'event7',
+    day: 'day2',
+    type: 'event',
+    number: '07',
+    category: 'APP DEVELOPMENT',
+    title: 'App Innovators',
+    description: 'Plan and present an app idea designed to solve a practical problem.',
+    selectorDescription: 'Register for App Innovators and submit your event details.',
+    icon: CodeXml,
+    date: '2026 · TBD',
+    meta: { icon: Users, label: 'Students' },
+    fee: 1,
+    ...openEventDefaults,
+    formHeading: 'Register for App Innovators',
+    formDescription: 'Complete the registration form for App Innovators.',
+    poster: 'posters/event7-poster',
+    posterAlt: 'App Innovators event poster',
+    ...getPaymentQr('event7', 'day2'),
+  },
+  {
+    id: 'event8',
+    day: 'day2',
+    type: 'event',
+    number: '08',
+    category: 'DATA CHALLENGE',
+    title: 'Data Quest',
+    description: 'Explore a data challenge and turn useful findings into a clear solution.',
+    selectorDescription: 'Register for Data Quest and submit your event details.',
+    icon: Lightbulb,
+    date: '2026 · TBD',
+    meta: { icon: Users, label: 'Students' },
+    fee: 1,
+    ...openEventDefaults,
+    formHeading: 'Register for Data Quest',
+    formDescription: 'Complete the registration form for Data Quest.',
+    poster: 'posters/event8-poster',
+    posterAlt: 'Data Quest event poster',
+    ...getPaymentQr('event8', 'day2'),
+  },
+  {
+    id: 'event9',
+    day: 'day2',
+    type: 'event',
+    number: '09',
+    category: 'DESIGN CHALLENGE',
+    title: 'Pixel Perfect',
+    description: 'Create and present a thoughtful digital design for a real-world use case.',
+    selectorDescription: 'Register for Pixel Perfect and submit your event details.',
+    icon: Palette,
+    date: '2026 · TBD',
+    meta: { icon: Users, label: 'Students' },
+    fee: 1,
+    ...openEventDefaults,
+    formHeading: 'Register for Pixel Perfect',
+    formDescription: 'Complete the registration form for Pixel Perfect.',
+    poster: 'posters/event9-poster',
+    posterAlt: 'Pixel Perfect event poster',
+    ...getPaymentQr('event9', 'day2'),
+  },
+  {
+    id: 'event10',
+    day: 'day2',
+    type: 'event',
+    number: '10',
+    category: 'TECH QUIZ',
+    title: 'Tech Trivia',
+    description: 'Test your technology knowledge in a fast-paced team quiz.',
+    selectorDescription: 'Register for Tech Trivia and submit your event details.',
+    icon: Trophy,
+    date: '2026 · TBD',
+    meta: { icon: Users, label: 'Students' },
+    fee: 1,
+    ...openEventDefaults,
+    formHeading: 'Register for Tech Trivia',
+    formDescription: 'Complete the registration form for Tech Trivia.',
+    poster: 'posters/event10-poster',
+    posterAlt: 'Tech Trivia event poster',
+    ...getPaymentQr('event10', 'day2'),
   },
 ]
 

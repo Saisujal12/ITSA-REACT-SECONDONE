@@ -22,8 +22,7 @@ const SESSION_DURATION =
 
 function getSessionSecret() {
   const secret =
-    process.env.ADMIN_SESSION_SECRET ||
-    process.env.ADMIN_PASSWORD_HASH;
+    process.env.ADMIN_SESSION_SECRET;
 
   if (!secret) {
     throw new Error(

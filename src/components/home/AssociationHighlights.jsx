@@ -14,25 +14,25 @@ const HIGHLIGHTS = [
     image: 'gallery/guest-lecture-1',
     title: 'Guest Lecture on AI Applications',
     label: 'Guest Lecture',
-    to: '/about#guest-lecture',
+    to: '/gallery#recent-events',
   },
   {
     image: 'gallery/gallery-1',
     title: "Teachers' Day",
     label: 'Celebration',
-    to: '/about#teachers-day',
+    to: '/gallery#recent-events',
   },
   {
     image: 'gallery/gallery-2',
     title: 'IT Association 2026 Inaugural',
     label: 'Association',
-    to: '/about#inaugural',
+    to: '/gallery#recent-events',
   },
   {
     image: 'gallery/gallery-3',
     title: 'Workshops & Learning',
     label: 'Learning',
-    to: '/about#workshops',
+    to: '/gallery#recent-events',
   },
 ]
 
@@ -149,7 +149,7 @@ export default function AssociationHighlights() {
 
               <div className={s.overlay} />
 
-              <Link to={active.to} className={s.caption} aria-label={`Open ${active.label}: ${active.title} on the About page`}>
+              <Link to={active.to} className={s.caption} aria-label={`View ${active.title} in Moments worth remembering`}>
                 <span>{active.label}</span>
                 <h3>{active.title}</h3>
               </Link>
@@ -250,10 +250,10 @@ export default function AssociationHighlights() {
                   <Link
                     key={slide.image}
                     to={slide.to}
-                    className={`${s.thumb} ${
+                    className={`${s.thumb} ${slide.label === 'Learning' ? s.thumbLearning : ''} ${
                       index === activeIndex ? s.thumbActive : ''
                     }`}
-                    aria-label={`Open ${slide.label}: ${slide.title} on the About page`}
+                    aria-label={`View ${slide.title} in Moments worth remembering`}
                   >
                     <img
                       src={slide.asset.src}

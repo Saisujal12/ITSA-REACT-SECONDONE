@@ -61,14 +61,7 @@ export async function loginAdmin(
       req.body || {};
 
     const adminUsername =
-      process.env
-        .ADMIN_USERNAME
-        ?.trim();
-
-    const adminPasswordHash =
-      process.env
-        .ADMIN_PASSWORD_HASH
-        ?.trim();
+      process.env.ADMIN_USERNAME?.trim() || "admin";
 
     /*
      * All three fields are mandatory.
@@ -84,19 +77,6 @@ export async function loginAdmin(
           success: false,
           message:
             "Username, password, and event are required.",
-        });
-    }
-
-    if (
-      !adminUsername ||
-      !adminPasswordHash
-    ) {
-      return res
-        .status(500)
-        .json({
-          success: false,
-          message:
-            "Admin authentication is not configured.",
         });
     }
 
@@ -138,13 +118,26 @@ export async function loginAdmin(
         });
     }
 
+    const eventPasswordHash =
+      process.env[selectedEvent.passwordHashEnv]?.trim();
+
+    if (!eventPasswordHash) {
+      return res
+        .status(503)
+        .json({
+          success: false,
+          message:
+            "A password has not been configured for the selected event.",
+        });
+    }
+
     /*
      * Validate password.
      */
     const valid =
       await verifyPassword(
         password,
-        adminPasswordHash,
+        eventPasswordHash,
       );
 
     if (!valid) {
@@ -179,8 +172,11 @@ export async function loginAdmin(
       message:
         "Admin login successful.",
 
-      event:
-        selectedEvent,
+      event: {
+        id: selectedEvent.id,
+        label: selectedEvent.label,
+        name: selectedEvent.name,
+      },
     });
   } catch (error) {
     console.error(

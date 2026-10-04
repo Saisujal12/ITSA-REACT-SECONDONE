@@ -256,28 +256,42 @@ export default function About() {
       <section className={s.aboutHighlights} aria-labelledby="about-highlights-title">
         <div className={s.aboutHighlightsHeading}>
           <span>ASSOCIATION HIGHLIGHTS</span>
-          <h2 id="about-highlights-title">Recent moments, <strong>kept together.</strong></h2>
+          <h2 id="about-highlights-title">
+            Recent moments, <strong>kept together.</strong>
+          </h2>
         </div>
         <div className={s.aboutHighlightsGrid}>
           <article id="guest-lecture" className={s.aboutHighlightCard} tabIndex={-1}>
             <span>GUEST LECTURE</span>
             <h3>Exploring AI Applications Across Industries</h3>
-            <p>A guest lecture introduced students to practical applications, possibilities and impact of Artificial Intelligence across industries.</p>
+            <p>
+              A guest lecture introduced students to practical applications, possibilities and
+              impact of Artificial Intelligence across industries.
+            </p>
           </article>
           <article id="teachers-day" className={s.aboutHighlightCard} tabIndex={-1}>
             <span>ASSOCIATION ACTIVITY</span>
             <h3>Teachers&apos; Day</h3>
-            <p>The IT Association celebrated Teachers&apos; Day with a special activity focused on appreciation, interaction and community.</p>
+            <p>
+              The IT Association celebrated Teachers&apos; Day with a special activity focused on
+              appreciation, interaction and community.
+            </p>
           </article>
           <article id="inaugural" className={s.aboutHighlightCard} tabIndex={-1}>
             <span>ASSOCIATION</span>
             <h3>IT Association 2026 Inaugural</h3>
-            <p>A new academic year of learning, collaboration, innovation and student activities began with the IT Association.</p>
+            <p>
+              A new academic year of learning, collaboration, innovation and student activities
+              began with the IT Association.
+            </p>
           </article>
           <article id="workshops" className={s.aboutHighlightCard} tabIndex={-1}>
             <span>LEARNING</span>
             <h3>Workshops</h3>
-            <p>Practical sessions focused on modern technologies, tools and real-world applications give students opportunities to learn by doing.</p>
+            <p>
+              Practical sessions focused on modern technologies, tools and real-world applications
+              give students opportunities to learn by doing.
+            </p>
           </article>
         </div>
       </section>
@@ -293,7 +307,7 @@ export default function About() {
           </div>
           <p>
             Faculty and student leaders working together to guide, coordinate and grow the IT
-            Association. <Link to="/association">View the full Association Body →</Link>
+            Association.
           </p>
         </div>
         <AboutTeam />

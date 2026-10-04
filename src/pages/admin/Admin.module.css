@@ -1066,14 +1066,16 @@
 }
 
 .field {
-  margin:
-    16px 0;
-
   text-align:
     left;
 }
 
-.field label {
+.login-form {
+  display: grid;
+  gap: 16px;
+}
+
+.field-label {
   display: block;
 
   margin-bottom: 7px;
@@ -1086,6 +1088,7 @@
 
 .field-input {
   position: relative;
+  display: block;
 }
 
 .field-input > svg {
@@ -1134,6 +1137,16 @@
     border-box;
 }
 
+.field-input input,
+.event-select {
+  font: inherit;
+  font-size: 14px;
+}
+
+.field-input input::placeholder {
+  color: #718198;
+}
+
 .field-input input:focus {
   border-color:
     var(--blue2);
@@ -1143,15 +1156,54 @@
     rgba(59, 130, 246, 0.12);
 }
 
+.field-input .password-input {
+  padding-right: 48px;
+}
+
+.password-toggle {
+  position: absolute;
+  top: 50%;
+  right: 12px;
+  z-index: 2;
+  width: 28px;
+  height: 28px;
+  padding: 0;
+  display: grid;
+  place-items: center;
+  transform: translateY(-50%);
+  border: 0;
+  border-radius: 6px;
+  background: transparent;
+  color: #9db0ca;
+  cursor: pointer;
+}
+
+.password-toggle:hover {
+  color: #fff;
+}
+
+.password-toggle:focus-visible {
+  outline: 2px solid var(--blue2);
+  outline-offset: 2px;
+}
+
+.password-toggle svg {
+  width: 17px;
+  height: 17px;
+}
+
 /* EVENT DROPDOWN */
 
 .event-select {
+  appearance: none;
+  -webkit-appearance: none;
+
   width: 100%;
 
   height: 50px;
 
   padding:
-    0 15px 0 42px;
+    0 48px 0 42px;
 
   border:
     1px solid var(--line);
@@ -1174,6 +1226,14 @@
 
   box-sizing:
     border-box;
+}
+
+.field-input > .select-chevron {
+  left: auto;
+  right: 18px;
+  width: 17px;
+  height: 17px;
+  color: #9db0ca;
 }
 
 .event-select:focus {
@@ -1215,7 +1275,7 @@
 }
 
 .login-status {
-  margin-top: 6px;
+  margin: 0;
 
   font-size: 12px;
 
@@ -1241,6 +1301,14 @@
     #93a4bd;
 
   font-size: 12px;
+}
+
+.login-spinner {
+  width: 20px;
+  height: 20px;
+  margin: 12px auto;
+  color: var(--blue2);
+  animation: kf-spin 0.8s linear infinite;
 }
 
 /* ============================================================

@@ -9,15 +9,13 @@ export const MAIN_NAV = [
 
 export const REGISTER_LINK = { to: '/register', label: 'Register' }
 
-// Footer columns (legacy home footer, plus the Association Body and Contact
-// pages that previously had no inbound links).
+// Footer columns for the site's secondary navigation.
 export const FOOTER_COLUMNS = [
   {
     title: 'Quick Links',
     links: [
       { to: '/', label: 'Home' },
       { to: '/about', label: 'About Association' },
-      { to: '/association', label: 'Association Body' },
       { to: '/gallery', label: 'Gallery' },
       { to: '/contact', label: 'Contact' },
     ],

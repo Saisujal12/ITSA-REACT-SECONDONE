@@ -6,7 +6,6 @@ import SiteLayout from "./components/layout/SiteLayout";
 import PageLoader from "./components/ui/PageLoader";
 
 import About from "./pages/About";
-import Association from "./pages/Association";
 import Contact from "./pages/Contact";
 import Events from "./pages/Events";
 import Gallery from "./pages/Gallery";
@@ -183,18 +182,6 @@ const router = createBrowserRouter([
 
           /*
           |--------------------------------------------------------------------------
-          | ASSOCIATION
-          |--------------------------------------------------------------------------
-          */
-
-          {
-            path: "association",
-
-            Component: Association,
-          },
-
-          /*
-          |--------------------------------------------------------------------------
           | GALLERY
           |--------------------------------------------------------------------------
           */
@@ -245,6 +232,16 @@ const router = createBrowserRouter([
             element: (
               <LegacyRedirect
                 to="/sumshodhini"
+              />
+            ),
+          },
+
+          {
+            path: "association",
+
+            element: (
+              <LegacyRedirect
+                to="/about"
               />
             ),
           },

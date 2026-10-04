@@ -2,6 +2,7 @@ import { ABOUT_TEAM_GROUPS, getPerson } from '../../data/team'
 import ImageWithFallback from '../ui/ImageWithFallback'
 import { cx } from '../../utils/cx'
 import s from '../../pages/About.module.css'
+import nameStyles from './AboutTeamNames.module.css'
 
 const GROUP_TONES = {
   hod: s.teamGroupHod,
@@ -15,6 +16,7 @@ const GRID_LAYOUTS = { two: s.teamGroupGridTwo, four: s.teamGroupGridFour }
 function RoleCard({ card, wide }) {
   const Icon = card.icon
   const person = getPerson(card.person)
+  const isFacultyCard = card.person === 'hod' || card.person?.startsWith('facultyCoordinator')
   const showPhoto = person?.photo && (
     card.person === 'hod' ||
     card.person?.startsWith('facultyCoordinator') ||
@@ -46,10 +48,19 @@ function RoleCard({ card, wide }) {
         </div>
       )}
       <div className={s.teamCardContent}>
-        <span>{card.tag}</span>
-        <h4>{card.title}</h4>
-        <p>{card.text}</p>
-        {person?.name && <strong className={s.teamCardName}>{person.name}</strong>}
+        {!isFacultyCard && <span>{card.tag}</span>}
+        {!isFacultyCard && <h4>{card.title}</h4>}
+        {card.text && <p>{card.text}</p>}
+        {person?.name && (
+          <strong className={cx(s.teamCardName, nameStyles.teamCardName)}>
+            {person.name}
+          </strong>
+        )}
+        {person?.designation && (
+          <span className={nameStyles.teamCardDesignation}>
+            {person.designation}
+          </span>
+        )}
       </div>
     </article>
   )
