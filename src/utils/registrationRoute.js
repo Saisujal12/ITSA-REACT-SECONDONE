@@ -2,12 +2,12 @@
   Registration URL contract (unchanged from the legacy register.html):
 
     /register                          → day selection
-    /register?day=day2                 → Day 2 event selection
+    /register?day=day2                 → redirect to the Events page
     /register?day=day1                 → Day 1 workshop form (Introduction to LLMs)
     /register?event=<id>&from=<source> → that event's form
 
   `from` records where the visitor came from so "Back" returns there:
-    day2      → Day 2 event selection
+    day2      → /events
     events    → /events
     workshops → /workshops
     day1 / —  → day selection
@@ -27,8 +27,6 @@ export function registrationPath(eventId, from) {
   return `/register?${params}`
 }
 
-export const DAY2_SELECTION_PATH = '/register?day=day2'
-
 /** Works out which registration view the current URL asks for. */
 export function resolveRegistrationView(searchParams) {
   const eventId = searchParams.get('event')
@@ -42,7 +40,7 @@ export function resolveRegistrationView(searchParams) {
     return { view: 'days', unknownEvent: eventId }
   }
 
-  if (day === 'day2') return { view: 'events' }
+  if (day === 'day2') return { view: 'redirect-events' }
   if (day === 'day1') return { view: 'form', event: getEvent(DAY1_DEFAULT_EVENT_ID), from: 'day1' }
 
   return { view: 'days' }
@@ -52,7 +50,7 @@ export function resolveRegistrationView(searchParams) {
 export function backTarget(from) {
   switch (from) {
     case 'day2':
-      return { to: DAY2_SELECTION_PATH, label: 'Back to Events' }
+      return { to: '/events', label: 'Back to Events' }
     case 'events':
       return { to: '/events', label: 'Back to All Events' }
     case 'workshops':

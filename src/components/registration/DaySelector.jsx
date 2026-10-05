@@ -1,13 +1,13 @@
 import { Link } from 'react-router'
 import { DAY1_DEFAULT_EVENT_ID, REGISTRATION_DAYS } from '../../data/events'
 import { SITE } from '../../data/site'
-import { DAY2_SELECTION_PATH, registrationPath } from '../../utils/registrationRoute'
+import { registrationPath } from '../../utils/registrationRoute'
 import { cx } from '../../utils/cx'
 import s from '../../pages/Register.module.css'
 
 const CARDS = [
   { day: REGISTRATION_DAYS.day1, to: registrationPath(DAY1_DEFAULT_EVENT_ID, 'day1'), tone: null },
-  { day: REGISTRATION_DAYS.day2, to: DAY2_SELECTION_PATH, tone: s.dayCardEvents },
+  { day: REGISTRATION_DAYS.day2, to: '/events', tone: s.dayCardEvents },
 ]
 
 export default function DaySelector() {

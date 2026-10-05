@@ -1,6 +1,5 @@
-import { useSearchParams } from 'react-router'
+import { Navigate, useSearchParams } from 'react-router'
 import DaySelector from '../components/registration/DaySelector'
-import EventSelector from '../components/registration/EventSelector'
 import RegistrationView from '../components/registration/RegistrationView'
 import StatusMessage from '../components/ui/StatusMessage'
 import { useDocumentTitle } from '../hooks/useDocumentTitle'
@@ -16,10 +15,12 @@ export default function Register() {
   const title =
     route.view === 'form'
       ? `${route.event.title} Registration`
-      : route.view === 'events'
-        ? 'Day 2 Events'
-        : 'Register'
+      : 'Register'
   useDocumentTitle(title)
+
+  if (route.view === 'redirect-events') {
+    return <Navigate to="/events" replace />
+  }
 
   return (
     <div className={s.page}>
@@ -39,7 +40,6 @@ export default function Register() {
       )}
 
       {route.view === 'days' && <DaySelector />}
-      {route.view === 'events' && <EventSelector />}
       {route.view === 'form' && <RegistrationView key={route.event.id} event={route.event} from={route.from} />}
     </div>
   )
