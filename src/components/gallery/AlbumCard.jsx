@@ -42,7 +42,7 @@ export default function AlbumCard({ album, number, reverse }) {
                   srcSet={photo.image.srcSet}
                   sizes="(max-width: 1100px) 100vw, 65vw"
                   alt={photo.alt}
-                  loading="lazy"
+                  loading={photoIndex === index ? 'eager' : 'lazy'}
                   decoding="async"
                 />
               </div>

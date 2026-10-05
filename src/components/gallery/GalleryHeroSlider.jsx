@@ -40,7 +40,7 @@ export default function GalleryHeroSlider({ slides }) {
                 srcSet={slide.image.srcSet}
                 sizes="(max-width: 800px) 96vw, 45vw"
                 alt={slide.alt}
-                loading={slideIndex === 0 ? 'eager' : 'lazy'}
+                loading={slideIndex === index ? 'eager' : 'lazy'}
                 decoding="async"
               />
             </div>

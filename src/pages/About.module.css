@@ -2210,10 +2210,6 @@
   }
 
   .about-hero-visual .about-float-card {
-    width: 154px;
-    height: 58px;
-    padding: 8px 9px;
-    gap: 7px;
     width: 138px;
     height: 52px;
     padding: 7px 8px;
@@ -2221,24 +2217,17 @@
   }
 
   .about-hero-visual .float-icon {
-    width: 36px;
-    height: 36px;
-    flex-basis: 36px;
     width: 30px;
     height: 30px;
     flex-basis: 30px;
   }
 
   .about-hero-visual .visual-core {
-    width: 220px;
-    height: 220px;
     width: 190px;
     height: 190px;
   }
 
   .about-hero-visual .about-core-logo {
-    width: 150px;
-    height: 150px;
     width: 120px;
     height: 120px;
   }

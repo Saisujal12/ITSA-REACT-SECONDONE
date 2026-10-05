@@ -3,8 +3,6 @@ import { Link } from 'react-router'
 import {
   ChevronLeft,
   ChevronRight,
-  Pause,
-  Play,
 } from 'lucide-react'
 import { resolveImage } from '../../utils/assets'
 import s from './AssociationHighlights.module.css'
@@ -36,7 +34,7 @@ const HIGHLIGHTS = [
   },
 ]
 
-const INTERVAL_MS = 4000
+const INTERVAL_MS = 3500
 
 export default function AssociationHighlights() {
   const slides = useMemo(
@@ -51,14 +49,8 @@ export default function AssociationHighlights() {
   const [activeIndex, setActiveIndex] =
     useState(0)
 
-  const [paused, setPaused] =
-    useState(false)
-
   useEffect(() => {
-    if (
-      paused ||
-      slides.length < 2
-    ) {
+    if (slides.length < 2) {
       return undefined
     }
 
@@ -75,7 +67,7 @@ export default function AssociationHighlights() {
 
     return () =>
       window.clearInterval(timer)
-  }, [paused, slides.length])
+  }, [slides.length])
 
   if (!slides.length) {
     return null
@@ -94,24 +86,6 @@ export default function AssociationHighlights() {
     <section
       className="section"
       aria-labelledby="association-highlights-title"
-      onMouseEnter={() =>
-        setPaused(true)
-      }
-      onMouseLeave={() =>
-        setPaused(false)
-      }
-      onFocusCapture={() =>
-        setPaused(true)
-      }
-      onBlurCapture={(event) => {
-        if (
-          !event.currentTarget.contains(
-            event.relatedTarget,
-          )
-        ) {
-          setPaused(false)
-        }
-      }}
     >
       <div className="container">
         <div className={s.heading}>
@@ -154,32 +128,6 @@ export default function AssociationHighlights() {
                 <h3>{active.title}</h3>
               </Link>
 
-              <button
-                type="button"
-                className={s.pauseButton}
-                onClick={() =>
-                  setPaused(
-                    (current) =>
-                      !current,
-                  )
-                }
-                aria-label={
-                  paused
-                    ? 'Resume highlight carousel'
-                    : 'Pause highlight carousel'
-                }
-                title={
-                  paused
-                    ? 'Resume carousel'
-                    : 'Pause carousel'
-                }
-              >
-                {paused ? (
-                  <Play size={16} />
-                ) : (
-                  <Pause size={16} />
-                )}
-              </button>
             </div>
 
             <div className={s.controls}>

@@ -4,13 +4,19 @@ import { usePrefersReducedMotion } from './useMediaQuery'
 import { usePageVisible } from './usePageVisible'
 
 /*
-  Slider behaviour shared by the gallery hero and the album sliders
-  (legacy gallery.html inline script): 4s autoplay, wrap-around, pause on
-  hover, timer restarts after manual navigation. Also pauses while focused,
-  off-screen, in a hidden tab or under reduced motion, and supports arrow
-  keys and touch swipe.
+  Shared gallery slider behavior: automatic 3.5s rotation, wrap-around,
+  timer restart after manual navigation, and arrow-key/touch support. By
+  default it keeps rotating on hover and focus; callers can opt into pausing.
+  It pauses while off-screen, in a hidden tab, or when reduced motion is set.
 */
-export function useCarousel(count, { interval = 4000, pauseOnHover = true } = {}) {
+export function useCarousel(
+  count,
+  {
+    interval = 3500,
+    pauseOnHover = false,
+    pauseOnFocus = false,
+  } = {},
+) {
   const [index, setIndex] = useState(0)
   const [hovered, setHovered] = useState(false)
   const [focused, setFocused] = useState(false)
@@ -26,7 +32,12 @@ export function useCarousel(count, { interval = 4000, pauseOnHover = true } = {}
   const prev = () => setIndex((current) => (current - 1 + count) % count)
 
   const running =
-    count > 1 && inView && pageVisible && !reducedMotion && !focused && !(pauseOnHover && hovered)
+    count > 1 &&
+    inView &&
+    pageVisible &&
+    !reducedMotion &&
+    !(pauseOnFocus && focused) &&
+    !(pauseOnHover && hovered)
 
   useEffect(() => {
     if (!running) return undefined
