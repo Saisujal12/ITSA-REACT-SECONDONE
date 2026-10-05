@@ -1,13 +1,12 @@
 import { useEffect, useRef, useState } from 'react'
 import { useInView } from './useInView'
-import { usePrefersReducedMotion } from './useMediaQuery'
 import { usePageVisible } from './usePageVisible'
 
 /*
   Shared gallery slider behavior: automatic 3.5s rotation, wrap-around,
   timer restart after manual navigation, and arrow-key/touch support. By
   default it keeps rotating on hover and focus; callers can opt into pausing.
-  It pauses while off-screen, in a hidden tab, or when reduced motion is set.
+  It pauses while off-screen or in a hidden tab.
 */
 export function useCarousel(
   count,
@@ -25,7 +24,6 @@ export function useCarousel(
 
   const inView = useInView(regionRef)
   const pageVisible = usePageVisible()
-  const reducedMotion = usePrefersReducedMotion()
 
   const goTo = (next) => setIndex(((next % count) + count) % count)
   const next = () => setIndex((current) => (current + 1) % count)
@@ -35,7 +33,6 @@ export function useCarousel(
     count > 1 &&
     inView &&
     pageVisible &&
-    !reducedMotion &&
     !(pauseOnFocus && focused) &&
     !(pauseOnHover && hovered)
 
