@@ -32,7 +32,7 @@ const EVENTS = [
 ];
 
 export default function AdminLogin() {
-  useDocumentTitle("Admin Login | IT Association");
+  useDocumentTitle("Admin Login | IT Department");
 
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
@@ -103,7 +103,7 @@ export default function AdminLogin() {
           <div className={s.loginIcon}>
             <ShieldHalf aria-hidden="true" />
           </div>
-          <p className={s.loginTitle}>IT Association</p>
+          <p className={s.loginTitle}>IT Department</p>
           <h1>Admin sign in</h1>
           <p className={s.loginDescription}>Checking your session…</p>
           <LoaderCircle className={s.loginSpinner} aria-label="Loading" />
@@ -118,7 +118,7 @@ export default function AdminLogin() {
         <div className={s.loginIcon}>
           <ShieldHalf aria-hidden="true" />
         </div>
-        <p className={s.loginTitle}>IT Association</p>
+        <p className={s.loginTitle}>IT Department</p>
         <h1>Admin sign in</h1>
         <p className={s.loginDescription}>
           Use the admin username and the unique password for the selected workshop or event.

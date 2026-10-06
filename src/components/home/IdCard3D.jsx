@@ -53,7 +53,7 @@ const CODE39 = {
 
 function Barcode({ value }) {
   const normalized = String(
-    value || 'ITSA-2026-001',
+  value || 'ITDEPT-2026-001',
   )
     .toUpperCase()
     .replace(/[^0-9A-Z .$/+%-]/g, '-')
@@ -115,7 +115,7 @@ function Barcode({ value }) {
 }
 
 export default function IdCard3D({
-  registrationId = 'ITSA-2026-001',
+  registrationId = 'ITDEPT-2026-001',
   workshop = 'To be announced',
   date = 'October 30, 2026',
   validity = '30 OCT 2026',
@@ -133,7 +133,7 @@ export default function IdCard3D({
     () =>
       String(
         registrationId ||
-          'ITSA-2026-001',
+          'ITDEPT-2026-001',
       ).toUpperCase(),
     [registrationId],
   )
@@ -144,7 +144,7 @@ export default function IdCard3D({
         ref={sceneRef}
         className={s.scene}
         role="img"
-        aria-label="IT Association Sumshodhini 2026 ID card"
+        aria-label="IT Department Sumshodhini 2026 ID card"
       >
         <div
           ref={cardRef}
@@ -170,7 +170,7 @@ export default function IdCard3D({
                   src={LOGO.src}
                   width="64"
                   height="66"
-                  alt="IT Association logo"
+                  alt="IT Department logo"
                 />
               }
             />
@@ -192,7 +192,7 @@ export default function IdCard3D({
               </strong>
 
               <span>
-                Students Association
+                IT Department
               </span>
             </div>
           </div>
@@ -224,7 +224,7 @@ export default function IdCard3D({
           <div className={s.bottom}>
             <div className={s.bottomBrand}>
               <span>
-                ITSA · {SITE.year}
+                {SITE.shortName} · {SITE.year}
               </span>
 
               <small>

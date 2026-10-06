@@ -21,7 +21,7 @@ const CONTACT_CARDS = [
   {
     icon: Mail,
     label: 'EMAIL',
-    title: 'IT Association',
+    title: 'IT Department',
     text: "Use the department's official communication channel for event and association queries.",
   },
   {
@@ -46,7 +46,7 @@ export default function Contact() {
             LET&apos;S <span>CONNECT.</span>
           </h1>
           <p>
-            Have a question about an event, workshop or the IT Association? Reach the department
+            Have a question about an event, workshop or the IT Department? Reach the department
             team through the details below.
           </p>
         </div>

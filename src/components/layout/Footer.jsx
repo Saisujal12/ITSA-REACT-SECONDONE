@@ -59,9 +59,9 @@ export default function Footer() {
               <img
                 src={LOGO.src}
                 srcSet={LOGO.srcSet}
-                sizes="44px"
-                width="44"
-                height="44"
+                sizes="56px"
+                width="56"
+                height="56"
                 alt=""
               />
 
@@ -71,8 +71,6 @@ export default function Footer() {
             </div>
 
             <p>
-              {SITE.branch.toUpperCase()}
-              <br />
               {SITE.department},{' '}
               {SITE.college}
               <br />
@@ -86,7 +84,7 @@ export default function Footer() {
               target="_blank"
               rel="noopener noreferrer"
               aria-label={`${SITE.name} on Instagram`}
-              title="Follow ITSA on Instagram"
+              title="Follow IT Department on Instagram"
             >
               <InstagramIcon
                 size={20}

@@ -1,0 +1,250 @@
+.testimonials {
+  overflow: hidden;
+  background: var(--bg-soft);
+}
+
+.heading {
+  display: flex;
+  align-items: end;
+  justify-content: space-between;
+  gap: 24px;
+  margin-bottom: 26px;
+}
+
+.heading h2 {
+  margin-top: 8px;
+  color: var(--text-dark);
+  font-size: clamp(32px, 4vw, 52px);
+  line-height: 1;
+  letter-spacing: -0.055em;
+}
+
+.controls {
+  display: flex;
+  gap: 9px;
+}
+
+.controls button {
+  width: 44px;
+  height: 44px;
+  display: grid;
+  place-items: center;
+  border: 1px solid var(--border);
+  border-radius: 50%;
+  background: var(--bg-main);
+  color: var(--text-dark);
+  cursor: pointer;
+  transition: color var(--transition), background var(--transition), border-color var(--transition), transform var(--transition);
+}
+
+.controls button:hover {
+  transform: translateY(-2px);
+  border-color: var(--primary);
+  background: var(--primary);
+  color: #fff;
+}
+
+.controls button:focus-visible,
+.track:focus-visible {
+  outline: 3px solid rgba(146, 23, 47, 0.35);
+  outline-offset: 3px;
+}
+
+.controls svg {
+  width: 19px;
+  height: 19px;
+}
+
+.track {
+  display: flex;
+  gap: 16px;
+  overflow-x: auto;
+  padding: 2px 3px 18px;
+  scroll-behavior: smooth;
+  scroll-snap-type: x mandatory;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(146, 23, 47, 0.35) transparent;
+}
+
+.card {
+  position: relative;
+  flex: 0 0 calc((100% - 32px) / 3);
+  min-height: 300px;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  padding: 25px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-medium);
+  background: var(--bg-main);
+  box-shadow: var(--shadow-small);
+  scroll-snap-align: start;
+}
+
+.quoteIcon {
+  width: 25px;
+  height: 25px;
+  color: var(--primary);
+  fill: rgba(146, 23, 47, 0.1);
+}
+
+.cardTop {
+  position: relative;
+  width: 100%;
+  min-height: 80px;
+  margin-bottom: 12px;
+  min-height: 88px;
+  margin-bottom: 20px;
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.photoPlaceholder {
+  width: 80px;
+  height: 80px;
+  flex: 0 0 80px;
+  width: 88px;
+  height: 88px;
+  flex: 0 0 88px;
+  margin-left: auto;
+  display: grid;
+  place-items: center;
+  border: 2px solid rgba(146, 23, 47, 0.16);
+  border-radius: 50%;
+  background: rgba(146, 23, 47, 0.055);
+  color: rgba(146, 23, 47, 0.72);
+}
+
+.photoPlaceholder svg {
+  width: 34px;
+  height: 34px;
+  width: 42px;
+  height: 42px;
+  stroke-width: 1.7;
+}
+
+.card > p {
+  margin: 0 0 22px;
+  margin: 0;
+  color: var(--text-muted);
+  font-size: 14px;
+  line-height: 1.7;
+}
+
+.person {
+  position: absolute;
+  top: 12px;
+  left: 0;
+  right: 104px;
+  min-width: 0;
+  display: flex;
+  align-items: center;
+  gap: 11px;
+  margin-top: auto;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 4px;
+}
+
+.avatar {
+  width: 40px;
+  height: 40px;
+  flex: 0 0 40px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  background: rgba(146, 23, 47, 0.09);
+  color: var(--primary);
+  font-size: 16px;
+  font-weight: 800;
+}
+
+.person h3 {
+  margin: 0;
+  color: var(--text-dark);
+  font-size: 14px;
+  font-size: clamp(14px, 1.35vw, 18px);
+  line-height: 1.3;
+  white-space: nowrap;
+}
+
+.person > span {
+  display: block;
+  margin-top: 3px;
+  color: var(--text-muted);
+  font-size: 11px;
+  font-size: clamp(11px, 1vw, 14px);
+  white-space: nowrap;
+}
+
+.quoteIcon {
+  display: block;
+  margin-bottom: 12px;
+}
+
+@media (max-width: 900px) {
+  .card {
+    flex-basis: calc((100% - 16px) / 2);
+  }
+}
+
+@media (max-width: 600px) {
+  .heading {
+    align-items: center;
+  }
+
+  .heading h2 {
+    font-size: clamp(29px, 8vw, 38px);
+  }
+
+  .controls button {
+    width: 38px;
+    height: 38px;
+  }
+
+  .track {
+    gap: 12px;
+  }
+
+  .card {
+    flex-basis: min(88%, 360px);
+    min-height: 315px;
+    flex-basis: min(94%, 430px);
+    min-height: 280px;
+    padding: 21px;
+  }
+
+  .photoPlaceholder {
+    width: 72px;
+    height: 72px;
+    flex-basis: 72px;
+    width: 76px;
+    height: 76px;
+    flex-basis: 76px;
+  }
+
+  .cardTop {
+    min-height: 72px;
+    min-height: 76px;
+  }
+
+  .person {
+    right: 88px;
+  }
+
+  .person h3 {
+    font-size: 14px;
+  }
+
+  .person > span {
+    font-size: 11px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .track {
+    scroll-behavior: auto;
+  }
+}

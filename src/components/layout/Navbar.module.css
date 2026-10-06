@@ -64,42 +64,39 @@
 }
 
 .brand-symbol {
-  width: 58px;
-  height: 58px;
-  min-width: 58px;
+  width: 60px;
+  height: 60px;
+  min-width: 60px;
   display: flex;
   align-items: center;
   justify-content: center;
 }
 
 .brand-symbol img {
-  width: 58px;
-  height: 58px;
+  width: 60px;
+  height: 60px;
   object-fit: contain;
   transform: translateY(-3px);
-  filter:
-    grayscale(0.78)
-    contrast(1.08)
-    saturate(0.45);
-  mix-blend-mode: multiply;
+  filter: none;
 }
 
 .brand-text {
   display: flex;
   flex-direction: column;
-  gap: 4px;
+  gap: 3px;
   line-height: 1;
 }
 
 .brand-text strong {
   color: #272522;
-  font-size: 15px;
+  font-size: 17px;
+  font-size: 19px;
   font-weight: 900;
   letter-spacing: 0.5px;
 }
 
 .brand-text span {
-  color: #77716a;
+  color: #817b74;
   font-size: 7px;
   font-weight: 800;
   letter-spacing: 4px;
@@ -445,7 +442,8 @@
 
 @media (max-width: 600px) {
   .brand-text strong {
-    font-size: 13px;
+    font-size: 14px;
+    font-size: 16px;
   }
 
   .brand-text span {
@@ -466,9 +464,9 @@
 
   .brand-symbol,
   .brand-symbol img {
-    width: 40px;
-    height: 40px;
-    min-width: 40px;
+    width: 44px;
+    height: 44px;
+    min-width: 44px;
   }
 
   .college-symbol {
@@ -486,7 +484,8 @@
   }
 
   .brand-text strong {
-    font-size: 11px;
+    font-size: 12px;
+    font-size: 14px;
     letter-spacing: 0.3px;
   }
 
@@ -494,4 +493,5 @@
     font-size: 5px;
     letter-spacing: 2px;
   }
+
 }

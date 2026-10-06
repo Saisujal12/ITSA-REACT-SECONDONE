@@ -69,11 +69,11 @@ export default function Navbar() {
           </span>
           <span className={s.brandDivider} aria-hidden="true" />
           <span className={s.brandSymbol}>
-            <img src={LOGO.src} srcSet={LOGO.srcSet} sizes="58px" width="58" height="58" alt="" />
+            <img src={LOGO.src} srcSet={LOGO.srcSet} sizes="60px" width="60" height="60" alt="" />
           </span>
           <span className={s.brandText}>
             <strong>{SITE.nameUpper}</strong>
-            <span>{SITE.collegeSpaced}</span>
+            <span>{SITE.college}</span>
           </span>
         </Link>
 

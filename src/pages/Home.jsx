@@ -2,13 +2,14 @@ import { BookOpen, Hammer, Rocket, Sparkles } from 'lucide-react'
 import { Link } from 'react-router'
 import AssociationHighlights from '../components/home/AssociationHighlights'
 import IdCard3D from '../components/home/IdCard3D'
+import Testimonials from '../components/home/Testimonials'
 import { LOGO, SITE } from '../data/site'
 import { useDocumentTitle } from '../hooks/useDocumentTitle'
 import ImageWithFallback from '../components/ui/ImageWithFallback'
 import s from './Home.module.css'
 
 const STATS = [
-  { value: 'IT', label: 'ASSOCIATION' },
+  { value: 'IT', label: 'DEPARTMENT' },
   { value: String(SITE.year), label: 'LEARN · BUILD · GROW' },
   { value: '∞', label: 'POSSIBILITIES' },
 ]
@@ -44,7 +45,7 @@ const APPROACH = [
 ]
 
 export default function Home() {
-  useDocumentTitle('IT Association | KITSW', { raw: true })
+  useDocumentTitle('IT Department | KITSW', { raw: true })
 
   return (
     <>
@@ -52,14 +53,12 @@ export default function Home() {
       <section className={s.hero} aria-labelledby="home-title">
         <div className={s.heroContainer}>
           <div className={s.heroContent}>
-            <p className={s.heroSmallTitle}>ITSA</p>
-
             <h1 id="home-title">
-              IT <span>Student&apos;s Association.</span>
+              IT <span>Department.</span>
             </h1>
 
             <p className={s.heroDescription}>
-              The IT Association represents the spirit of the Information Technology branch through
+              The IT Department represents the spirit of the Information Technology branch through
               learning, innovation, practical experiences and student activities.
               <br />
               <strong>Learn. Build. Grow.</strong>
@@ -67,7 +66,7 @@ export default function Home() {
 
             <div className={s.heroButtons}>
               <Link to="/about" className="btn btn-primary">
-                Explore Association <span aria-hidden="true">→</span>
+                Explore IT Department <span aria-hidden="true">→</span>
               </Link>
 
               <Link to="/sumshodhini" className="btn btn-outline">
@@ -117,8 +116,11 @@ export default function Home() {
         </div>
       </section>
 
-      {/* ASSOCIATION HIGHLIGHTS */}
+      {/* DEPARTMENT HIGHLIGHTS */}
       <AssociationHighlights />
+
+      {/* TESTIMONIALS */}
+      <Testimonials />
 
       {/* ABOUT */}
       <section
@@ -142,15 +144,12 @@ export default function Home() {
                   {SITE.nameUpper}
                 </div>
 
-                <div className={s.panelSubtitle}>
-                  {SITE.branch.toUpperCase()}
-                </div>
               </div>
             </div>
 
             <div className={s.aboutContent}>
               <p className="section-label">
-                ABOUT THE ASSOCIATION
+                ABOUT THE IT DEPARTMENT
               </p>
 
               <h2 id="home-about-title">
@@ -161,7 +160,7 @@ export default function Home() {
               </h2>
 
               <p>
-                The IT Association is a student-driven platform
+                The IT Department is a student-driven platform
                 of the Information Technology branch that brings
                 together technical learning, practical
                 experiences, workshops, events and creative
@@ -169,7 +168,7 @@ export default function Home() {
               </p>
 
               <p>
-                Through every academic year, the Association
+                Through every academic year, the Department
                 provides opportunities for students to learn new
                 technologies, build practical skills, participate
                 in activities and experience technology beyond
@@ -187,7 +186,7 @@ export default function Home() {
                   to="/about"
                   className="btn btn-primary"
                 >
-                  Discover the Association{' '}
+                  Discover IT Association{' '}
                   <span aria-hidden="true">→</span>
                 </Link>
               </div>
@@ -216,7 +215,7 @@ export default function Home() {
             </h2>
 
             <p>
-              The IT Association is built around a simple idea:
+              The IT Department is built around a simple idea:
               learn something new, turn that knowledge into
               something practical and grow through the
               experience.
@@ -363,7 +362,7 @@ export default function Home() {
             </h2>
 
             <p>
-              Discover the IT Association, explore{' '}
+              Discover the IT Department, explore{' '}
               {SITE.fest} and take part in the workshops and
               events created for the Information Technology
               branch.

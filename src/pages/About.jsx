@@ -58,7 +58,7 @@ const WHAT_WE_DO = [
 ]
 
 export default function About() {
-  useDocumentTitle('About Association')
+  useDocumentTitle('About IT Association')
   const location = useLocation()
 
   useEffect(() => {
@@ -80,7 +80,7 @@ export default function About() {
           <div className={s.aboutHeroContent}>
             <div className={s.aboutKicker}>
               <span className={s.kickerLine} aria-hidden="true" />
-              {SITE.nameUpper} · {SITE.college}
+              IT Student&apos;s Association · {SITE.college}
             </div>
             <h1 id="about-title">
               ABOUT <span>US.</span>
@@ -153,7 +153,7 @@ export default function About() {
           </div>
           <div className={s.aboutIntroCopy} data-reveal="">
             <p>
-              The IT Association is a student-driven platform that connects students, faculty and
+              The IT Department is a student-driven platform that connects students, faculty and
               technology enthusiasts through technical activities, workshops, competitions and
               events.
             </p>
@@ -256,42 +256,28 @@ export default function About() {
       <section className={s.aboutHighlights} aria-labelledby="about-highlights-title">
         <div className={s.aboutHighlightsHeading}>
           <span>ASSOCIATION HIGHLIGHTS</span>
-          <h2 id="about-highlights-title">
-            Recent moments, <strong>kept together.</strong>
-          </h2>
+          <h2 id="about-highlights-title">Recent moments, <strong>kept together.</strong></h2>
         </div>
         <div className={s.aboutHighlightsGrid}>
           <article id="guest-lecture" className={s.aboutHighlightCard} tabIndex={-1}>
             <span>GUEST LECTURE</span>
             <h3>Exploring AI Applications Across Industries</h3>
-            <p>
-              A guest lecture introduced students to practical applications, possibilities and
-              impact of Artificial Intelligence across industries.
-            </p>
+            <p>A guest lecture introduced students to practical applications, possibilities and impact of Artificial Intelligence across industries.</p>
           </article>
           <article id="teachers-day" className={s.aboutHighlightCard} tabIndex={-1}>
             <span>ASSOCIATION ACTIVITY</span>
             <h3>Teachers&apos; Day</h3>
-            <p>
-              The IT Association celebrated Teachers&apos; Day with a special activity focused on
-              appreciation, interaction and community.
-            </p>
+            <p>The IT Department celebrated Teachers&apos; Day with a special activity focused on appreciation, interaction and community.</p>
           </article>
           <article id="inaugural" className={s.aboutHighlightCard} tabIndex={-1}>
             <span>ASSOCIATION</span>
-            <h3>IT Association 2026 Inaugural</h3>
-            <p>
-              A new academic year of learning, collaboration, innovation and student activities
-              began with the IT Association.
-            </p>
+            <h3>IT Department 2026 Inaugural</h3>
+            <p>A new academic year of learning, collaboration, innovation and student activities began with the IT Department.</p>
           </article>
           <article id="workshops" className={s.aboutHighlightCard} tabIndex={-1}>
             <span>LEARNING</span>
             <h3>Workshops</h3>
-            <p>
-              Practical sessions focused on modern technologies, tools and real-world applications
-              give students opportunities to learn by doing.
-            </p>
+            <p>Practical sessions focused on modern technologies, tools and real-world applications give students opportunities to learn by doing.</p>
           </article>
         </div>
       </section>
@@ -300,14 +286,14 @@ export default function About() {
       <section className={s.teamSection} aria-labelledby="team-title">
         <div className={cx(s.teamHeading, s.associationBodyHeading)} data-reveal="">
           <div>
-            <span>IT STUDENTS ASSOCIATION</span>
-            <h2 id="team-title">
-              IT Students <strong>Association Body.</strong>
+            
+            <span>ITSA · KITSW</span>
+            <h2 id="team-title">IT STUDENT&apos;S ASSOCIATION <strong>BODY</strong>
             </h2>
           </div>
           <p>
             Faculty and student leaders working together to guide, coordinate and grow the IT
-            Association.
+            Department.
           </p>
         </div>
         <AboutTeam />
@@ -321,7 +307,7 @@ export default function About() {
             Learn something. <strong>Build something.</strong>
           </h2>
           <p>
-            Join the IT Association and become part of a community built around technology,
+            Join the IT Department and become part of a community built around technology,
             creativity and collaboration.
           </p>
           <Link to="/register" className={s.ctaButton}>

@@ -4,7 +4,7 @@
 .grid { display: grid; grid-template-columns: minmax(0, 1.35fr) minmax(300px, .95fr); gap: 54px; padding-bottom: 30px; border-bottom: 1px solid rgba(255,255,255,.1); }
 .brand { max-width: 400px; }
 .brandTitle { display:flex; align-items:center; gap:10px; color:#fff; font-size:18px; font-weight:800; letter-spacing:-.025em; }
-.brandTitle img { width:38px; height:38px; object-fit:contain; }
+.brandTitle img { width:56px; height:56px; object-fit:contain; }
 .brand p { margin-top:10px; color:rgba(255,255,255,.62); font-size:11px; line-height:1.65; }
 .instagram { width:fit-content; margin-top:16px; padding:7px 10px; display:inline-flex; align-items:center; gap:7px; border:1px solid rgba(255,255,255,.13); border-radius:999px; color:rgba(255,255,255,.75); font-size:10px; font-weight:800; transition:color var(--transition),border-color var(--transition),background var(--transition),transform var(--transition); }
 .instagram:hover { transform:translateY(-2px); border-color:rgba(255,255,255,.32); background:rgba(255,255,255,.06); color:#fff; }

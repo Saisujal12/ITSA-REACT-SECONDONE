@@ -174,7 +174,7 @@ function formatDate(
 
 export default function AdminDashboard() {
   useDocumentTitle(
-    "Admin Dashboard | IT Association",
+    "Admin Dashboard | IT Department",
     {
       raw: true,
     },
@@ -569,7 +569,7 @@ useEffect(
           <ShieldCheck />
 
           <span>
-            IT ASSOCIATION
+            IT DEPARTMENT
           </span>
         </div>
 

@@ -14,8 +14,8 @@ import {
   WandSparkles,
 } from 'lucide-react'
 import MobileOrbitCard from '../components/sumshodhini/MobileOrbitCard'
-import ImageWithFallback from '../components/ui/ImageWithFallback'
 import { SITE } from '../data/site'
+import ImageWithFallback from '../components/ui/ImageWithFallback'
 import { useDocumentTitle } from '../hooks/useDocumentTitle'
 import { cx } from '../utils/cx'
 import s from './Sumshodhini.module.css'
@@ -118,12 +118,10 @@ export default function Sumshodhini() {
                 <small>{SITE.college}</small>
                 <span />
               </div>
-
               <h1 id="sam-title">
                 <span className={s.samTitleMain}>{SITE.festUpper}</span>
                 <span className={s.samTitleAccent}>’26</span>
               </h1>
-
               <div className={s.samTitleBottom} aria-hidden="true">
                 <span className={s.samTitleRule} />
                 <span>{SITE.year}</span>
@@ -138,7 +136,6 @@ export default function Sumshodhini() {
                 <span>EVENT SCHEDULE</span>
                 <div aria-hidden="true" />
               </div>
-
               {DAYS.map((day) => (
                 <Link key={day.id} to={day.to} className={s.samDayItem}>
                   <div className={s.samDayText}>
@@ -177,6 +174,7 @@ export default function Sumshodhini() {
                   />
                 </div>
               </div>
+
             </div>
 
             <MobileOrbitCard />
@@ -193,20 +191,13 @@ export default function Sumshodhini() {
       <div className={s.samDetails}>
         {DAYS.map((day) => {
           const Icon = day.icon
-
           return (
-            <section
-              key={day.id}
-              id={day.id}
-              className={s.samDetailSection}
-              aria-labelledby={`${day.id}-title`}
-            >
+            <section key={day.id} id={day.id} className={s.samDetailSection} aria-labelledby={`${day.id}-title`}>
               <div className={s.samDetailContent}>
                 <span className={s.samDetailLabel}>{day.label}</span>
                 <h2 id={`${day.id}-title`}>{day.heading}</h2>
                 <p>{day.text}</p>
               </div>
-
               <div className={s.samDetailIcon} aria-hidden="true">
                 <Icon size="1em" />
               </div>
@@ -221,18 +212,15 @@ export default function Sumshodhini() {
           <div className={s.samSectionLabel}>
             ABOUT THE EVENT
           </div>
-
           <div className={s.samIntroContent}>
             <h2 id="sam-about-title">
               Where <strong>ideas</strong> become possibilities.
             </h2>
-
             <p>
-              {SITE.fest} is the flagship technical event of the IT Association, designed to give
+              {SITE.fest} is the flagship technical event of the IT Department, designed to give
               students a space to question, experiment, collaborate and present ideas beyond the
               classroom.
             </p>
-
             <p>
               From emerging technologies and technical challenges to creative problem solving,{' '}
               {SITE.fest} brings together different ways of thinking under one roof.
@@ -250,7 +238,6 @@ export default function Sumshodhini() {
               Think. <strong>Make.</strong> Share.
             </h2>
           </div>
-
           <p>Every part of {SITE.fest} is designed to turn participation into an experience.</p>
         </div>
 
@@ -283,7 +270,6 @@ export default function Sumshodhini() {
               <div className={s.timelineDot} aria-hidden="true">
                 {String(index + 1).padStart(2, '0')}
               </div>
-
               <div className={s.timelineContent}>
                 <span>{step.tag}</span>
                 <h3>{step.title}</h3>
@@ -298,23 +284,19 @@ export default function Sumshodhini() {
       <section className={s.samCta} aria-labelledby="sam-cta-title">
         <div className={s.samCtaInner}>
           <span className={s.samCtaLabel}>READY TO EXPLORE?</span>
-
           <h2 id="sam-cta-title" className={s.samCtaTitle}>
             <span className={s.ctaDarkText}>Your next idea</span>
             <strong className={s.ctaAccentText}>starts here.</strong>
           </h2>
-
           <p className={s.samCtaDescription}>
             Step into {SITE.fest} and become part of a community that believes in questioning,
             creating and discovering.
           </p>
-
           <div className={s.samCtaButtons}>
             <Link to="/workshops" className={s.samCtaBtn}>
               <span>EXPLORE DAY 1</span>
               <ArrowRight size="1em" aria-hidden="true" />
             </Link>
-
             <Link to="/events" className={s.samCtaBtn}>
               <span>EXPLORE DAY 2</span>
               <ArrowRight size="1em" aria-hidden="true" />
@@ -325,3 +307,5 @@ export default function Sumshodhini() {
     </div>
   )
 }
+
+

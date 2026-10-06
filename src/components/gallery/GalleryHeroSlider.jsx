@@ -23,7 +23,7 @@ export default function GalleryHeroSlider({ slides }) {
         className={cx(s.galleryHeroPhotoCard, s.carouselRegion)}
         role="region"
         aria-roledescription="carousel"
-        aria-label="IT Association photo highlights"
+        aria-label="IT Department photo highlights"
       >
         <div className={s.heroGallerySlider}>
           {available.map((slide, slideIndex) => (

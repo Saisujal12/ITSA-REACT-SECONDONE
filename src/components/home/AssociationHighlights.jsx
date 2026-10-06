@@ -22,7 +22,7 @@ const HIGHLIGHTS = [
   },
   {
     image: 'gallery/gallery-2',
-    title: 'IT Association 2026 Inaugural',
+    title: 'IT Department 2026 Inaugural',
     label: 'Association',
     to: '/gallery#recent-events',
   },
@@ -91,13 +91,13 @@ export default function AssociationHighlights() {
         <div className={s.heading}>
           <div>
             <p className="section-label">
-              ASSOCIATION HIGHLIGHTS
+              DEPARTMENT HIGHLIGHTS
             </p>
 
             <h2 id="association-highlights-title">
               Moments from{' '}
               <span className="text-primary">
-                ITSA.
+                IT DEPT.
               </span>
             </h2>
           </div>

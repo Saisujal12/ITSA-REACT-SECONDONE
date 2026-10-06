@@ -27,6 +27,7 @@
   position: relative;
   width: 292px;
   height: 450px;
+  height: 466px;
   overflow: hidden;
   border-radius: 25px;
   background:
@@ -158,7 +159,8 @@
 
 .identity {
   position: relative;
-  min-height: 188px;
+  min-height: 198px;
+  min-height: 214px;
   padding: 16px 18px 13px;
   display: flex;
   flex-direction: column;
@@ -177,14 +179,16 @@
 }
 
 .logoBox {
-  width: 112px;
-  height: 112px;
+  width: 122px;
+  height: 122px;
+  width: 136px;
+  height: 136px;
   display: flex;
   align-items: center;
   justify-content: center;
   margin-bottom: 13px;
   border-radius: 50%;
-  background: #ffffff;
+  background: #fbf8f2;
   border: 1px solid
     rgba(146, 23, 47, 0.1);
   box-shadow:
@@ -193,9 +197,13 @@
 }
 
 .logoBox img {
-  width: 96px;
-  height: 96px;
+  width: 116px;
+  height: 116px;
+  width: 128px;
+  height: 128px;
   object-fit: contain;
+  filter: saturate(0.84) contrast(0.9) brightness(1.05);
+  filter: none;
 }
 
 .associationName {
@@ -400,33 +408,7 @@
 .header { justify-content: space-between; }
 .eventTitle { min-width: 0; align-items: flex-start; }
 .headerLogo { margin-left: auto; }
-
-@media (max-width: 1200px) {
-  .scene { --scene-scale: .94; }
-}
-
-@media (max-width: 900px) {
-  .area { min-height: 450px; }
-  .scene { --scene-scale: .88; }
-}
-
-@media (max-width: 600px) {
-  .area { min-height: 410px; }
-  .scene { --scene-scale: .78; }
-  .header { padding: 13px 15px; }
-  .headerLogo,
-  .headerLogoFallback {
-    width: 72px;
-    height: 72px;
-    flex-basis: 72px;
-  }
-  .eventTitle strong { font-size: 15px; }
-  .eventTitle span {
-    font-size: 7px;
-    letter-spacing: 2px;
-  }
-}
-
-@media (max-width: 380px) {
-  .scene { --scene-scale: .72; }
-}
+@media (max-width: 1200px) { .scene { --scene-scale: .94; } }
+@media (max-width: 900px) { .area { min-height: 450px; } .scene { --scene-scale: .88; } }
+@media (max-width: 600px) { .area { min-height: 410px; } .scene { --scene-scale: .78; } .header { padding: 13px 15px; } .headerLogo, .headerLogoFallback { width:72px; height:72px; flex-basis:72px; } .eventTitle strong { font-size:15px; } .eventTitle span { font-size:7px; letter-spacing:2px; } }
+@media (max-width:380px) { .scene { --scene-scale: .72; } }

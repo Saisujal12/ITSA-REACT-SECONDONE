@@ -20,16 +20,16 @@ const UPDATES = [
     category: 'ASSOCIATION ACTIVITY',
     title: "Teachers' Day",
     text:
-      'The IT Association celebrated Teachers’ Day with a special activity focused on appreciation, interaction and community.',
+      'The IT Department celebrated Teachers’ Day with a special activity focused on appreciation, interaction and community.',
     to: '/gallery',
   },
   {
     date: '29 JUL 2026',
     category: 'ASSOCIATION',
     title:
-      'IT Association 2026 Inaugural',
+      'IT Department 2026 Inaugural',
     text:
-      'A new academic year of learning, collaboration, innovation and student activities began with the IT Association.',
+      'A new academic year of learning, collaboration, innovation and student activities began with the IT Department.',
     to: '/about',
   },
 ]
@@ -50,13 +50,13 @@ export default function LatestUpdates() {
             <h2 id="latest-updates-title">
               What&apos;s happening at{' '}
               <span className="text-primary">
-                ITSA.
+                IT DEPT.
               </span>
             </h2>
           </div>
 
           <p>
-            Keep up with recent association
+            Keep up with recent IT Department
             activities, learning sessions and
             student events.
           </p>
