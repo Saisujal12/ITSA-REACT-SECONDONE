@@ -1,3 +1,4 @@
+import { useEffect, useState } from 'react'
 import { Link } from 'react-router'
 import {
   ArrowRight,
@@ -16,6 +17,7 @@ import {
 
 import { useDocumentTitle } from '../hooks/useDocumentTitle'
 import { registrationPath } from '../utils/registrationRoute'
+import { fetchPublicRegistrationCount } from '../services/registrations'
 
 import s from './Workshops.module.css'
 
@@ -23,6 +25,26 @@ const CURRENT = getEvent('llm')
 
 export default function Workshops() {
   useDocumentTitle('Workshops')
+  const [registrationCount, setRegistrationCount] = useState(0)
+
+  useEffect(() => {
+    let active = true
+    const loadCount = async () => {
+      try {
+        const result = await fetchPublicRegistrationCount('llm')
+        if (active) setRegistrationCount(Math.min(100, Math.max(0, Number(result.count) || 0)))
+      } catch {
+        // Keep the public counter at zero until the count endpoint is available.
+      }
+    }
+
+    loadCount()
+    const interval = window.setInterval(loadCount, 30_000)
+    return () => {
+      active = false
+      window.clearInterval(interval)
+    }
+  }, [])
 
   const hasSamples =
     PREVIOUS_WORKSHOPS.some(
@@ -206,6 +228,11 @@ export default function Workshops() {
           </div>
 
           <div className={s.currentSide}>
+            <div className={s.registrationCount} aria-live="polite">
+              <span>No. of workshop registrations till now</span>
+              <strong>{registrationCount}</strong>
+            </div>
+
             <div className={s.dueTab}>
               <span>
                 {workshop.due.label}

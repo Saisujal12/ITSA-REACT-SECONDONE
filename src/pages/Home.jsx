@@ -1,4 +1,3 @@
-import { BookOpen, Hammer, Rocket, Sparkles } from 'lucide-react'
 import { Link } from 'react-router'
 import AssociationHighlights from '../components/home/AssociationHighlights'
 import IdCard3D from '../components/home/IdCard3D'
@@ -21,29 +20,6 @@ const ABOUT_POINTS = [
   'Develop communication, teamwork, creativity and leadership skills.',
 ]
 
-const APPROACH = [
-  {
-    title: 'Learn',
-    text: 'Discover technologies, concepts and ideas that extend learning beyond the regular classroom.',
-    icon: BookOpen,
-  },
-  {
-    title: 'Build',
-    text: 'Apply knowledge through projects, practical activities and hands-on experiences.',
-    icon: Hammer,
-  },
-  {
-    title: 'Experience',
-    text: `Take part in workshops, technical activities, competitions and ${SITE.fest} events.`,
-    icon: Sparkles,
-  },
-  {
-    title: 'Grow',
-    text: 'Develop confidence, communication, teamwork and leadership through real experiences.',
-    icon: Rocket,
-  },
-]
-
 export default function Home() {
   useDocumentTitle('IT Department | KITSW', { raw: true })
 
@@ -54,7 +30,8 @@ export default function Home() {
         <div className={s.heroContainer}>
           <div className={s.heroContent}>
             <h1 id="home-title">
-              IT <span>Department.</span>
+              <span className={s.titleLead}>Department of Information</span>
+              <span className={s.titleAccent}>Technology</span>
             </h1>
 
             <p className={s.heroDescription}>
@@ -186,67 +163,11 @@ export default function Home() {
                   to="/about"
                   className="btn btn-primary"
                 >
-                  Discover IT Association{' '}
+                  Discover the IT Department{' '}
                   <span aria-hidden="true">→</span>
                 </Link>
               </div>
             </div>
-          </div>
-        </div>
-      </section>
-
-      {/* APPROACH */}
-      <section
-        className="section section-soft"
-        aria-labelledby="home-approach-title"
-      >
-        <div className="container">
-          <div className="section-heading">
-            <p className="section-label">
-              OUR APPROACH
-            </p>
-
-            <h2 id="home-approach-title">
-              Learn.{' '}
-              <span className="text-primary">
-                Build.
-              </span>{' '}
-              Grow.
-            </h2>
-
-            <p>
-              The IT Department is built around a simple idea:
-              learn something new, turn that knowledge into
-              something practical and grow through the
-              experience.
-            </p>
-          </div>
-
-          <div className={s.grid4}>
-            {APPROACH.map((item) => {
-              const Icon = item.icon
-
-              return (
-                <article
-                  key={item.title}
-                  className={`card ${s.featureCard}`}
-                >
-                  <div
-                    className={s.featureIcon}
-                    aria-hidden="true"
-                  >
-                    <Icon
-                      size={25}
-                      strokeWidth={2.1}
-                    />
-                  </div>
-
-                  <h3>{item.title}</h3>
-
-                  <p>{item.text}</p>
-                </article>
-              )
-            })}
           </div>
         </div>
       </section>

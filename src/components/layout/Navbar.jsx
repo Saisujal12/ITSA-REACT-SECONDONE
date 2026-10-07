@@ -1,9 +1,8 @@
 import { useEffect, useRef, useState } from 'react'
 import { Link, NavLink, useLocation } from 'react-router'
 import kitswLogo from '../../assets/images/brand/kitsw-logo-transparent.png'
-import { MAIN_NAV, REGISTER_LINK } from '../../data/navigation'
+import { MAIN_NAV } from '../../data/navigation'
 import { LOGO, SITE } from '../../data/site'
-import { useMagnetic } from '../../hooks/useMagnetic'
 import { useScrolled } from '../../hooks/useScrolled'
 import { cx } from '../../utils/cx'
 import s from './Navbar.module.css'
@@ -20,9 +19,6 @@ export default function Navbar() {
   const headerRef = useRef(null)
   const menuButtonRef = useRef(null)
   const firstMobileLinkRef = useRef(null)
-  const registerRef = useRef(null)
-  useMagnetic(registerRef)
-
   const close = () => setOpenOnPath(null)
 
   useEffect(() => {
@@ -91,13 +87,6 @@ export default function Navbar() {
         </nav>
 
         <div className={s.navActions}>
-          <Link ref={registerRef} to={REGISTER_LINK.to} className={s.registerBtn}>
-            <span>{REGISTER_LINK.label}</span>
-            <span className={s.registerArrow} aria-hidden="true">
-              →
-            </span>
-          </Link>
-
           <button
             ref={menuButtonRef}
             className={cx(s.menuButton, open && s.active)}
@@ -140,10 +129,6 @@ export default function Navbar() {
             </NavLink>
           ))}
 
-          <Link to={REGISTER_LINK.to} className={s.mobileRegister} onClick={close}>
-            <span>Register Now</span>
-            <span aria-hidden="true">→</span>
-          </Link>
         </nav>
       </div>
     </header>

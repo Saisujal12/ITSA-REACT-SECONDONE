@@ -26,7 +26,6 @@
   --pointer-y: 35%;
   position: relative;
   width: 292px;
-  height: 450px;
   height: 466px;
   overflow: hidden;
   border-radius: 25px;
@@ -159,7 +158,6 @@
 
 .identity {
   position: relative;
-  min-height: 198px;
   min-height: 214px;
   padding: 16px 18px 13px;
   display: flex;
@@ -179,8 +177,6 @@
 }
 
 .logoBox {
-  width: 122px;
-  height: 122px;
   width: 136px;
   height: 136px;
   display: flex;
@@ -197,12 +193,9 @@
 }
 
 .logoBox img {
-  width: 116px;
-  height: 116px;
   width: 128px;
   height: 128px;
   object-fit: contain;
-  filter: saturate(0.84) contrast(0.9) brightness(1.05);
   filter: none;
 }
 
@@ -219,10 +212,11 @@
 }
 
 .associationName span {
+  white-space: nowrap;
   color: var(--primary);
-  font-size: 11px;
+  font-size: 8px;
   font-weight: 900;
-  letter-spacing: 1.3px;
+  letter-spacing: 0.45px;
   text-transform: uppercase;
 }
 

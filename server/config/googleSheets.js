@@ -101,16 +101,34 @@ const HEADERS = [
   "College Type",
   "College Name",
   "Roll No",
+  "Year",
   "Branch",
   "Email",
-  "Phone",
-  "Event",
-  "Amount",
-  "UTR / Transaction ID",
+  "Phone no",
+  "Veg/Non-veg",
+  "UTR/Transaction ID",
   "Status",
-  "Created At",
-  "Updated At",
+  "Created AT",
+  "Updated AT",
 ];
+
+function formatSheetTimestamp(date = new Date()) {
+  const parts = Object.fromEntries(
+    new Intl.DateTimeFormat("en-GB", {
+      timeZone: "Asia/Kolkata",
+      day: "2-digit",
+      month: "2-digit",
+      year: "2-digit",
+      hour: "2-digit",
+      minute: "2-digit",
+      hourCycle: "h12",
+    })
+      .formatToParts(date)
+      .map(({ type, value }) => [type, value]),
+  );
+
+  return `${parts.day}-${parts.month}-${parts.year} ${parts.hour}:${parts.minute} ${parts.dayPeriod.toUpperCase()}`;
+}
 
 /*
 |--------------------------------------------------------------------------
@@ -316,7 +334,7 @@ export async function ensureRegistrationSheet(
           spreadsheetId,
 
           range:
-            `${SHEET_NAME}!A1:N1`,
+            `${SHEET_NAME}!A1:O1`,
         },
       );
 
@@ -333,22 +351,50 @@ export async function ensureRegistrationSheet(
           existingHeaders[
             index
           ] === header,
-      );
+      ) && !String(existingHeaders[14] || "").trim();
 
     if (!headersMatch) {
+      const existingRows = await sheets.spreadsheets.values.get({
+        spreadsheetId,
+        range: `${SHEET_NAME}!A2:O`,
+      });
+
+      const currentHeadersWithAllocationColumn =
+        HEADERS.every((header, index) => existingHeaders[index] === header) &&
+        existingHeaders[14] === "Seat Allocation";
+
+      if (currentHeadersWithAllocationColumn) {
+        await sheets.spreadsheets.values.update({
+          spreadsheetId,
+          range: `${SHEET_NAME}!A1:N1`,
+          valueInputOption: "RAW",
+          requestBody: { values: [HEADERS] },
+        });
+        await sheets.spreadsheets.values.clear({ spreadsheetId, range: `${SHEET_NAME}!O:O` });
+        return HEADERS;
+      }
+
+      if (existingRows.data.values?.length) {
+        const schemaError = new Error(
+          `The registration tab for "${eventId}" still contains rows using the old column layout. Back up the tab, then migrate or clear its old rows before using the new registration columns.`,
+        );
+        schemaError.code = "GOOGLE_SHEET_SCHEMA_MISMATCH";
+        throw schemaError;
+      }
+
       await sheets.spreadsheets.values.update(
         {
           spreadsheetId,
 
           range:
-            `${SHEET_NAME}!A1:N1`,
+            `${SHEET_NAME}!A1:O1`,
 
           valueInputOption:
             "RAW",
 
           requestBody: {
             values: [
-              HEADERS,
+              [...HEADERS, ""],
             ],
           },
         },
@@ -419,9 +465,7 @@ export async function appendRegistration(
     eventId,
   );
 
-  const createdAt =
-    new Date().toISOString();
-
+  const createdAt = formatSheetTimestamp();
   const values = [
     [
       registration.registrationId ||
@@ -439,6 +483,9 @@ export async function appendRegistration(
       registration.rollNo ||
         "",
 
+      registration.year ||
+        "",
+
       registration.branch ||
         "",
 
@@ -448,10 +495,7 @@ export async function appendRegistration(
       registration.phone ||
         "",
 
-      registration.event ||
-        "",
-
-      registration.amount ??
+      registration.mealPreference ||
         "",
 
       registration.transactionId ||
@@ -475,7 +519,7 @@ export async function appendRegistration(
           `${SHEET_NAME}!A:N`,
 
         valueInputOption:
-          "USER_ENTERED",
+          "RAW",
 
         insertDataOption:
           "INSERT_ROWS",
@@ -586,19 +630,19 @@ export async function getRegistrationRows(
         rollNo:
           row[4] || "",
 
-        branch:
+        year:
           row[5] || "",
 
-        email:
+        branch:
           row[6] || "",
 
-        phone:
+        email:
           row[7] || "",
 
-        event:
+        phone:
           row[8] || "",
 
-        amount:
+        mealPreference:
           row[9] || "",
 
         transactionId:
@@ -613,6 +657,7 @@ export async function getRegistrationRows(
 
         updatedAt:
           row[13] || "",
+
       }),
     )
     .filter(
@@ -763,8 +808,7 @@ export async function updateRegistrationStatus(
     throw error;
   }
 
-  const updatedAt =
-    new Date().toISOString();
+  const updatedAt = formatSheetTimestamp();
 
   await sheets.spreadsheets.values.update(
     {
@@ -774,7 +818,7 @@ export async function updateRegistrationStatus(
         `${SHEET_NAME}!L${rowNumber}:N${rowNumber}`,
 
       valueInputOption:
-        "USER_ENTERED",
+        "RAW",
 
       requestBody: {
         values: [
@@ -808,19 +852,19 @@ export async function updateRegistrationStatus(
     rollNo:
       row[4] || "",
 
-    branch:
+    year:
       row[5] || "",
 
-    email:
+    branch:
       row[6] || "",
 
-    phone:
+    email:
       row[7] || "",
 
-    event:
+    phone:
       row[8] || "",
 
-    amount:
+    mealPreference:
       row[9] || "",
 
     transactionId:
@@ -832,5 +876,6 @@ export async function updateRegistrationStatus(
       row[12] || "",
 
     updatedAt,
+
   };
 }

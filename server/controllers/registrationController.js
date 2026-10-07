@@ -1,5 +1,6 @@
 import {
   appendRegistration,
+  getRegistrationRows,
 } from "../config/googleSheets.js";
 
 import {
@@ -33,7 +34,35 @@ const EVENT_IDS = new Set([
   "code-build",
   "innovation",
   "cyber-quest",
+  "design-deploy",
+  "tech-connect",
+  "event6",
+  "event7",
+  "event8",
+  "event9",
+  "event10",
 ]);
+
+/* Publicly expose registration totals only (never personal data). */
+export async function getPublicRegistrationCount(req, res) {
+  const { eventId } = req.params;
+  if (!EVENT_IDS.has(eventId)) {
+    return res.status(404).json({ success: false, message: "Event not found." });
+  }
+
+  try {
+    const registrations = await getRegistrationRows(eventId);
+    return res.set("Cache-Control", "no-store").json({
+      success: true,
+      eventId,
+      count: eventId === "llm" ? Math.min(registrations.length, 100) : registrations.length,
+      limit: eventId === "llm" ? 100 : null,
+    });
+  } catch (error) {
+    console.error("Failed to read public registration count:", error.message);
+    return res.status(503).json({ success: false, message: "Registration count is temporarily unavailable." });
+  }
+}
 
 /*
 |--------------------------------------------------------------------------
@@ -53,9 +82,11 @@ export async function createRegistration(
       collegeType,
       collegeName,
       rollNo,
+      year,
       branch,
       email,
       phone,
+      mealPreference,
       amount,
       transactionId,
     } = req.body;
@@ -75,6 +106,26 @@ export async function createRegistration(
 
         message:
           "Invalid event selected.",
+      });
+    }
+
+    if (
+      eventId === "llm" &&
+      !["VEG", "NON_VEG"].includes(mealPreference)
+    ) {
+      return res.status(400).json({
+        success: false,
+        message: "Please select Veg or Non-Veg for lunch.",
+      });
+    }
+
+    if (
+      eventId === "llm" &&
+      !["1st", "2nd", "3rd", "4th"].includes(year)
+    ) {
+      return res.status(400).json({
+        success: false,
+        message: "Please select your year of study.",
       });
     }
 
@@ -330,6 +381,11 @@ export async function createRegistration(
               .toUpperCase()
           : "",
 
+      year:
+        eventId === "llm"
+          ? year
+          : "",
+
       branch:
         String(branch)
           .trim()
@@ -343,6 +399,13 @@ export async function createRegistration(
 
       phone:
         normalizedPhone,
+
+      mealPreference:
+        eventId === "llm"
+          ? mealPreference === "VEG"
+            ? "Veg"
+            : "Non-Veg"
+          : "",
 
       amount,
 
@@ -458,6 +521,7 @@ export async function createRegistration(
         status:
           "PENDING",
 
+
         eventId,
 
         email: {
@@ -529,6 +593,13 @@ export async function createRegistration(
           message:
             "The Google Sheet for this event is not accessible. Please contact the administrator.",
         });
+    }
+
+    if (error.code === "GOOGLE_SHEET_SCHEMA_MISMATCH") {
+      return res.status(503).json({
+        success: false,
+        message: "The workshop registration sheet needs its new columns. Back up the existing registrations, then update the sheet headers before accepting registrations.",
+      });
     }
 
     if (

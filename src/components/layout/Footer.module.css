@@ -1,7 +1,7 @@
 /* Site footer. */
 .footer { padding: 42px 0 20px; background: #211e1b; color: #fff; }
 .inner { width: var(--container); margin: 0 auto; }
-.grid { display: grid; grid-template-columns: minmax(0, 1.35fr) minmax(300px, .95fr); gap: 54px; padding-bottom: 30px; border-bottom: 1px solid rgba(255,255,255,.1); }
+.grid { display: grid; grid-template-columns: minmax(0, 1.35fr) minmax(300px, .95fr); gap: 54px; padding-bottom: 20px; }
 .brand { max-width: 400px; }
 .brandTitle { display:flex; align-items:center; gap:10px; color:#fff; font-size:18px; font-weight:800; letter-spacing:-.025em; }
 .brandTitle img { width:56px; height:56px; object-fit:contain; }
@@ -9,6 +9,7 @@
 .instagram { width:fit-content; margin-top:16px; padding:7px 10px; display:inline-flex; align-items:center; gap:7px; border:1px solid rgba(255,255,255,.13); border-radius:999px; color:rgba(255,255,255,.75); font-size:10px; font-weight:800; transition:color var(--transition),border-color var(--transition),background var(--transition),transform var(--transition); }
 .instagram:hover { transform:translateY(-2px); border-color:rgba(255,255,255,.32); background:rgba(255,255,255,.06); color:#fff; }
 .instagram:focus-visible { outline-color:#fff; outline-offset:4px; }
+.developerCredit { width:100%; margin:0; padding:0 0 20px; border-bottom:1px solid rgba(255,255,255,.1); color:rgba(255,255,255,.48); font-size:13px; font-weight:400; line-height:1.6; text-align:center; }
 .navColumns { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:34px; align-items:start; }
 .column { min-width:0; text-align:left; }
 .column h2 { margin-bottom:12px; color:#fff; font-size:10px; font-weight:900; letter-spacing:1px; text-transform:uppercase; }
@@ -18,4 +19,5 @@
 .bottom { padding-top:17px; display:flex; align-items:center; justify-content:space-between; gap:20px; }
 .bottom p { color:rgba(255,255,255,.55); font-size:9px; }
 @media (max-width:900px) { .grid { grid-template-columns:1fr; gap:28px; } .brand { max-width:500px; } }
-@media (max-width:480px) { .footer { padding:34px 0 18px; } .grid { gap:24px; padding-bottom:24px; } .brand,.column { width:100%; max-width:none; text-align:left; justify-self:start; } .navColumns { grid-template-columns:repeat(2,minmax(0,1fr)); gap:22px; } .brandTitle { justify-content:flex-start; } .bottom { padding-top:14px; } }
+@media (max-width:480px) { .footer { padding:34px 0 18px; } .grid { gap:24px; padding-bottom:24px; } .brand,.column { width:100%; max-width:none; text-align:left; justify-self:start; } .navColumns { grid-template-columns:repeat(2,minmax(0,1fr)); gap:22px; } .brandTitle { justify-content:flex-start; } .developerCredit { font-size:clamp(7px,2.5vw,9px); letter-spacing:-.025em; white-space:nowrap; } .bottom { padding-top:14px; } }
+@media (max-width:480px) { .footer { padding:34px 0 18px; } .grid { gap:24px; padding-bottom:24px; } .brand,.column { width:100%; max-width:none; text-align:left; justify-self:start; } .navColumns { grid-template-columns:repeat(2,minmax(0,1fr)); gap:22px; } .brandTitle { justify-content:flex-start; } .developerCredit { font-size:clamp(8.5px,2.8vw,10px); letter-spacing:-.025em; white-space:nowrap; } .bottom { padding-top:14px; } }

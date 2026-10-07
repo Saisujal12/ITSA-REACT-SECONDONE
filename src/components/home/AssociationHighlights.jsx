@@ -187,42 +187,6 @@ export default function AssociationHighlights() {
             </div>
           </div>
 
-          <div className={s.sideGrid}>
-            {slides
-              .slice(0, 4)
-              .map(
-                (
-                  slide,
-                  index,
-                ) => (
-                  <Link
-                    key={slide.image}
-                    to={slide.to}
-                    className={`${s.thumb} ${slide.label === 'Learning' ? s.thumbLearning : ''} ${
-                      index === activeIndex ? s.thumbActive : ''
-                    }`}
-                    aria-label={`View ${slide.title} in Moments worth remembering`}
-                  >
-                    <img
-                      src={slide.asset.src}
-                      srcSet={
-                        slide.asset.srcSet
-                      }
-                      sizes="180px"
-                      alt=""
-                    />
-
-                    <span>
-                      <small>
-                        {slide.label}
-                      </small>
-
-                      {slide.title}
-                    </span>
-                  </Link>
-                ),
-              )}
-          </div>
         </div>
       </div>
     </section>

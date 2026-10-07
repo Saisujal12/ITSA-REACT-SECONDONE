@@ -18,6 +18,7 @@ import Sumshodhini from "./pages/Sumshodhini";
 import Workshops from "./pages/Workshops";
 
 import AdminDashboard from "./pages/admin/AdminDashboard";
+import AdminHome from "./pages/admin/AdminHome";
 import AdminLogin from "./pages/admin/AdminLogin";
 
 /*
@@ -58,12 +59,7 @@ const router = createBrowserRouter([
       {
         index: true,
 
-        element: (
-          <Navigate
-            to="/admin/login"
-            replace
-          />
-        ),
+        Component: AdminHome,
       },
 
       /*

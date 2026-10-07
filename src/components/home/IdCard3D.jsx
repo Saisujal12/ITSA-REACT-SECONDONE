@@ -192,7 +192,7 @@ export default function IdCard3D({
               </strong>
 
               <span>
-                IT Department
+                Kakatiya Institute of Technology and Science
               </span>
             </div>
           </div>

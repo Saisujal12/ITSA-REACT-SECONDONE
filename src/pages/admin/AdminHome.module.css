@@ -1,0 +1,300 @@
+.page {
+  --paper: #faf8f2;
+  --ink: #211e1b;
+  --muted: #77716a;
+  --red: #94182f;
+  min-height: 100vh;
+  background: var(--paper);
+  color: var(--ink);
+  font-family: var(--font-outfit);
+}
+
+.header {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  min-height: 82px;
+  padding: 10px clamp(20px, 4vw, 72px);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  border-bottom: 1px solid rgba(42, 35, 31, .12);
+  background: rgba(250, 248, 242, .96);
+  backdrop-filter: blur(16px);
+}
+
+.brand {
+  min-width: 0;
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  color: var(--ink);
+  text-decoration: none;
+}
+
+.college-logo,
+.it-logo {
+  width: 54px;
+  height: 58px;
+  flex: 0 0 auto;
+  display: grid;
+  place-items: center;
+}
+
+.college-logo img {
+  width: 43px;
+  height: auto;
+  object-fit: contain;
+}
+
+.it-logo img {
+  width: 54px;
+  height: 54px;
+  object-fit: contain;
+}
+
+.divider {
+  width: 1px;
+  height: 40px;
+  flex: 0 0 1px;
+  background: rgba(42, 35, 31, .15);
+}
+
+.brand-text {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  line-height: 1;
+}
+
+.brand-text strong {
+  white-space: nowrap;
+  font-size: clamp(14px, 1.3vw, 19px);
+  font-weight: 900;
+}
+
+.brand-text small {
+  color: #817b74;
+  font-size: 8px;
+  font-weight: 800;
+  letter-spacing: 4px;
+}
+
+.login-button {
+  min-height: 46px;
+  padding: 0 20px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+  border-radius: 999px;
+  background: var(--red);
+  color: white;
+  font-size: 13px;
+  font-weight: 800;
+  text-decoration: none;
+  transition: transform .2s ease, background .2s ease;
+}
+
+.login-button:hover {
+  transform: translateY(-2px);
+  background: #751326;
+}
+
+.main {
+  width: min(1180px, calc(100% - 48px));
+  margin: 0 auto;
+  padding: clamp(42px, 7vw, 88px) 0 90px;
+}
+
+.intro {
+  margin-bottom: 34px;
+}
+
+.eyebrow,
+.card-eyebrow {
+  color: var(--red);
+  font-size: 10px;
+  font-weight: 900;
+  letter-spacing: .17em;
+}
+
+.intro h1 {
+  margin: 12px 0 10px;
+  font-size: clamp(42px, 7vw, 76px);
+  font-weight: 900;
+  letter-spacing: -.065em;
+  line-height: .98;
+}
+
+.page .intro h1 em {
+  color: var(--red);
+  font-style: normal;
+}
+
+.page .intro h1,
+.page .workshop-card h2,
+.page .section-heading h2,
+.page .event-card h3 {
+  color: var(--ink);
+}
+
+.intro p {
+  color: var(--muted);
+  font-size: 16px;
+}
+
+.page .intro p {
+  color: var(--muted);
+}
+
+.workshop-card {
+  padding: clamp(22px, 4vw, 38px);
+  display: flex;
+  align-items: center;
+  gap: 22px;
+  border: 1px solid rgba(148, 24, 47, .19);
+  border-radius: 22px;
+  background: white;
+  box-shadow: 0 18px 50px rgba(40, 30, 25, .05);
+}
+
+.card-icon {
+  width: 58px;
+  height: 58px;
+  flex: 0 0 auto;
+  display: grid;
+  place-items: center;
+  border-radius: 17px;
+  background: rgba(148, 24, 47, .08);
+  color: var(--red);
+}
+
+.workshop-card h2 {
+  margin: 6px 0 2px;
+  font-size: clamp(18px, 2.5vw, 25px);
+}
+
+.workshop-count {
+  display: block;
+  color: var(--red);
+  font-size: clamp(42px, 6vw, 64px);
+  font-weight: 900;
+  line-height: 1.05;
+}
+
+.events-section {
+  margin-top: 58px;
+}
+
+.section-heading {
+  margin-bottom: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.section-heading h2 {
+  margin-top: 6px;
+  font-size: clamp(30px, 4vw, 42px);
+  letter-spacing: -.04em;
+}
+
+.section-heading > svg {
+  color: var(--red);
+}
+
+.event-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(225px, 1fr));
+  gap: 16px;
+}
+
+.event-card {
+  padding: 23px;
+  border: 1px solid rgba(42, 35, 31, .12);
+  border-radius: 18px;
+  background: rgba(255, 255, 255, .76);
+}
+
+.event-card > span {
+  color: var(--red);
+  font-size: 9px;
+  font-weight: 900;
+  letter-spacing: .13em;
+}
+
+.event-card h3 {
+  min-height: 48px;
+  margin: 10px 0 14px;
+  font-size: 19px;
+}
+
+.event-card p {
+  color: var(--muted);
+  font-size: 11px;
+}
+
+.event-card > strong {
+  display: block;
+  margin-top: 3px;
+  color: var(--ink);
+  font-size: 34px;
+  font-weight: 900;
+}
+
+@media (max-width: 560px) {
+  .header {
+    min-height: 72px;
+    padding-inline: 14px;
+  }
+
+  .college-logo,
+  .it-logo {
+    width: 39px;
+    height: 46px;
+  }
+
+  .college-logo img {
+    width: 34px;
+  }
+
+  .it-logo img {
+    width: 43px;
+    height: 43px;
+  }
+
+  .brand {
+    gap: 6px;
+  }
+
+  .brand-text strong {
+    font-size: 12px;
+  }
+
+  .brand-text small {
+    font-size: 7px;
+    letter-spacing: 3px;
+  }
+
+  .login-button {
+    min-height: 40px;
+    padding-inline: 14px;
+    font-size: 12px;
+  }
+
+  .main {
+    width: calc(100% - 32px);
+  }
+
+  .workshop-card {
+    align-items: flex-start;
+    gap: 15px;
+  }
+
+  .card-icon {
+    width: 46px;
+    height: 46px;
+  }
+}

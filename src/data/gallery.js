@@ -65,7 +65,7 @@ export const GALLERY_SECTIONS = [
           { image: 'gallery/inaugural-2', alt: 'Inaugural of IT Department 2026 placeholder' },
         ],
         driveLabel: 'VIEW EVENT PHOTOS',
-        driveUrl: null,
+        driveUrl: 'https://drive.google.com/drive/folders/1stRTE2ZWWDyjF1H0Rcqv02FghfjXyHas',
       },
     ],
   },

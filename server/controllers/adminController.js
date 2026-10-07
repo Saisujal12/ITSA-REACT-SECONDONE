@@ -337,6 +337,13 @@ export async function listRegistrations(
         });
     }
 
+    if (error.code === "GOOGLE_SHEET_SCHEMA_MISMATCH") {
+      return res.status(503).json({
+        success: false,
+        message: "This registration sheet still has records in the previous column layout. Back them up and migrate or clear those rows before using the new layout.",
+      });
+    }
+
     return res
       .status(500)
       .json({

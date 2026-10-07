@@ -9,6 +9,7 @@ import {
   BookUser,
   Building2,
   ChevronDown,
+  GraduationCap,
   Hash,
   LoaderCircle,
   Mail,
@@ -42,6 +43,7 @@ import {
 import {
   COLLEGE_OPTIONS,
   EMPTY_REGISTRATION,
+  STUDY_YEAR_OPTIONS,
   normalizeRegistration,
   validateRegistration,
 } from "../../utils/validation";
@@ -60,6 +62,8 @@ const FIELD_ORDER = [
   "branch",
   "email",
   "phone",
+  "year",
+  "mealPreference",
   "transactionId",
 ];
 
@@ -263,9 +267,10 @@ export default function RegistrationForm({
 
         if (attempted) {
           setErrors(
-            validateRegistration(
-              next,
-            ),
+          validateRegistration(
+            next,
+            event,
+          ),
           );
         }
 
@@ -297,14 +302,19 @@ export default function RegistrationForm({
     const nextErrors =
       validateRegistration(
         values,
+        event,
       );
 
     setErrors(
       nextErrors,
     );
 
+    const fieldOrder = FIELD_ORDER.filter(
+      (name) => name !== "mealPreference" || event.type === "workshop",
+    );
+
     const firstInvalid =
-      FIELD_ORDER.find(
+      fieldOrder.find(
         (name) =>
           nextErrors[name],
       );
@@ -364,6 +374,12 @@ export default function RegistrationForm({
 
             phone:
               clean.phone,
+
+            year:
+              clean.year,
+
+            mealPreference:
+              clean.mealPreference,
 
             amount:
               event.fee,
@@ -788,6 +804,77 @@ export default function RegistrationForm({
               )}
             </Field>
           </div>
+
+          {event.type === "workshop" && (
+            <Field
+              id="reg-year"
+              number="07"
+              label="YEAR OF STUDY"
+              icon={GraduationCap}
+              error={errors.year}
+            >
+              {(aria) => (
+                <>
+                  <select {...register("year")} {...aria} required>
+                    <option value="" disabled>
+                      Select your year
+                    </option>
+                    {STUDY_YEAR_OPTIONS.map((year) => (
+                      <option key={year} value={year}>
+                        {year}
+                      </option>
+                    ))}
+                  </select>
+                  <ChevronDown className={s.selectCaret} aria-hidden="true" />
+                </>
+              )}
+            </Field>
+          )}
+
+          {event.type === "workshop" && (
+            <fieldset
+              className={s.mealPreferenceFieldset}
+              aria-describedby={errors.mealPreference ? "reg-mealPreference-error" : undefined}
+              aria-invalid={Boolean(errors.mealPreference)}
+            >
+              <legend>
+                <span>08</span>
+                LUNCH PREFERENCE
+              </legend>
+
+              <div className={s.mealPreferenceOptions}>
+                <label className={s.mealPreferenceOption} htmlFor="reg-meal-veg">
+                  <input
+                    {...register("mealPreference")}
+                    id="reg-meal-veg"
+                    type="radio"
+                    value="VEG"
+                    checked={values.mealPreference === "VEG"}
+                    aria-invalid={Boolean(errors.mealPreference)}
+                  />
+                  <span>Veg</span>
+                </label>
+
+                <label className={s.mealPreferenceOption} htmlFor="reg-meal-non-veg">
+                  <input
+                    {...register("mealPreference")}
+                    id="reg-meal-non-veg"
+                    type="radio"
+                    value="NON_VEG"
+                    checked={values.mealPreference === "NON_VEG"}
+                    aria-invalid={Boolean(errors.mealPreference)}
+                  />
+                  <span>Non-Veg</span>
+                </label>
+              </div>
+
+              {errors.mealPreference && (
+                <small id="reg-mealPreference-error" className={s.mealPreferenceError}>
+                  {errors.mealPreference}
+                </small>
+              )}
+            </fieldset>
+          )}
         </div>
 
         {/* QR */}
@@ -806,7 +893,7 @@ export default function RegistrationForm({
         >
           <Field
             id="reg-transactionId"
-            number="07"
+            number={event.type === "workshop" ? "09" : "07"}
             label="PAYMENT UTR / TRANSACTION ID"
             icon={
               ReceiptText

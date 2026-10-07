@@ -11,14 +11,18 @@ export const COLLEGE_OPTIONS = [
   { value: 'OTHER', label: 'Other College' },
 ]
 
+export const STUDY_YEAR_OPTIONS = ['1st', '2nd', '3rd', '4th']
+
 export const EMPTY_REGISTRATION = {
   name: '',
   collegeType: '',
   collegeName: '',
   rollNo: '',
+  year: '',
   branch: '',
   email: '',
   phone: '',
+  mealPreference: '',
   transactionId: '',
 }
 
@@ -28,14 +32,16 @@ export function normalizeRegistration(values) {
     collegeType: values.collegeType,
     collegeName: values.collegeName.trim().replace(/\s+/g, ' '),
     rollNo: values.rollNo.trim().toUpperCase(),
+    year: values.year || '',
     branch: values.branch.trim().replace(/\s+/g, ' '),
     email: values.email.trim().toLowerCase(),
     phone: values.phone.replace(/\D/g, '').slice(0, 10),
+    mealPreference: values.mealPreference || '',
     transactionId: values.transactionId.trim(),
   }
 }
 
-export function validateRegistration(values) {
+export function validateRegistration(values, event) {
   const v = normalizeRegistration(values)
   const errors = {}
 
@@ -81,6 +87,14 @@ export function validateRegistration(values) {
     errors.phone = 'Please enter your 10-digit phone number.'
   } else if (!PHONE.test(v.phone)) {
     errors.phone = 'Phone number must contain exactly 10 digits.'
+  }
+
+  if (event?.type === 'workshop' && !['VEG', 'NON_VEG'].includes(v.mealPreference)) {
+    errors.mealPreference = 'Please choose Veg or Non-Veg for lunch.'
+  }
+
+  if (event?.type === 'workshop' && !STUDY_YEAR_OPTIONS.includes(v.year)) {
+    errors.year = 'Please select your year of study.'
   }
 
   if (!v.transactionId) {

@@ -81,6 +81,10 @@ function normalizeRegistration(
       item?.rollNo ??
       "",
 
+    year:
+      item?.year ??
+      "",
+
     branch:
       item?.branch ??
       "",
@@ -91,6 +95,10 @@ function normalizeRegistration(
 
     phone:
       item?.phone ??
+      "",
+
+    mealPreference:
+      item?.mealPreference ??
       "",
 
     event:
@@ -118,6 +126,7 @@ function normalizeRegistration(
     updatedAt:
       item?.updatedAt ??
       "",
+
   };
 }
 
@@ -132,6 +141,10 @@ function formatDate(
 ) {
   if (!value) {
     return "—";
+  }
+
+  if (/^\d{2}-\d{2}-\d{2} \d{2}:\d{2} (AM|PM)$/i.test(String(value))) {
+    return String(value);
   }
 
   const date =
@@ -450,6 +463,7 @@ useEffect(
               item.status ===
               "REJECTED",
           ).length,
+
       }),
       [
         registrations,

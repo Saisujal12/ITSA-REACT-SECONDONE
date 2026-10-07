@@ -95,6 +95,7 @@ export default function Footer() {
                 Follow us on Instagram
               </span>
             </a>
+
           </div>
 
           <div className={s.navColumns}>
@@ -114,6 +115,10 @@ export default function Footer() {
             ))}
           </div>
         </div>
+
+        <p className={s.developerCredit}>
+          Website developed by K.Sai Sujal, A.Jashwanth and Salman Imaran Syed
+        </p>
 
         <div className={s.bottom}>
           <p>

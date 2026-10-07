@@ -21,3 +21,7 @@ export function submitRegistration(
     },
   );
 }
+
+export function fetchPublicRegistrationCount(eventId, { signal } = {}) {
+  return request(`/api/registrations/counts/${encodeURIComponent(eventId)}`, { signal });
+}

@@ -11,6 +11,8 @@ const FIELDS = [
   ['branch', 'Branch'],
   ['email', 'Email'],
   ['phone', 'Phone'],
+  ['mealPreference', 'Lunch Preference'],
+  ['seatAllocation', 'Seat Allocation'],
   ['workshop', 'Workshop'],
   ['amount', 'Amount'],
   ['transactionId', 'Transaction ID'],

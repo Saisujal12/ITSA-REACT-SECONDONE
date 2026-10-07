@@ -3,6 +3,7 @@ import express from "express";
 
 import {
   createRegistration,
+  getPublicRegistrationCount,
 } from "../controllers/registrationController.js";
 
 const router = express.Router();
@@ -16,6 +17,7 @@ const router = express.Router();
 // email, and Google Sheets logic remain unchanged.
 
 router.post("/", createRegistration);
+router.get("/counts/:eventId", getPublicRegistrationCount);
 
 export default router;
 
