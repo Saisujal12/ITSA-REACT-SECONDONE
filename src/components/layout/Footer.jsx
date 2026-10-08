@@ -117,7 +117,7 @@ export default function Footer() {
         </div>
 
         <p className={s.developerCredit}>
-          Website developed by K.Sai Sujal, A.Jashwanth and Salman Imaran Syed
+          Website developed by K.Sai Sujal, A.Jashwanth and Salman Imran Syed
         </p>
 
         <div className={s.bottom}>
