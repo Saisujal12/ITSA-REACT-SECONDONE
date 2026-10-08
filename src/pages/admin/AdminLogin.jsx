@@ -114,7 +114,21 @@ export default function AdminLogin() {
 
   return (
     <main className={s.loginPage}>
-      <section className={s.loginCard}>
+      <section className={s.loginCard} style={{ position: "relative" }}>
+        <Link
+          className={s.backHome}
+          to="/admin"
+          style={{
+            position: "absolute",
+            top: "18px",
+            left: "22px",
+            marginTop: 0,
+          }}
+        >
+          <ArrowLeft aria-hidden="true" />
+          Back
+        </Link>
+
         <div className={s.loginIcon}>
           <ShieldHalf aria-hidden="true" />
         </div>
@@ -188,7 +202,11 @@ export default function AdminLogin() {
                 title={showPassword ? "Hide password" : "Show password"}
                 type="button"
               >
-                {showPassword ? <EyeOff aria-hidden="true" /> : <Eye aria-hidden="true" />}
+                {showPassword ? (
+                  <EyeOff aria-hidden="true" />
+                ) : (
+                  <Eye aria-hidden="true" />
+                )}
               </button>
             </span>
           </label>
@@ -205,7 +223,11 @@ export default function AdminLogin() {
             </p>
           )}
 
-          <button className={cx(s.button, s.loginButton)} disabled={submitting} type="submit">
+          <button
+            className={cx(s.button, s.loginButton)}
+            disabled={submitting}
+            type="submit"
+          >
             {submitting ? (
               <>
                 <LoaderCircle className={s.loginSpinner} aria-hidden="true" />
@@ -219,11 +241,6 @@ export default function AdminLogin() {
             )}
           </button>
         </form>
-
-        <Link className={s.backHome} to="/">
-          <ArrowLeft aria-hidden="true" />
-          Back to website
-        </Link>
       </section>
     </main>
   );
