@@ -1,5 +1,6 @@
 import "dotenv/config";
 import { google } from "googleapis";
+import { Readable } from "node:stream";
 
 /*
 |--------------------------------------------------------------------------
@@ -110,7 +111,10 @@ const HEADERS = [
   "Status",
   "Created AT",
   "Updated AT",
+  "Payment Screenshot",
 ];
+
+const LEGACY_HEADERS = HEADERS.slice(0, 14);
 
 function formatSheetTimestamp(date = new Date()) {
   const parts = Object.fromEntries(
@@ -260,6 +264,7 @@ function createAuth() {
 
       scopes: [
         "https://www.googleapis.com/auth/spreadsheets",
+        "https://www.googleapis.com/auth/drive",
       ],
     });
   }
@@ -300,6 +305,7 @@ function createAuth() {
 
     scopes: [
       "https://www.googleapis.com/auth/spreadsheets",
+      "https://www.googleapis.com/auth/drive",
     ],
   });
 }
@@ -307,11 +313,38 @@ function createAuth() {
 const auth =
   createAuth();
 
+function createDriveAuth() {
+  const clientId = process.env.GOOGLE_DRIVE_OAUTH_CLIENT_ID?.trim();
+  const clientSecret = process.env.GOOGLE_DRIVE_OAUTH_CLIENT_SECRET?.trim();
+  const refreshToken = process.env.GOOGLE_DRIVE_OAUTH_REFRESH_TOKEN?.trim();
+  const configured = [clientId, clientSecret, refreshToken].filter(Boolean).length;
+
+  if (configured === 0) {
+    // Backwards compatibility: existing service-account Drive configuration.
+    return auth;
+  }
+
+  if (configured !== 3) {
+    throw new Error(
+      "Personal Google Drive OAuth is incomplete. Set GOOGLE_DRIVE_OAUTH_CLIENT_ID, GOOGLE_DRIVE_OAUTH_CLIENT_SECRET, and GOOGLE_DRIVE_OAUTH_REFRESH_TOKEN.",
+    );
+  }
+
+  const oauthClient = new google.auth.OAuth2(clientId, clientSecret);
+  oauthClient.setCredentials({ refresh_token: refreshToken });
+  return oauthClient;
+}
+
 const sheets =
   google.sheets({
     version: "v4",
     auth,
   });
+
+// Drive can use a personal Gmail OAuth token while Sheets continues using the
+// service account. OAuth is selected when all three GOOGLE_DRIVE_OAUTH_* vars
+// are present in server/.env.
+const drive = google.drive({ version: "v3", auth: createDriveAuth() });
 
 /*
 |--------------------------------------------------------------------------
@@ -334,7 +367,7 @@ export async function ensureRegistrationSheet(
           spreadsheetId,
 
           range:
-            `${SHEET_NAME}!A1:O1`,
+            `${SHEET_NAME}!A1:P1`,
         },
       );
 
@@ -351,26 +384,39 @@ export async function ensureRegistrationSheet(
           existingHeaders[
             index
           ] === header,
-      ) && !String(existingHeaders[14] || "").trim();
+      ) && !String(existingHeaders[15] || "").trim();
 
     if (!headersMatch) {
       const existingRows = await sheets.spreadsheets.values.get({
         spreadsheetId,
-        range: `${SHEET_NAME}!A2:O`,
+        range: `${SHEET_NAME}!A2:P`,
       });
 
+      const legacyHeadersMatch = LEGACY_HEADERS.every(
+        (header, index) => existingHeaders[index] === header,
+      );
+
       const currentHeadersWithAllocationColumn =
-        HEADERS.every((header, index) => existingHeaders[index] === header) &&
-        existingHeaders[14] === "Seat Allocation";
+        legacyHeadersMatch && existingHeaders[14] === "Seat Allocation";
 
       if (currentHeadersWithAllocationColumn) {
+        await sheets.spreadsheets.values.clear({ spreadsheetId, range: `${SHEET_NAME}!O:O` });
         await sheets.spreadsheets.values.update({
           spreadsheetId,
-          range: `${SHEET_NAME}!A1:N1`,
+          range: `${SHEET_NAME}!A1:O1`,
           valueInputOption: "RAW",
           requestBody: { values: [HEADERS] },
         });
-        await sheets.spreadsheets.values.clear({ spreadsheetId, range: `${SHEET_NAME}!O:O` });
+        return HEADERS;
+      }
+
+      if (legacyHeadersMatch && !String(existingHeaders[14] || "").trim()) {
+        await sheets.spreadsheets.values.update({
+          spreadsheetId,
+          range: `${SHEET_NAME}!O1`,
+          valueInputOption: "RAW",
+          requestBody: { values: [[HEADERS[14]]] },
+        });
         return HEADERS;
       }
 
@@ -394,7 +440,7 @@ export async function ensureRegistrationSheet(
 
           requestBody: {
             values: [
-              [...HEADERS, ""],
+              HEADERS,
             ],
           },
         },
@@ -441,6 +487,75 @@ export async function ensureRegistrationSheet(
     }
 
     throw error;
+  }
+}
+
+export async function uploadPaymentScreenshot({
+  registrationId,
+  fileName,
+  mimeType,
+  base64,
+}) {
+  const folderId = process.env.PAYMENT_SCREENSHOT_FOLDER_ID?.trim();
+  if (!folderId) {
+    const error = new Error("PAYMENT_SCREENSHOT_FOLDER_ID is not configured.");
+    error.code = "PAYMENT_SCREENSHOT_STORAGE_NOT_CONFIGURED";
+    throw error;
+  }
+
+  const safeName = String(fileName || "payment-screenshot.jpg")
+    .replace(/[^a-zA-Z0-9._-]/g, "_")
+    .slice(-100);
+  const bytes = Buffer.from(base64, "base64");
+  let response;
+  try {
+    response = await drive.files.create({
+      supportsAllDrives: true,
+      requestBody: {
+        name: `${registrationId}-${safeName}`,
+        mimeType,
+        parents: [folderId],
+      },
+      media: {
+        mimeType,
+        body: Readable.from(bytes),
+      },
+      fields: "id,name,webViewLink",
+    });
+  } catch (cause) {
+    if ([403, 404].includes(cause?.code || cause?.response?.status)) {
+      const driveApiError = cause?.response?.data?.error;
+      const safeMessage = String(driveApiError?.message || cause?.message || "Unknown Drive API error")
+        .replaceAll(folderId, "[configured folder]");
+      console.error("Payment screenshot Drive upload was denied:", {
+        status: cause?.response?.status || cause?.code,
+        reason: driveApiError?.errors?.[0]?.reason || driveApiError?.status || "unknown",
+        message: safeMessage,
+      });
+      const reason = driveApiError?.errors?.[0]?.reason || driveApiError?.status;
+      if (reason === "storageQuotaExceeded") {
+        const error = new Error(
+          "The payment screenshot folder is in My Drive. Google service accounts cannot own files because they have no Drive storage quota. Configure PAYMENT_SCREENSHOT_FOLDER_ID with a folder inside a Google Workspace Shared Drive, and add the service account to that Shared Drive with Contributor or higher access.",
+        );
+        error.code = "PAYMENT_SCREENSHOT_SHARED_DRIVE_REQUIRED";
+        throw error;
+      }
+      const error = new Error("The configured payment screenshot Drive folder is missing or inaccessible.");
+      error.code = "PAYMENT_SCREENSHOT_STORAGE_ACCESS_DENIED";
+      throw error;
+    }
+    throw cause;
+  }
+
+  return {
+    id: response.data.id,
+    url: response.data.webViewLink || `https://drive.google.com/file/d/${response.data.id}/view`,
+  };
+}
+
+export async function deletePaymentScreenshot(fileId) {
+  if (fileId) {
+    await drive.files.delete({ fileId, supportsAllDrives: true });
   }
 }
 
@@ -507,6 +622,8 @@ export async function appendRegistration(
       createdAt,
 
       "",
+
+      registration.paymentScreenshotUrl || "",
     ],
   ];
 
@@ -516,7 +633,7 @@ export async function appendRegistration(
         spreadsheetId,
 
         range:
-          `${SHEET_NAME}!A:N`,
+          `${SHEET_NAME}!A:O`,
 
         valueInputOption:
           "RAW",
@@ -596,7 +713,7 @@ export async function getRegistrationRows(
         spreadsheetId,
 
         range:
-          `${SHEET_NAME}!A2:N`,
+          `${SHEET_NAME}!A2:O`,
       },
     );
 
@@ -647,6 +764,9 @@ export async function getRegistrationRows(
 
         transactionId:
           row[10] || "",
+
+        paymentScreenshotUrl:
+          row[14] || "",
 
         status:
           row[11] ||
@@ -764,7 +884,7 @@ export async function updateRegistrationStatus(
         spreadsheetId,
 
         range:
-          `${SHEET_NAME}!A${rowNumber}:N${rowNumber}`,
+          `${SHEET_NAME}!A${rowNumber}:O${rowNumber}`,
       },
     );
 
@@ -869,6 +989,9 @@ export async function updateRegistrationStatus(
 
     transactionId:
       row[10] || "",
+
+    paymentScreenshotUrl:
+      row[14] || "",
 
     status,
 

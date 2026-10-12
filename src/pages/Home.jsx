@@ -9,8 +9,8 @@ import s from './Home.module.css'
 
 const STATS = [
   { value: 'IT', label: 'DEPARTMENT' },
-  { value: String(SITE.year), label: 'LEARN · BUILD · GROW' },
-  { value: '∞', label: 'POSSIBILITIES' },
+  { value: '25', label: 'FACULTIES' },
+  { value: '32', label: 'STUDENT ASSOCIATION MEMBERS' },
 ]
 
 const ABOUT_POINTS = [
@@ -30,16 +30,18 @@ export default function Home() {
         <div className={s.heroContainer}>
           <div className={s.heroContent}>
             <h1 id="home-title">
-              <span className={s.titleLead}>Department of Information</span>
-              <span className={s.titleAccent}>Technology</span>
+              <span className={s.titleLead}>Department of</span>
+              <span className={s.titleAccent}>Information Technology</span>
             </h1>
 
             <p className={s.heroDescription}>
-              The IT Department represents the spirit of the Information Technology branch through
-              learning, innovation, practical experiences and student activities.
-              <br />
-              <strong>Learn. Build. Grow.</strong>
+              The IT Department helps students explore emerging technologies, strengthen their
+              computing skills, and turn creative ideas into practical solutions. Through
+              workshops, collaborative projects, and technical events, students gain real
+              experience, share ideas, and prepare for future careers.
             </p>
+
+            <p className={s.heroMotto}>Learn. Connect. Grow.</p>
 
             <div className={s.heroButtons}>
               <Link to="/about" className="btn btn-primary">
@@ -47,7 +49,7 @@ export default function Home() {
               </Link>
 
               <Link to="/sumshodhini" className="btn btn-outline">
-                Explore {SITE.fest}
+                Explore {SITE.fest} <span aria-hidden="true">→</span>
               </Link>
             </div>
 
@@ -65,19 +67,7 @@ export default function Home() {
                     <dt className="visually-hidden">{stat.label}</dt>
 
                     <dd>
-                      <strong
-                        aria-hidden={
-                          stat.value === '∞' || undefined
-                        }
-                      >
-                        {stat.value}
-                      </strong>
-
-                      {stat.value === '∞' && (
-                        <span className="visually-hidden">
-                          Infinite
-                        </span>
-                      )}
+                      <strong>{stat.value}</strong>
 
                       <span aria-hidden="true">
                         {stat.label}
@@ -96,8 +86,24 @@ export default function Home() {
       {/* DEPARTMENT HIGHLIGHTS */}
       <AssociationHighlights />
 
-      {/* TESTIMONIALS */}
-      <Testimonials />
+      {/* IT DEPARTMENT GROUP PHOTO */}
+      <section
+        className={`section ${s.groupPhotoSection}`}
+        aria-labelledby="it-group-photo-title"
+      >
+        <div className="container">
+          <h2 id="it-group-photo-title">
+            IT Department <span className="text-primary">Group Photo</span>
+          </h2>
+
+          <ImageWithFallback
+            imageKey="gallery/gallery-5"
+            alt="IT Department students and faculty together in a group photo"
+            className={s.groupPhoto}
+            loading="lazy"
+          />
+        </div>
+      </section>
 
       {/* ABOUT */}
       <section
@@ -120,7 +126,6 @@ export default function Home() {
                 <div className={s.panelTitle}>
                   {SITE.nameUpper}
                 </div>
-
               </div>
             </div>
 
@@ -189,6 +194,7 @@ export default function Home() {
                     loading="lazy"
                   />
                 </div>
+
                 <div className={s.panelTitle}>
                   {SITE.festUpper}
                 </div>
@@ -221,9 +227,7 @@ export default function Home() {
               <ul className={s.aboutList}>
                 <li>
                   <span>
-                    <strong>
-                      Day 01 — Workshops
-                    </strong>
+                    <strong>Day 01 — Workshops</strong>
                     <br />
                     Learn through practical,
                     technology-focused workshops.
@@ -232,9 +236,7 @@ export default function Home() {
 
                 <li>
                   <span>
-                    <strong>
-                      Day 02 — Events
-                    </strong>
+                    <strong>Day 02 — Events</strong>
                     <br />
                     Participate in different technical
                     and engaging events.
@@ -266,6 +268,9 @@ export default function Home() {
         </div>
       </section>
 
+      {/* TESTIMONIALS: second-last homepage section */}
+      <Testimonials />
+
       {/* CALL TO ACTION */}
       <section
         className="section"
@@ -274,12 +279,11 @@ export default function Home() {
         <div className="container">
           <div className={s.cta}>
             <p className={s.ctaKicker}>
-              LEARN · BUILD · GROW
+              LEARN · CONNECT · GROW
             </p>
 
             <h2 id="home-cta-title">
-              Learn today. Build tomorrow. Grow through
-              experience.
+              Learn today. Connect through experience. Grow together.
             </h2>
 
             <p>

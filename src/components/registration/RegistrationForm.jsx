@@ -11,6 +11,7 @@ import {
   ChevronDown,
   GraduationCap,
   Hash,
+  ImageUp,
   LoaderCircle,
   Mail,
   Phone,
@@ -64,8 +65,37 @@ const FIELD_ORDER = [
   "phone",
   "year",
   "mealPreference",
+  "paymentScreenshot",
   "transactionId",
 ];
+
+const MAX_SCREENSHOT_BYTES = 8 * 1024 * 1024;
+
+async function preparePaymentScreenshot(file) {
+  const image = await createImageBitmap(file);
+  const canvas = document.createElement("canvas");
+  let scale = Math.min(1, 1280 / Math.max(image.width, image.height));
+  let dataUrl = "";
+
+  for (const quality of [0.78, 0.7, 0.62, 0.54]) {
+    canvas.width = Math.max(1, Math.round(image.width * scale));
+    canvas.height = Math.max(1, Math.round(image.height * scale));
+    canvas.getContext("2d").drawImage(image, 0, 0, canvas.width, canvas.height);
+    dataUrl = canvas.toDataURL("image/jpeg", quality);
+    if ((dataUrl.length * 3) / 4 <= 1_450_000) break;
+    scale *= 0.85;
+  }
+  image.close();
+
+  if ((dataUrl.length * 3) / 4 > 1_450_000) {
+    throw new Error("Screenshot is too large after compression.");
+  }
+
+  return {
+    fileName: `${file.name.replace(/\.[^.]+$/, "") || "payment-screenshot"}.jpg`,
+    dataUrl,
+  };
+}
 
 function Field({
   id,
@@ -178,6 +208,10 @@ export default function RegistrationForm({
     setServerError,
   ] = useState("");
 
+  const [paymentScreenshot, setPaymentScreenshot] = useState(null);
+  const [screenshotError, setScreenshotError] = useState("");
+  const [isScreenshotDragging, setIsScreenshotDragging] = useState(false);
+
   const fieldRefs =
     useRef({});
 
@@ -186,6 +220,8 @@ export default function RegistrationForm({
 
   const abortRef =
     useRef(null);
+
+  const screenshotInputRef = useRef(null);
 
   const feeKnown =
     hasVerifiedFee(event);
@@ -209,6 +245,35 @@ export default function RegistrationForm({
       feedbackRef.current?.focus();
     }
   }, [status]);
+
+  async function handlePaymentScreenshotFile(file) {
+    setScreenshotError("");
+    if (status === "success" || status === "error") setStatus("idle");
+    if (!file) {
+      setPaymentScreenshot(null);
+      return;
+    }
+    if (!file.type.match(/^image\/(jpeg|png|webp)$/)) {
+      setPaymentScreenshot(null);
+      setScreenshotError("Choose a JPG, PNG, or WebP image.");
+      return;
+    }
+    if (file.size > MAX_SCREENSHOT_BYTES) {
+      setPaymentScreenshot(null);
+      setScreenshotError("The image must be 8 MB or smaller.");
+      return;
+    }
+    try {
+      const prepared = await preparePaymentScreenshot(file);
+      setPaymentScreenshot(prepared);
+      if (attempted) {
+        setErrors((current) => ({ ...current, paymentScreenshot: undefined }));
+      }
+    } catch {
+      setPaymentScreenshot(null);
+      setScreenshotError("This image could not be opened. Please choose another file.");
+    }
+  }
 
   const register =
     (name) => ({
@@ -305,6 +370,11 @@ export default function RegistrationForm({
         event,
       );
 
+    if (!paymentScreenshot) {
+      nextErrors.paymentScreenshot = "Please upload your payment screenshot.";
+    }
+    setScreenshotError(nextErrors.paymentScreenshot || "");
+
     setErrors(
       nextErrors,
     );
@@ -386,6 +456,8 @@ export default function RegistrationForm({
 
             transactionId:
               clean.transactionId,
+
+            paymentScreenshot,
           },
           {
             signal:
@@ -412,6 +484,9 @@ export default function RegistrationForm({
       setValues(
         EMPTY_REGISTRATION,
       );
+      setPaymentScreenshot(null);
+      setScreenshotError("");
+      if (screenshotInputRef.current) screenshotInputRef.current.value = "";
 
       setErrors({});
 
@@ -884,6 +959,91 @@ export default function RegistrationForm({
           day={day}
         />
 
+        <div className={cx(s.formGroup, screenshotError && s.invalid, s.screenshotGroup)}>
+          <label htmlFor="reg-paymentScreenshot">
+            <span>{event.type === "workshop" ? "09" : "07"}</span>
+            UPLOAD PAYMENT SCREENSHOT
+          </label>
+          <div
+            className={cx(
+              s.screenshotDropzone,
+              isScreenshotDragging && s.screenshotDropzoneActive,
+              screenshotError && s.screenshotDropzoneInvalid,
+              paymentScreenshot && s.screenshotDropzoneComplete,
+            )}
+            onDragEnter={(dragEvent) => {
+              dragEvent.preventDefault();
+              setIsScreenshotDragging(true);
+            }}
+            onDragOver={(dragEvent) => dragEvent.preventDefault()}
+            onDragLeave={(dragEvent) => {
+              if (!dragEvent.currentTarget.contains(dragEvent.relatedTarget)) {
+                setIsScreenshotDragging(false);
+              }
+            }}
+            onDrop={(dropEvent) => {
+              dropEvent.preventDefault();
+              setIsScreenshotDragging(false);
+              handlePaymentScreenshotFile(dropEvent.dataTransfer.files?.[0]);
+            }}
+          >
+            <input
+              className={s.screenshotFileInput}
+              id="reg-paymentScreenshot"
+              ref={(element) => {
+                screenshotInputRef.current = element;
+                fieldRefs.current.paymentScreenshot = element;
+              }}
+              type="file"
+              accept="image/jpeg,image/png,image/webp"
+              aria-label="Choose payment screenshot"
+              aria-invalid={Boolean(screenshotError)}
+              aria-describedby={screenshotError ? "reg-paymentScreenshot-error" : "reg-paymentScreenshot-hint"}
+              onChange={(changeEvent) => handlePaymentScreenshotFile(changeEvent.target.files?.[0])}
+              required
+            />
+            <div className={s.screenshotDropContent} aria-hidden="true">
+              <span className={s.screenshotDropIcon}>
+                <ImageUp />
+              </span>
+              <span className={s.screenshotDropCopy}>
+                <strong>
+                  {isScreenshotDragging
+                    ? "Release to upload screenshot"
+                    : paymentScreenshot?.fileName || "Drop payment screenshot here"}
+                </strong>
+                <small>
+                  {paymentScreenshot ? "Click to replace or drop a new file" : "or click to browse files"}
+                </small>
+              </span>
+              <span className={s.screenshotFormatTag}>JPG · PNG · WEBP <b>MAX 8 MB</b></span>
+            </div>
+          </div>
+          <small id="reg-paymentScreenshot-hint" className={s.fieldHint}>
+            Upload a clear image of the successful payment screen. Your image is optimized automatically.
+          </small>
+          {paymentScreenshot && (
+            <div className={s.screenshotPreview}>
+              <img src={paymentScreenshot.dataUrl} alt="Preview of uploaded payment screenshot" />
+              <span>Payment screenshot ready to upload</span>
+              <button
+                type="button"
+                onClick={() => {
+                  setPaymentScreenshot(null);
+                  if (screenshotInputRef.current) screenshotInputRef.current.value = "";
+                }}
+              >
+                Remove
+              </button>
+            </div>
+          )}
+          {screenshotError && (
+            <small id="reg-paymentScreenshot-error" className={s.fieldError} role="alert">
+              {screenshotError}
+            </small>
+          )}
+        </div>
+
         {/* UTR */}
 
         <div
@@ -893,7 +1053,7 @@ export default function RegistrationForm({
         >
           <Field
             id="reg-transactionId"
-            number={event.type === "workshop" ? "09" : "07"}
+            number={event.type === "workshop" ? "10" : "08"}
             label="PAYMENT UTR / TRANSACTION ID"
             icon={
               ReceiptText

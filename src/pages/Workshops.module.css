@@ -92,6 +92,7 @@
 }
 
 .workshop-hero-card {
+  container-type: inline-size;
   min-height: 290px;
   padding: 34px;
   display: flex;
@@ -118,9 +119,12 @@
 .workshop-hero-card strong {
   margin-top: 35px;
   font-family: Georgia,"Times New Roman",serif;
-  font-size: clamp(35px,4vw,55px);
+  font-size: clamp(24px, 4.1cqi, 46px);
+  font-size: clamp(30px, 4.5cqi, 42px);
   line-height: .92;
   letter-spacing: -.055em;
+  white-space: pre-line;
+  white-space: pre;
 }
 
 .hero-card-meta {
@@ -207,6 +211,7 @@
 
 .current-main h2 strong {
   color: var(--w-red);
+  white-space: pre-line;
 }
 
 .current-main p {
@@ -553,6 +558,9 @@
   }
   .workshop-hero-card {
     min-height: 240px;
+  }
+  .workshop-hero-card strong {
+    font-size: clamp(17px, 5.6cqi, 34px);
   }
   .workshop-current {
     padding-top: 70px;

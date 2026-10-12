@@ -287,7 +287,10 @@
 }
 
 .featured h4 {
+  max-width: 1220px;
   color: #fff;
+  font-size: clamp(38px, 3.5vw, 52px);
+  line-height: .98;
 }
 
 .featured p {
@@ -438,6 +441,9 @@
   }
   .events-grid {
     grid-template-columns: 1fr;
+  }
+  .featured h4 {
+    font-size: clamp(30px, 4.5vw, 40px);
   }
 }
 

@@ -5,7 +5,7 @@ import s from './Testimonials.module.css'
 // Draft testimonials and four sample student identities requested by the site owner.
 const TESTIMONIALS = [
   {
-    name: 'N. Narla Yeshwanth Reddy',
+    name: 'N. Yeshwanth Reddy',
     message:
       'Being part of the IT Department has helped me explore technology beyond the classroom. Every activity has encouraged me to learn by doing and keep building with confidence.',
   },
@@ -51,7 +51,7 @@ export default function Testimonials() {
       <div className="container">
         <div className={s.heading}>
           <div>
-            <p className="section-label">STUDENT VOICES</p>
+            <p className={`section-label ${s.labelNoRule}`}>STUDENT VOICES</p>
             <h2 id="home-testimonials-title">
               What our students <span className="text-primary">say.</span>
             </h2>

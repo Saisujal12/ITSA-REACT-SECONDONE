@@ -147,8 +147,8 @@ export default function PaymentPanel({
           <p>
             Scan the QR code,
             complete your payment,
-            and enter the UTR /
-            transaction ID below.
+            upload the payment screenshot,
+            and enter the UTR / transaction ID below.
           </p>
 
           <div

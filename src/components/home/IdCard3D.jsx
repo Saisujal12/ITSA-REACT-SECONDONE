@@ -1,8 +1,16 @@
 import { useMemo, useRef } from 'react'
 import { LOGO, SITE } from '../../data/site'
+import { EVENTS } from '../../data/events'
 import ImageWithFallback from '../ui/ImageWithFallback'
 import { useTilt3d } from '../../hooks/useTilt3d'
 import s from './IdCard3D.module.css'
+
+const WORKSHOP_TITLE =
+  EVENTS.find((event) => event.id === 'llm')?.title.replace(
+    'Prompt, ',
+    'Prompt,\n',
+  ) ??
+  'Industry-Driven AI Workshop'
 
 const CODE39 = {
   '0': 'nnnwwnwnn',
@@ -116,7 +124,7 @@ function Barcode({ value }) {
 
 export default function IdCard3D({
   registrationId = 'ITDEPT-2026-001',
-  workshop = 'To be announced',
+  workshop = WORKSHOP_TITLE,
   date = 'October 30, 2026',
   validity = '30 OCT 2026',
 }) {
@@ -198,21 +206,23 @@ export default function IdCard3D({
           </div>
 
           <div className={s.details}>
-            <div className={s.detail}>
+            <div className={`${s.detail} ${s.detailWorkshop}`}>
               <span>Workshop</span>
               <strong>{workshop}</strong>
             </div>
 
-            <div className={s.detail}>
-              <span>Date</span>
-              <strong>{date}</strong>
-            </div>
+            <div className={s.detailPair}>
+              <div className={`${s.detail} ${s.detailDate}`}>
+                <span>Workshop Date</span>
+                <strong>{date}</strong>
+              </div>
 
-            <div className={s.detail}>
-              <span>ID Card Number</span>
-              <strong>
-                {resolvedRegistrationId}
-              </strong>
+              <div className={`${s.detail} ${s.detailNumber}`}>
+                <span>ID Card Number</span>
+                <strong>
+                  {resolvedRegistrationId}
+                </strong>
+              </div>
             </div>
 
             <div className={s.detail}>
@@ -227,9 +237,8 @@ export default function IdCard3D({
                 {SITE.shortName} · {SITE.year}
               </span>
 
-              <small>
-                LEARN · BUILD · GROW
-              </small>
+              <small>VALIDITY</small>
+              <strong>{validity}</strong>
             </div>
 
             <div className={s.barcodeWrap}>

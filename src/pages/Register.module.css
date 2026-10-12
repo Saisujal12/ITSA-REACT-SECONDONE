@@ -1234,6 +1234,209 @@
   margin-top: 23px;
 }
 
+.screenshot-group {
+  margin-top: 23px;
+}
+
+.screenshot-dropzone {
+  position: relative;
+  min-height: 112px;
+  display: flex;
+  align-items: center;
+  overflow: hidden;
+  padding: 17px 19px;
+  border: 1px solid rgba(39, 37, 34, 0.13);
+  border-radius: 16px;
+  background:
+    radial-gradient(circle at 1px 1px, rgba(148, 24, 47, 0.07) 1px, transparent 1.4px) 0 0 / 15px 15px,
+    linear-gradient(120deg, #fff 0%, #fffdfa 100%);
+  cursor: pointer;
+  transition:
+    border-color 0.2s ease,
+    box-shadow 0.2s ease,
+    background-color 0.2s ease,
+    transform 0.2s ease;
+}
+
+.screenshot-dropzone:hover,
+.screenshot-dropzone:focus-within {
+  border-color: rgba(148, 24, 47, 0.42);
+  box-shadow: 0 10px 26px rgba(39, 37, 34, 0.07), 0 0 0 4px rgba(148, 24, 47, 0.055);
+}
+
+.screenshot-dropzone:focus-within {
+  outline: 2px solid rgba(148, 24, 47, 0.25);
+  outline-offset: 2px;
+}
+
+.screenshot-dropzone-active {
+  transform: translateY(-2px);
+  border-color: var(--r-red);
+  background-color: #fff8f8;
+  box-shadow: 0 0 0 5px rgba(148, 24, 47, 0.09);
+}
+
+.screenshot-dropzone-invalid {
+  border-color: rgba(180, 35, 24, 0.6);
+  background-color: #fffafa;
+}
+
+.screenshot-dropzone-complete {
+  border-color: rgba(63, 125, 75, 0.35);
+}
+
+.screenshot-file-input {
+  position: absolute;
+  z-index: 2;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  opacity: 0;
+  cursor: pointer;
+}
+
+.screenshot-drop-content {
+  display: grid;
+  grid-template-columns: 46px minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 14px;
+  width: 100%;
+  min-width: 0;
+  pointer-events: none;
+}
+
+.screenshot-drop-icon {
+  width: 46px;
+  height: 46px;
+  display: grid;
+  place-items: center;
+  border: 1px solid rgba(148, 24, 47, 0.15);
+  border-radius: 13px;
+  background: linear-gradient(145deg, rgba(148, 24, 47, 0.1), rgba(148, 24, 47, 0.035));
+  color: var(--r-red);
+  transition: transform 0.2s ease, background 0.2s ease;
+}
+
+.screenshot-dropzone:hover .screenshot-drop-icon,
+.screenshot-dropzone-active .screenshot-drop-icon {
+  transform: translateY(-2px);
+  background: rgba(148, 24, 47, 0.14);
+}
+
+.screenshot-drop-icon svg {
+  width: 20px;
+  height: 20px;
+}
+
+.screenshot-drop-copy {
+  display: grid;
+  gap: 4px;
+  min-width: 0;
+}
+
+.screenshot-drop-copy strong {
+  overflow: hidden;
+  color: var(--r-ink);
+  font-size: 13px;
+  font-weight: 800;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.screenshot-drop-copy small {
+  color: var(--r-light);
+  font-size: 11px;
+}
+
+.screenshot-format-tag {
+  display: grid;
+  gap: 5px;
+  justify-items: end;
+  padding: 8px 10px;
+  border: 1px solid rgba(39, 37, 34, 0.09);
+  border-radius: 9px;
+  background: rgba(255, 255, 255, 0.82);
+  color: #77716a;
+  font-size: 8px;
+  font-weight: 900;
+  letter-spacing: 0.1em;
+  white-space: nowrap;
+}
+
+.screenshot-format-tag b {
+  color: var(--r-red);
+  font-size: 8px;
+}
+
+.screenshot-preview {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-top: 12px;
+  padding: 10px;
+  border: 1px solid rgba(39, 37, 34, 0.1);
+  border-radius: 12px;
+  background: #fff;
+  color: var(--r-ink);
+  font-size: 11px;
+  font-weight: 700;
+}
+
+@media (max-width: 520px) {
+  .screenshot-dropzone {
+    min-height: 100px;
+    padding: 13px;
+  }
+
+  .screenshot-drop-content {
+    grid-template-columns: 40px minmax(0, 1fr);
+    gap: 10px;
+  }
+
+  .screenshot-drop-icon {
+    width: 40px;
+    height: 40px;
+  }
+
+  .screenshot-drop-copy strong {
+    font-size: 11px;
+  }
+
+  .screenshot-drop-copy small {
+    font-size: 10px;
+  }
+
+  .screenshot-format-tag {
+    grid-column: 2;
+    display: flex;
+    justify-content: flex-start;
+    justify-items: initial;
+    gap: 9px;
+    width: fit-content;
+    padding: 5px 7px;
+    font-size: 7px;
+  }
+}
+
+.screenshot-preview img {
+  width: 64px;
+  height: 64px;
+  flex: 0 0 64px;
+  border-radius: 7px;
+  object-fit: cover;
+}
+
+.screenshot-preview button {
+  margin-left: auto;
+  border: 0;
+  background: transparent;
+  color: var(--r-red);
+  font: inherit;
+  font-weight: 900;
+  cursor: pointer;
+}
+
 /* Submit */
 
 .submit-btn {

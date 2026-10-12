@@ -12,11 +12,11 @@ export const SITE = {
   department: 'Department of Information Technology',
   branch: 'Information Technology',
   year: 2026,
-  // Official spelling. Legacy pages also used Samshodini / Sumshodini / Samshodhini.
+  // Official spelling. Legacy pages also used Samshodini / Sumshodhini / Samshodhini.
   fest: 'Sumshodhini',
   festUpper: 'SUMSHODHINI',
-  motto: 'Learn · Build · Grow',
-  mottoConnect: 'Learn · Build · Connect',
+  motto: 'Learn · Connect · Grow',
+  mottoConnect: 'Learn · Connect · Grow',
 }
 
 export const LOGO = {

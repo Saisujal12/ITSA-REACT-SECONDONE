@@ -1,6 +1,8 @@
 import {
+  deletePaymentScreenshot,
   appendRegistration,
   getRegistrationRows,
+  uploadPaymentScreenshot,
 } from "../config/googleSheets.js";
 
 import {
@@ -89,6 +91,7 @@ export async function createRegistration(
       mealPreference,
       amount,
       transactionId,
+      paymentScreenshot,
     } = req.body;
 
     /*
@@ -291,6 +294,24 @@ export async function createRegistration(
       });
     }
 
+    const screenshotMatch = /^data:(image\/(?:jpeg|png|webp));base64,([A-Za-z0-9+/]+={0,2})$/.exec(
+      String(paymentScreenshot?.dataUrl || ""),
+    );
+    const screenshotBytes = screenshotMatch
+      ? Buffer.from(screenshotMatch[2], "base64")
+      : null;
+    const screenshotSignatureMatches = screenshotMatch && screenshotBytes?.length && (
+      (screenshotMatch[1] === "image/jpeg" && screenshotBytes[0] === 0xff && screenshotBytes[1] === 0xd8 && screenshotBytes[2] === 0xff) ||
+      (screenshotMatch[1] === "image/png" && screenshotBytes.subarray(0, 8).equals(Buffer.from([137, 80, 78, 71, 13, 10, 26, 10]))) ||
+      (screenshotMatch[1] === "image/webp" && screenshotBytes.toString("ascii", 0, 4) === "RIFF" && screenshotBytes.toString("ascii", 8, 12) === "WEBP")
+    );
+    if (!screenshotSignatureMatches || screenshotBytes.length > 1_500_000) {
+      return res.status(400).json({
+        success: false,
+        message: "Upload a valid payment screenshot (JPG, PNG, or WebP) under 1.5 MB.",
+      });
+    }
+
     /*
     |--------------------------------------------------------------------------
     | Validate amount
@@ -412,6 +433,8 @@ export async function createRegistration(
       transactionId:
         normalizedTransactionId,
 
+      paymentScreenshotUrl: "",
+
       status:
         "PENDING",
     };
@@ -431,13 +454,26 @@ export async function createRegistration(
     );
 
     let savedRegistration;
+    let uploadedScreenshot;
 
     try {
+      uploadedScreenshot = await uploadPaymentScreenshot({
+        registrationId: registration.registrationId,
+        fileName: paymentScreenshot.fileName,
+        mimeType: screenshotMatch[1],
+        base64: screenshotMatch[2],
+      });
+      registration.paymentScreenshotUrl = uploadedScreenshot.url;
       savedRegistration =
         await appendRegistration(
           registration,
         );
     } catch (appendError) {
+      try {
+        await deletePaymentScreenshot(uploadedScreenshot?.id);
+      } catch (cleanupError) {
+        console.error("Payment screenshot cleanup failed:", cleanupError.message);
+      }
       try {
         await releaseTransactionId(
           registration.transactionId,
@@ -553,6 +589,27 @@ export async function createRegistration(
           message:
             "This event is not configured yet. Please contact the administrator.",
         });
+    }
+
+    if (error.code === "PAYMENT_SCREENSHOT_STORAGE_NOT_CONFIGURED") {
+      return res.status(503).json({
+        success: false,
+        message: "Payment screenshot storage is not configured. Please contact the administrator.",
+      });
+    }
+
+    if (error.code === "PAYMENT_SCREENSHOT_STORAGE_ACCESS_DENIED") {
+      return res.status(503).json({
+        success: false,
+        message: "Payment screenshot storage is unavailable. Please contact the administrator.",
+      });
+    }
+
+    if (error.code === "PAYMENT_SCREENSHOT_SHARED_DRIVE_REQUIRED") {
+      return res.status(503).json({
+        success: false,
+        message: "Payment screenshot storage needs administrator setup. Please try again later or contact the administrator.",
+      });
     }
 
     /*

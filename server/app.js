@@ -121,7 +121,7 @@ app.use(cors(corsOptions));
 
 app.use(
   express.json({
-    limit: "1mb",
+    limit: "3mb",
   })
 );
 

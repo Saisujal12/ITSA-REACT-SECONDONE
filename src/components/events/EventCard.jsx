@@ -26,7 +26,17 @@ export default function EventCard({ event, featured = false, from = 'events' }) 
       </div>
 
       <span className={s.eventType}>{event.category}</span>
-      <h4 id={titleId}>{event.title}</h4>
+      <h4 id={titleId}>
+        {featured && event.id === 'llm' ? (
+          <>
+            Industry-Driven AI: Prompt, Build,
+            <br />
+            Deploy with LLMs and Intelligent Automation
+          </>
+        ) : (
+          event.title
+        )}
+      </h4>
       <p>{event.description}</p>
 
       <div className={s.eventInfo}>

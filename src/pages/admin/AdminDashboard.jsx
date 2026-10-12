@@ -113,6 +113,10 @@ function normalizeRegistration(
       item?.transactionId ??
       "",
 
+    paymentScreenshotUrl:
+      item?.paymentScreenshotUrl ??
+      "",
+
     status:
       String(
         item?.status ||
@@ -1066,6 +1070,10 @@ useEffect(
                     </th>
 
                     <th>
+                      Payment Screenshot
+                    </th>
+
+                    <th>
                       Status
                     </th>
 
@@ -1144,6 +1152,25 @@ useEffect(
                             registration.transactionId ||
                             "—"
                           }
+                        </td>
+
+                        <td>
+                          {registration.paymentScreenshotUrl ? (
+                            <a
+                              className={cx(
+                                s.button,
+                                s.viewButton,
+                              )}
+                              href={registration.paymentScreenshotUrl}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              aria-label={`View payment screenshot for ${registration.name || registration.registrationId}`}
+                            >
+                              View screenshot
+                            </a>
+                          ) : (
+                            <span>Not uploaded</span>
+                          )}
                         </td>
 
                         <td>
