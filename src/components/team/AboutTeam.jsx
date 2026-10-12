@@ -90,7 +90,6 @@ export default function AboutTeam() {
         >
           <div className={s.teamGroupHeading}>
             <div>
-              <small>{group.kicker}</small>
               <h3 id={`team-${group.id}`}>{group.title}</h3>
             </div>
           </div>

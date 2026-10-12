@@ -302,18 +302,14 @@ export default function About() {
       {/* FINAL CTA */}
       <section className={s.aboutFinalCta} aria-labelledby="about-cta-title" data-reveal="">
         <div className={s.ctaContent}>
-          <span>READY TO BE PART OF IT?</span>
-          <h2 id="about-cta-title">
-            Learn something. <strong>Build something.</strong>
-          </h2>
+          <span>CONTACT US</span>
+          <h2 id="about-cta-title">Join us</h2>
           <p>
-            Join the IT Department and become part of a community built around technology,
-            creativity and collaboration.
+            Anyone who wants to join the association body, contact this number: <strong>8179752006</strong>.
           </p>
-          <Link to="/register" className={s.ctaButton}>
-            Register Now
-            <ArrowUpRight aria-hidden="true" />
-          </Link>
+          <small className={s.ctaNote}>
+            You will be involved in the body activities from your second year.
+          </small>
         </div>
         <div className={s.ctaMark} aria-hidden="true">
           <span>IT</span>
