@@ -1,6 +1,6 @@
 /* Each admin selection has its own password hash and registration sheet. */
 export const ADMIN_EVENTS = [
-  { id: 'llm', label: 'Workshop', name: 'Agentic AI Workshop', passwordHashEnv: 'ADMIN_PASSWORD_HASH_LLM' },
+  { id: 'llm', label: 'Workshop', name: 'Industry-Driven AI: Prompt, Build, Deploy with LLMs and Intelligent Automation', passwordHashEnv: 'ADMIN_PASSWORD_HASH_LLM' },
   { id: 'code-build', label: 'Event 1', name: 'Code & Build', passwordHashEnv: 'ADMIN_PASSWORD_HASH_CODE_BUILD' },
   { id: 'innovation', label: 'Event 2', name: 'IT Innovation Challenge', passwordHashEnv: 'ADMIN_PASSWORD_HASH_INNOVATION' },
   { id: 'cyber-quest', label: 'Event 3', name: 'Cyber Quest', passwordHashEnv: 'ADMIN_PASSWORD_HASH_CYBER_QUEST' },

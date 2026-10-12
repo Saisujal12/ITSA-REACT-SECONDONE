@@ -2,7 +2,7 @@
 export const MAIN_NAV = [
   { to: '/', label: 'Home', end: true },
   { to: '/sumshodhini', label: 'Sumshodhini' },
-  { to: '/about', label: 'About IT Association' },
+  { to: '/about', label: "Student's Association" },
   { to: '/gallery', label: 'Gallery' },
 ]
 

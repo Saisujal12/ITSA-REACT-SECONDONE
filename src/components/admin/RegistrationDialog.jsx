@@ -12,10 +12,10 @@ const FIELDS = [
   ['email', 'Email'],
   ['phone', 'Phone'],
   ['mealPreference', 'Lunch Preference'],
-  ['seatAllocation', 'Seat Allocation'],
   ['workshop', 'Workshop'],
   ['amount', 'Amount'],
   ['transactionId', 'Transaction ID'],
+  ['paymentScreenshotUrl', 'Payment Screenshot'],
   ['status', 'Current Status'],
 ]
 
@@ -84,7 +84,17 @@ export default function RegistrationDialog({ registration, onClose, onUpdateStat
             className={cx(s.detailItem, key === 'transactionId' && cx(s.fullWidth, s.transaction))}
           >
             <dt>{label}</dt>
-            <dd>{key === 'amount' && registration[key] ? `₹${registration[key]}` : registration[key] || '—'}</dd>
+            <dd>
+              {key === 'paymentScreenshotUrl' && registration[key] ? (
+                <a href={registration[key]} target="_blank" rel="noreferrer">
+                  View payment screenshot
+                </a>
+              ) : key === 'amount' && registration[key] ? (
+                `₹${registration[key]}`
+              ) : (
+                registration[key] || '—'
+              )}
+            </dd>
           </div>
         ))}
       </dl>

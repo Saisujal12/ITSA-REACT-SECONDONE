@@ -6,7 +6,7 @@ The frontend resolves image keys through `src/utils/assets.js`. Missing files re
 
 | Activity | Exact upload path | Configuration reference |
 |---|---|---|
-| Workshop / Introduction to LLMs | `src/assets/images/qr/workshop-2026.webp` | `src/data/payment.js` → `PAYMENT_QR_CONFIG.llm.qr` |
+| Workshop / Industry-Driven AI | `src/assets/images/qr/workshop-2026.webp` | `src/data/payment.js` → `PAYMENT_QR_CONFIG.llm.qr` |
 | Code & Build | `src/assets/images/qr/code-build-2026.webp` | `PAYMENT_QR_CONFIG['code-build'].qr` |
 | IT Innovation Challenge | `src/assets/images/qr/innovation-2026.webp` | `PAYMENT_QR_CONFIG.innovation.qr` |
 | Cyber Quest | `src/assets/images/qr/cyber-quest-2026.webp` | `PAYMENT_QR_CONFIG['cyber-quest'].qr` |

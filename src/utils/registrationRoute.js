@@ -3,7 +3,7 @@
 
     /register                          → day selection
     /register?day=day2                 → redirect to the Events page
-    /register?day=day1                 → Day 1 workshop form (Introduction to LLMs)
+    /register?day=day1                 → Day 1 workshop form (Industry-Driven AI)
     /register?event=<id>&from=<source> → that event's form
 
   `from` records where the visitor came from so "Back" returns there:

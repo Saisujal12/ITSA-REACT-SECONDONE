@@ -3,6 +3,7 @@ import { Outlet, ScrollRestoration, useLocation } from 'react-router'
 import { useReveal } from '../../hooks/useReveal'
 import Footer from './Footer'
 import Navbar from './Navbar'
+import Sponsor from './Sponsor'
 import s from './SiteLayout.module.css'
 
 export default function SiteLayout() {
@@ -11,6 +12,11 @@ export default function SiteLayout() {
   const previousPath = useRef(pathname)
 
   useReveal(mainRef, pathname + search)
+  const showSponsor =
+    pathname === '/' ||
+    pathname === '/workshops' ||
+    pathname === '/events' ||
+    pathname.startsWith('/register')
 
   // Move keyboard/screen-reader focus to the new page after client-side navigation.
   useEffect(() => {
@@ -28,6 +34,7 @@ export default function SiteLayout() {
       <main id="main" ref={mainRef} tabIndex={-1} className={s.main}>
         <Outlet />
       </main>
+      {showSponsor && <Sponsor />}
       <Footer />
       <ScrollRestoration />
     </>

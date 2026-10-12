@@ -13,9 +13,14 @@
 */
 
 import {
+  Award,
+  BriefcaseBusiness,
+  ClipboardList,
   Crown,
   GraduationCap,
   Megaphone,
+  PackageCheck,
+  Palette,
   Terminal,
   UserCheck,
   UserRound,
@@ -39,58 +44,55 @@ export const PEOPLE = {
     designation: 'Assistant Professor',
     photo: 'team/faculty-coordinator-2',
   },
-  president: { name: null, photo: 'team/president', nameImage: 'team/president-name' },
+  president: { name: 'B. Vaishnavi Reddy', photo: 'team/president' },
   studentCoordinator: {
-    name: null,
+    name: 'B. Srivasthav',
     photo: 'team/student-coordinator',
-    nameImage: 'team/student-coordinator-name',
   },
   vicePresident: {
-    name: null,
+    name: 'K. Suhaas Vikram',
     photo: 'team/vice-president',
-    nameImage: 'team/vice-president-name',
+  },
+  executiveDirector: {
+    name: 'V. Nishta Reddy',
+    photo: 'team/executive-director',
+  },
+  chairPerson: {
+    name: 'P. Vinpal',
+    photo: 'team/chair-person',
   },
   generalSecretary: {
-    name: null,
+    name: 'B. Omkar',
     photo: 'team/general-secretary',
-    nameImage: 'team/general-secretary-name',
   },
-  treasurer: { name: null, photo: 'team/treasurer', nameImage: 'team/treasurer-name' },
-  // VERIFY: About calls this role "PR Head"; older copy called it "PR & Media Club".
-  prMedia: { name: null, photo: 'team/pr-media', nameImage: 'team/pr-media-name' },
+  treasurer: { name: 'G. Dinesh Karthik', photo: 'team/treasurer' },
+  prMedia: { name: 'K. Reethu Sri', photo: 'team/pr-media' },
+  creativeHead: {
+    name: 'Ann Offelia Arland',
+    photo: 'team/creative-head',
+  },
   technicalHead: {
-    name: null,
+    name: 'N. Akshitha',
     photo: 'team/technical-head',
-    nameImage: 'team/technical-head-name',
-  },
-  spokesperson: {
-    name: null,
-    photo: 'team/spokesperson',
-    nameImage: 'team/spokesperson-name',
-  },
-  disciplinaryHead: {
-    name: null,
-    photo: 'team/disciplinary-head',
-    nameImage: 'team/disciplinary-head-name',
   },
   logisticsHead: {
-    name: null,
+    name: 'V. Padmitha',
     photo: 'team/logistics-head',
-    nameImage: 'team/logistics-head-name',
   },
 }
 
 const pad = (n) => String(n).padStart(2, '0')
 
-// PLACEHOLDER: the legacy site listed 12 numbered placeholder cards per group.
-const numberedMembers = (slug, labelUpper, labelTitle, description) =>
+// The role label keeps its number; the member's real name replaces the
+// duplicated numbered placeholder that used to appear as the card heading.
+const numberedMembers = (slug, labelUpper, labelTitle, description, names = []) =>
   Array.from({ length: 12 }, (_, index) => ({
     id: `${slug}-${pad(index + 1)}`,
-    label: `${labelUpper} ${pad(index + 1)}`,
-    name: null,
+    label: names[index] ? labelUpper : `${labelUpper} ${pad(index + 1)}`,
+    name: names[index] ?? null,
     placeholderName: `${labelTitle} ${index + 1}`,
     photo: `team/${slug}-${pad(index + 1)}`,
-    description,
+    description: names[index] ? '' : description,
   }))
 
 export const JOINT_SECRETARIES = numberedMembers(
@@ -98,6 +100,20 @@ export const JOINT_SECRETARIES = numberedMembers(
   'JOINT SECRETARY',
   'Joint Secretary',
   'Student leadership and association coordination.',
+  [
+    'K. Sai Sujal',
+    'A. Jashwanth',
+    'Salman Imran Syed',
+    'Rayyan Bin wajid',
+    'P. Sindhuja',
+    'G. Nandini',
+    'R.Sathwik ram',
+    'sathvika',
+    'U. Janapriya',
+    'M.Pranavi',
+    'G.Varshith',
+    'Marapally Saigokul',
+  ],
 )
 
 export const EXECUTIVE_MEMBERS = numberedMembers(
@@ -105,6 +121,17 @@ export const EXECUTIVE_MEMBERS = numberedMembers(
   'EXECUTIVE MEMBER',
   'Executive Member',
   'Supporting events, activities and association initiatives.',
+  [
+    'Amulya Jalapathi',
+    'Mohammed K Moinuddin',
+    'P. Sri Vaishnavi',
+    'Mohammad Shekeel',
+    'Kola Varshith',
+    'K. Tejasri',
+    'Reddy malla varsha',
+    'Aditya',
+    'G.Akhil',
+  ],
 )
 
 /* About page — "IT Students Association Body" (legacy about.html section 05) */
@@ -156,22 +183,30 @@ export const ABOUT_TEAM_GROUPS = [
     number: '03',
     kicker: 'STUDENT LEADERSHIP',
     title: 'Student Leadership',
-    layout: 'two',
+    layout: 'triangle',
     cards: [
       {
         code: '03A',
         icon: Crown,
-        tag: 'EXECUTIVE BODY',
+        tag: 'STUDENT LEADERSHIP',
         title: 'President',
-        text: 'Leading the student association and representing the student body.',
+        text: '',
         person: 'president',
       },
       {
         code: '03B',
+        icon: Users,
+        tag: 'STUDENT LEADERSHIP',
+        title: 'Vice-President',
+        text: '',
+        person: 'vicePresident',
+      },
+      {
+        code: '03C',
         icon: UserCheck,
-        tag: 'COORDINATION',
+        tag: 'STUDENT COORDINATION',
         title: 'Student Coordinator',
-        text: 'Coordinating student participation, activities and association initiatives.',
+        text: '',
         person: 'studentCoordinator',
       },
     ],
@@ -179,30 +214,39 @@ export const ABOUT_TEAM_GROUPS = [
   {
     id: 'coordination',
     number: '04',
-    kicker: 'STUDENT COORDINATION',
-    title: 'Coordination Teams',
+    kicker: 'ASSOCIATION LEADERSHIP',
+    title: 'Core Leadership Team',
     layout: 'four',
     cards: [
-      { code: '04A', icon: Users, tag: 'COORDINATION', title: 'Vice President', text: 'Supporting association leadership and student initiatives.', person: 'vicePresident' },
-      { code: '04B', icon: Users, tag: 'COORDINATION', title: 'General Secretary', text: 'Supporting documentation, coordination and association communication.', person: 'generalSecretary' },
-      { code: '04C', icon: WalletCards, tag: 'COORDINATION', title: 'Treasurer', text: 'Supporting financial coordination and association activities.', person: 'treasurer' },
-      { code: '04D', icon: Terminal, tag: 'TECHNICAL', title: 'Technical Head', text: 'Managing technical activities, digital work and initiatives.', person: 'technicalHead' },
-      { code: '04E', icon: Megaphone, tag: 'PUBLIC RELATIONS', title: 'Spokesperson', text: 'Representing association communication and public-facing coordination.', person: 'spokesperson' },
-      { code: '04F', icon: Megaphone, tag: 'PUBLIC RELATIONS', title: 'PR and Media Head', text: 'Managing communication, outreach and association visibility.', person: 'prMedia' },
-      { code: '04G', icon: UserCheck, tag: 'DISCIPLINE', title: 'Disciplinary Head', text: 'Supporting discipline, conduct and orderly event participation.', person: 'disciplinaryHead' },
-      { code: '04H', icon: Users, tag: 'LOGISTICS', title: 'Logistics Head', text: 'Supporting venue, materials and operational coordination.', person: 'logisticsHead' },
+      { code: '04A', icon: BriefcaseBusiness, tag: 'EXECUTIVE BODY', title: 'Executive Director', text: '', person: 'executiveDirector' },
+      { code: '04B', icon: WalletCards, tag: 'FINANCE', title: 'Treasurer', text: '', person: 'treasurer' },
+      { code: '04C', icon: Award, tag: 'EXECUTIVE BODY', title: 'Chair Person', text: '', person: 'chairPerson' },
+      { code: '04D', icon: ClipboardList, tag: 'ADMINISTRATION', title: 'General Secretary', text: '', person: 'generalSecretary' },
+    ],
+  },
+  {
+    id: 'committees',
+    number: '05',
+    kicker: 'STUDENT COMMITTEES',
+    title: 'Operations & Creative Teams',
+    layout: 'four',
+    cards: [
+      { code: '05A', icon: PackageCheck, tag: 'OPERATIONS', title: 'Logistics Head', text: '', person: 'logisticsHead' },
+      { code: '05B', icon: Megaphone, tag: 'PUBLIC RELATIONS', title: 'PR and Media Head', text: '', person: 'prMedia' },
+      { code: '05C', icon: Palette, tag: 'CREATIVE', title: 'Creative Head', text: '', person: 'creativeHead' },
+      { code: '05D', icon: Terminal, tag: 'TECHNICAL', title: 'Technical Head', text: '', person: 'technicalHead' },
     ],
   },
   {
     id: 'joint-secretaries',
-    number: '05',
+    number: '06',
     kicker: 'STUDENT LEADERSHIP',
     title: 'Joint Secretaries',
     members: JOINT_SECRETARIES,
   },
   {
     id: 'executive-members',
-    number: '06',
+    number: '07',
     kicker: 'STUDENT EXECUTIVE BODY',
     title: 'Executive Members',
     members: EXECUTIVE_MEMBERS,

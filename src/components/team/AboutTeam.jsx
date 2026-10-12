@@ -9,28 +9,20 @@ const GROUP_TONES = {
   faculty: s.teamGroupFaculty,
   leadership: s.teamGroupLeadership,
   coordination: s.teamGroupCoordination,
+  committees: s.teamGroupCoordination,
 }
 
-const GRID_LAYOUTS = { two: s.teamGroupGridTwo, four: s.teamGroupGridFour }
+const GRID_LAYOUTS = {
+  two: s.teamGroupGridTwo,
+  triangle: s.teamGroupGridTriangle,
+  four: s.teamGroupGridFour,
+}
 
 function RoleCard({ card, wide }) {
   const Icon = card.icon
   const person = getPerson(card.person)
   const isFacultyCard = card.person === 'hod' || card.person?.startsWith('facultyCoordinator')
-  const showPhoto = person?.photo && (
-    card.person === 'hod' ||
-    card.person?.startsWith('facultyCoordinator') ||
-    card.person === 'president' ||
-    card.person === 'studentCoordinator' ||
-    card.person === 'vicePresident' ||
-    card.person === 'generalSecretary' ||
-    card.person === 'treasurer' ||
-    card.person === 'technicalHead' ||
-    card.person === 'spokesperson' ||
-    card.person === 'prMedia' ||
-    card.person === 'disciplinaryHead' ||
-    card.person === 'logisticsHead'
-  )
+  const showPhoto = Boolean(person?.photo)
 
   return (
     <article className={cx(s.teamCard, wide && s.teamCardWide, showPhoto && s.teamCardHasPhoto)}>
@@ -48,9 +40,7 @@ function RoleCard({ card, wide }) {
         </div>
       )}
       <div className={s.teamCardContent}>
-        {!isFacultyCard && <span>{card.tag}</span>}
         {!isFacultyCard && <h4>{card.title}</h4>}
-        {card.text && <p>{card.text}</p>}
         {person?.name && (
           <strong className={cx(s.teamCardName, nameStyles.teamCardName)}>
             {person.name}

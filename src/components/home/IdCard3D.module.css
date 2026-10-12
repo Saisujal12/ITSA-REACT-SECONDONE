@@ -223,10 +223,14 @@
 .details {
   min-height: 94px;
   padding: 10px 17px 8px;
+  padding: 6px 17px 4px;
   display: grid;
   grid-template-columns: 1fr 1fr;
   column-gap: 12px;
   row-gap: 7px;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  row-gap: 3px;
+  align-items: start;
   background: #faf7f0;
 }
 
@@ -234,13 +238,41 @@
   min-width: 0;
   display: flex;
   flex-direction: column;
+  align-items: flex-start;
   gap: 3px;
   padding-bottom: 6px;
+  padding-bottom: 3px;
   border-bottom: 1px solid
     rgba(35, 27, 23, 0.08);
 }
 
+.detail-workshop {
+  grid-column: 1 / -1;
+  align-items: center;
+  text-align: center;
+}
+
+.detail-pair {
+  grid-column: 1 / -1;
+  min-width: 0;
+  display: grid;
+  grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr);
+  column-gap: 18px;
+  align-items: start;
+  padding: 5px 10px 8px;
+  border-top: 0;
+  border-bottom: 1px solid rgba(35, 27, 23, 0.12);
+}
+
+.detail-pair .detail {
+  gap: 3px;
+  padding: 0;
+  border: 0;
+}
+
 .detail span {
+  display: block;
+  line-height: 1.2;
   color: var(--text-muted);
   font-size: 7px;
   font-weight: 900;
@@ -249,12 +281,33 @@
 }
 
 .detail strong {
+  display: block;
+  max-width: 100%;
   overflow: hidden;
   color: var(--text-dark);
   font-size: 9px;
   line-height: 1.2;
+  line-height: 1.25;
   text-overflow: ellipsis;
   white-space: nowrap;
+}
+
+.detail-number {
+  justify-self: end;
+  width: 100%;
+  align-items: flex-end;
+  text-align: right;
+}
+
+.detail-workshop strong {
+  display: block;
+  max-width: 100%;
+  overflow: visible;
+  font-size: 9px;
+  line-height: 1.15;
+  text-overflow: clip;
+  white-space: pre-line;
+  text-align: center;
 }
 
 .bottom {
@@ -293,6 +346,13 @@
   font-size: 6px;
   font-weight: 900;
   letter-spacing: 0.8px;
+}
+
+.bottomBrand strong {
+  color: var(--text-dark);
+  font-size: 9px;
+  line-height: 1;
+  letter-spacing: 0.3px;
 }
 
 .barcodeWrap {
