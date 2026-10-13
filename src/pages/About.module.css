@@ -1151,6 +1151,39 @@
   white-space: nowrap;
 }
 
+.cta-button {
+  min-height: 50px;
+  padding: 0 21px;
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  color: var(--about-red);
+  background: #ffffff;
+  border: 1px solid #ffffff;
+  border-radius: 100px;
+  font-size: 10px;
+  font-weight: 900;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  transition: transform 0.3s ease, background 0.3s ease, color 0.3s ease;
+}
+
+.cta-button:hover {
+  color: #ffffff;
+  background: transparent;
+  transform: translateY(-4px);
+}
+
+.cta-button:focus-visible {
+  outline: 2px solid #ffffff;
+  outline-offset: 4px;
+}
+
+.cta-button svg {
+  width: 15px;
+  height: 15px;
+}
+
 .cta-note {
   display: block;
   max-width: 540px;
