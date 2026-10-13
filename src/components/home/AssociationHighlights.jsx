@@ -76,10 +76,7 @@ export default function AssociationHighlights() {
               Moments from <span className="text-primary">IT DEPT.</span>
             </h2>
           </div>
-          <p className={s.headingText}>
-            A rotating look at workshops, celebrations, guest lectures and
-            student activities.
-          </p>
+         
         </div>
 
         <div className={s.layout}>

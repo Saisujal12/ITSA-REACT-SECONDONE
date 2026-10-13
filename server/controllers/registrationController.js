@@ -16,6 +16,61 @@ import {
   reserveTransactionId,
 } from "../services/transactionRegistry.js";
 
+/*
+|--------------------------------------------------------------------------
+| Public registration-count cache
+|--------------------------------------------------------------------------
+|
+| Avoid repeatedly reading Google Sheets for the same event.
+| Concurrent requests for the same event share one Google Sheets read.
+|
+*/
+
+const REGISTRATION_COUNT_CACHE_TTL = 30_000;
+
+const registrationCountCache = new Map();
+const registrationCountInFlight = new Map();
+
+async function getCachedRegistrationCount(eventId) {
+  const now = Date.now();
+  const cached = registrationCountCache.get(eventId);
+
+  // Return the cached count while it is fresh.
+  if (cached && cached.expiresAt > now) {
+    return cached.count;
+  }
+
+  // Reuse an existing request for this event.
+  const existingRequest = registrationCountInFlight.get(eventId);
+
+  if (existingRequest) {
+    return existingRequest;
+  }
+
+  // Start only one Google Sheets read for this event.
+  const request = getRegistrationRows(eventId)
+    .then((registrations) => {
+      const count =
+        eventId === "llm"
+          ? Math.min(registrations.length, 100)
+          : registrations.length;
+
+      registrationCountCache.set(eventId, {
+        count,
+        expiresAt: Date.now() + REGISTRATION_COUNT_CACHE_TTL,
+      });
+
+      return count;
+    })
+    .finally(() => {
+      registrationCountInFlight.delete(eventId);
+    });
+
+  registrationCountInFlight.set(eventId, request);
+
+  return request;
+}
+
 const EMAIL_REGEX =
   /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
@@ -46,23 +101,48 @@ const EVENT_IDS = new Set([
 ]);
 
 /* Publicly expose registration totals only (never personal data). */
+/*
+|--------------------------------------------------------------------------
+| Public registration count
+|--------------------------------------------------------------------------
+|
+| Only registration totals are exposed publicly.
+| Counts are cached to reduce Google Sheets API requests.
+|
+*/
+
 export async function getPublicRegistrationCount(req, res) {
   const { eventId } = req.params;
+
   if (!EVENT_IDS.has(eventId)) {
-    return res.status(404).json({ success: false, message: "Event not found." });
+    return res.status(404).json({
+      success: false,
+      message: "Event not found.",
+    });
   }
 
   try {
-    const registrations = await getRegistrationRows(eventId);
-    return res.set("Cache-Control", "no-store").json({
-      success: true,
-      eventId,
-      count: eventId === "llm" ? Math.min(registrations.length, 100) : registrations.length,
-      limit: eventId === "llm" ? 100 : null,
-    });
+    const count = await getCachedRegistrationCount(eventId);
+
+    return res
+      .set("Cache-Control", "public, max-age=15")
+      .json({
+        success: true,
+        eventId,
+        count,
+        limit: eventId === "llm" ? 100 : null,
+      });
   } catch (error) {
-    console.error("Failed to read public registration count:", error.message);
-    return res.status(503).json({ success: false, message: "Registration count is temporarily unavailable." });
+    console.error(
+      "Failed to read public registration count:",
+      error.message,
+    );
+
+    return res.status(503).json({
+      success: false,
+      message:
+        "Registration count is temporarily unavailable.",
+    });
   }
 }
 

@@ -1,15 +1,39 @@
-import { ArrowLeft, ArrowRight, Camera, FolderOpen } from 'lucide-react'
+import { useEffect, useState } from 'react'
+import { createPortal } from 'react-dom'
+import { ArrowLeft, ArrowRight, Camera, FolderOpen, X } from 'lucide-react'
 import { useCarousel } from '../../hooks/useCarousel'
 import { resolveImage } from '../../utils/assets'
 import { cx } from '../../utils/cx'
 import s from '../../pages/Gallery.module.css'
 
-const pad = (n) => String(n).padStart(2, '0')
-
-export default function AlbumCard({ album, number, reverse }) {
-  const photos = album.photos.map((photo) => ({ ...photo, image: resolveImage(photo.image) })).filter((photo) => photo.image)
-  const { index, goTo, next, prev, regionProps } = useCarousel(photos.length)
+export default function AlbumCard({ album, reverse }) {
+  const photos = album.photos
+    .map((photo) => ({ ...photo, image: resolveImage(photo.image) }))
+    .filter((photo) => photo.image)
+  const { index, regionProps } = useCarousel(photos.length)
+  const [lightboxIndex, setLightboxIndex] = useState(null)
   const titleId = `album-${album.id}`
+  const lightboxOpen = lightboxIndex !== null
+
+  const showPrevious = () => setLightboxIndex((current) => (current - 1 + photos.length) % photos.length)
+  const showNext = () => setLightboxIndex((current) => (current + 1) % photos.length)
+  const closeLightbox = () => setLightboxIndex(null)
+
+  useEffect(() => {
+    if (!lightboxOpen) return undefined
+    const onKeyDown = (event) => {
+      if (event.key === 'Escape') closeLightbox()
+      if (event.key === 'ArrowLeft' && photos.length > 1) setLightboxIndex((current) => (current - 1 + photos.length) % photos.length)
+      if (event.key === 'ArrowRight' && photos.length > 1) setLightboxIndex((current) => (current + 1) % photos.length)
+    }
+    const previousOverflow = document.body.style.overflow
+    document.body.style.overflow = 'hidden'
+    window.addEventListener('keydown', onKeyDown)
+    return () => {
+      document.body.style.overflow = previousOverflow
+      window.removeEventListener('keydown', onKeyDown)
+    }
+  }, [lightboxOpen, photos.length])
 
   return (
     <article className={cx(s.eventPhotoCard, reverse && s.eventPhotoCardReverse)} aria-labelledby={titleId}>
@@ -37,47 +61,25 @@ export default function AlbumCard({ album, number, reverse }) {
                 aria-label={`${photoIndex + 1} of ${photos.length}`}
                 aria-hidden={photoIndex !== index}
               >
-                <img
-                  src={photo.image.src}
-                  srcSet={photo.image.srcSet}
-                  sizes="(max-width: 1100px) 100vw, 65vw"
-                  alt={photo.alt}
-                  loading={photoIndex === index ? 'eager' : 'lazy'}
-                  decoding="async"
-                />
+                <button
+                  type="button"
+                  className={s.galleryImageOpen}
+                  onClick={() => setLightboxIndex(photoIndex)}
+                  aria-label={`Open image ${photoIndex + 1}: ${photo.alt}`}
+                  tabIndex={photoIndex === index ? 0 : -1}
+                >
+                  <img
+                    src={photo.image.src}
+                    srcSet={photo.image.srcSet}
+                    sizes="(max-width: 1100px) 100vw, 65vw"
+                    alt={photo.alt}
+                    loading={photoIndex === index ? 'eager' : 'lazy'}
+                    decoding="async"
+                  />
+                </button>
               </div>
             ))}
 
-            <div className={s.eventPhotoOverlay} aria-hidden="true" />
-            <span className={s.eventPhotoNumber} aria-hidden="true">
-              {number}
-            </span>
-            <span className={s.eventSlideCounter} aria-hidden="true">
-              {pad(index + 1)} / {pad(photos.length)}
-            </span>
-
-            {photos.length > 1 && (
-              <>
-                <button type="button" className={cx(s.eventSliderButton, s.eventPrev)} aria-label="Previous photo" onClick={prev}>
-                  <ArrowLeft size={18} aria-hidden="true" />
-                </button>
-                <button type="button" className={cx(s.eventSliderButton, s.eventNext)} aria-label="Next photo" onClick={next}>
-                  <ArrowRight size={18} aria-hidden="true" />
-                </button>
-                <div className={s.eventSliderDots}>
-                  {photos.map((photo, photoIndex) => (
-                    <button
-                      key={photo.alt + photoIndex}
-                      type="button"
-                      className={cx(s.eventDot, photoIndex === index && s.active)}
-                      aria-label={`Photo ${photoIndex + 1}`}
-                      aria-current={photoIndex === index || undefined}
-                      onClick={() => goTo(photoIndex)}
-                    />
-                  ))}
-                </div>
-              </>
-            )}
           </div>
         )}
       </div>
@@ -98,6 +100,35 @@ export default function AlbumCard({ album, number, reverse }) {
           </a>
         )}
       </div>
+
+      {lightboxOpen && createPortal(
+        <div className={s.galleryLightbox} role="dialog" aria-modal="true" aria-label={`${album.title} image viewer`} onMouseDown={(event) => {
+          if (event.target === event.currentTarget) closeLightbox()
+        }}>
+          <button type="button" className={s.galleryLightboxClose} onClick={closeLightbox} aria-label="Close image viewer">
+            <X size={28} aria-hidden="true" />
+          </button>
+          {photos.length > 1 && (
+            <button type="button" className={cx(s.galleryLightboxArrow, s.galleryLightboxPrev)} onClick={showPrevious} aria-label="Previous image">
+              <ArrowLeft size={28} aria-hidden="true" />
+            </button>
+          )}
+          <div className={s.galleryLightboxImageWrap}>
+            <img
+              className={s.galleryLightboxImage}
+              src={photos[lightboxIndex].image.src}
+              srcSet={photos[lightboxIndex].image.srcSet}
+              alt={photos[lightboxIndex].alt}
+            />
+          </div>
+          {photos.length > 1 && (
+            <button type="button" className={cx(s.galleryLightboxArrow, s.galleryLightboxNext)} onClick={showNext} aria-label="Next image">
+              <ArrowRight size={28} aria-hidden="true" />
+            </button>
+          )}
+        </div>,
+        document.body,
+      )}
     </article>
   )
 }

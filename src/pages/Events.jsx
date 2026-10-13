@@ -1,20 +1,28 @@
-import { Link } from 'react-router'
-import { ArrowRight } from 'lucide-react'
 import EventCard from '../components/events/EventCard'
-import { eventsByDay, REGISTRATION_DAYS } from '../data/events'
+import { eventsByDay } from '../data/events'
 import { SITE } from '../data/site'
 import { useDocumentTitle } from '../hooks/useDocumentTitle'
-import { cx } from '../utils/cx'
 import s from './Events.module.css'
 
-const NUMBER_WORDS = ['Zero', 'One', 'Two', 'Three', 'Four', 'Five', 'Six', 'Seven', 'Eight', 'Nine', 'Ten']
+const NUMBER_WORDS = [
+  'Zero',
+  'One',
+  'Two',
+  'Three',
+  'Four',
+  'Five',
+  'Six',
+  'Seven',
+  'Eight',
+  'Nine',
+  'Ten',
+]
 
 export default function Events() {
   useDocumentTitle(`Events | ${SITE.fest} ${SITE.year}`, { raw: true })
 
-  const workshops = eventsByDay('day1')
-  const dayTwoEvents = eventsByDay('day2')
-  const total = dayTwoEvents.length
+  const events = eventsByDay('day2')
+  const total = events.length
   const totalWord = NUMBER_WORDS[total] ?? String(total)
 
   return (
@@ -23,7 +31,7 @@ export default function Events() {
         <div className={s.eventsHeroInner}>
           <div className={s.eventsKicker}>
             <span aria-hidden="true" />
-            {SITE.festUpper} {SITE.year} · DAYS 01–02
+            {SITE.festUpper} {SITE.year} · EVENTS
             <span aria-hidden="true" />
           </div>
 
@@ -33,24 +41,36 @@ export default function Events() {
                 EVENTS <em>THAT CONNECT.</em>
               </h1>
               <p>
-                {totalWord} Day-2 events covering technology, creativity, problem solving and
-                collaboration. The Day-1 workshop remains listed separately. Select an event to open its dedicated registration flow.
+                {totalWord} events covering technology, creativity, problem solving and
+                collaboration. Select an event to open its dedicated registration flow.
               </p>
             </div>
 
-            <div className={s.eventsOrbitMark} aria-hidden="true">
-              <span>{String(total).padStart(2, '0')}</span>
-              <small>
-                EVENTS
-                <br />
-                {SITE.year}
-              </small>
-            </div>
+            <a
+              className={s.eventsGifLink}
+              href="https://giphy.com/gifs/Pluralsight-computer-technology-coding-L1R1tvI9svkIWwpVYr"
+              target="_blank"
+              rel="noreferrer"
+              aria-label="View the coding GIF on GIPHY"
+            >
+              <img
+                className={s.eventsGif}
+                src="https://media.giphy.com/media/L1R1tvI9svkIWwpVYr/giphy.gif"
+                alt="Animated person coding at a computer"
+                loading="lazy"
+              />
+              <span className={s.eventsGifCaption}>
+                CREATE · LEARN · COMPETE
+              </span>
+            </a>
           </div>
         </div>
       </section>
 
-      <section className={s.eventsPageContent} aria-labelledby="events-choose-title">
+      <section
+        className={s.eventsPageContent}
+        aria-labelledby="events-choose-title"
+      >
         <div className={s.eventsHeading}>
           <div>
             <div className={s.eventsEyebrow}>
@@ -60,36 +80,21 @@ export default function Events() {
               Choose your <strong>event.</strong>
             </h2>
           </div>
+
           <p>
-            Click an event&apos;s Register button to open that event&apos;s registration directly.
-            The selected event, poster and payment QR will load automatically.
+            Click an event&apos;s Register button to open that event&apos;s registration
+            directly. The selected event, poster and payment QR will load
+            automatically.
           </p>
         </div>
 
         <div className={s.eventGroup}>
           <div className={s.eventGroupHeading}>
-            <h3>
-              <span>{REGISTRATION_DAYS.day1.shortLabel}</span> · WORKSHOP
-            </h3>
-            <Link to="/workshops" className={s.eventGroupLink}>
-              WORKSHOP DETAILS <ArrowRight size="1.2em" aria-hidden="true" />
-            </Link>
+            <h3>EVENTS</h3>
           </div>
-          <div className={cx(s.eventsGrid, workshops.length === 1 && s.eventsGridSingle)}>
-            {workshops.map((event) => (
-              <EventCard key={event.id} event={event} featured />
-            ))}
-          </div>
-        </div>
 
-        <div className={s.eventGroup}>
-          <div className={s.eventGroupHeading}>
-            <h3>
-              <span>{REGISTRATION_DAYS.day2.shortLabel}</span> · EVENTS
-            </h3>
-          </div>
           <div className={s.eventsGrid}>
-            {dayTwoEvents.map((event) => (
+            {events.map((event) => (
               <EventCard key={event.id} event={event} />
             ))}
           </div>

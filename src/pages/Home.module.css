@@ -160,6 +160,8 @@
   align-items: center;
 }
 
+/* Sumshodhini logo panel — CREAM BACKGROUND */
+
 .brand-panel {
   width: 100%;
   min-height: 430px;
@@ -168,31 +170,53 @@
   justify-content: center;
   overflow: hidden;
   padding: 40px;
+
+  border: 1px solid rgba(139, 30, 63, 0.12);
   border-radius: var(--radius-large);
-  background: linear-gradient(145deg, #92172f, #731124);
-  box-shadow: var(--shadow-medium);
-  color: white;
+
+  background: linear-gradient(
+    145deg,
+    #fffaf2 0%,
+    #f1ece3 55%,
+    #eee6d8 100%
+  );
+
+  box-shadow: 0 12px 30px rgba(35, 27, 23, 0.08);
+
+  color: #28221f;
   text-align: center;
 }
+
+/* Keep the logo artwork's original colors */
 
 .about-logo-mark {
   width: 230px;
   height: auto;
   margin: 0 auto 24px;
-  filter: drop-shadow(0 12px 30px rgba(0, 0, 0, 0.25));
+  filter: drop-shadow(0 8px 18px rgba(0, 0, 0, 0.15));
 }
+
+
+
+/* Circular logo background — CREAM */
 
 .fest-logo-circle {
   width: 180px;
   height: 180px;
   margin: 0 auto 24px;
+
   display: grid;
   place-items: center;
   overflow: hidden;
+
   border: 1px solid rgba(255, 255, 255, 0.2);
   border-radius: 50%;
-  background: rgba(255, 255, 255, 0.06);
-  box-shadow: inset 0 0 0 8px rgba(255, 255, 255, 0.035);
+
+  background: rgba(255, 255, 255, 0.08);
+
+  box-shadow:
+    inset 0 0 0 8px rgba(255, 255, 255, 0.025),
+    0 8px 22px rgba(0, 0, 0, 0.12);
 }
 
 .fest-logo-mark {
@@ -200,25 +224,29 @@
   width: 150px;
   height: 150px;
   object-fit: contain;
-  filter: drop-shadow(0 10px 18px rgba(0, 0, 0, 0.16));
 }
+/* Panel title and subtitle — DARK TEXT */
 
 .panel-title {
-  font-size: 14px;
-  font-weight: 800;
-  letter-spacing: 3px;
+  color: #000000;
+  font-size: 22px;
+  font-weight: 900;
+  letter-spacing: 2px;
 }
 
 .panel-subtitle {
-  margin-top: 8px;
-  font-size: 9px;
-  letter-spacing: 4px;
-  opacity: 0.75;
+  margin-top: 10px;
+  color: #000000;
+  font-size: 15px;
+  font-weight: 700;
+  letter-spacing: 3px;
+  opacity: 1;
 }
 
 .panel-days {
-  margin-bottom: 20px;
-  font-size: 52px;
+  margin-bottom: 24px;
+  color: #000000;
+  font-size: 76px;
   font-weight: 900;
   line-height: 1;
 }
@@ -337,6 +365,8 @@
   color: rgba(255, 255, 255, 0.78);
 }
 
+/* Responsive layouts */
+
 @media (max-width: 1300px) {
   .hero-container {
     grid-template-columns: minmax(0, 1fr) minmax(280px, 0.4fr);
@@ -449,6 +479,7 @@
 
   .brand-panel {
     min-height: 340px;
+    padding: 28px;
   }
 
   .group-photo {
@@ -457,6 +488,16 @@
 
   .about-logo-mark {
     width: 185px;
+  }
+
+  .fest-logo-circle {
+    width: 160px;
+    height: 160px;
+  }
+
+  .fest-logo-mark {
+    width: 135px;
+    height: 135px;
   }
 
   .grid-4 {

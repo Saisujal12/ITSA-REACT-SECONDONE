@@ -1,11 +1,17 @@
 import { Link } from 'react-router'
+
 import AssociationHighlights from '../components/home/AssociationHighlights'
 import IdCard3D from '../components/home/IdCard3D'
 import Testimonials from '../components/home/Testimonials'
+
 import { LOGO, SITE } from '../data/site'
 import { useDocumentTitle } from '../hooks/useDocumentTitle'
+
 import ImageWithFallback from '../components/ui/ImageWithFallback'
+
 import s from './Home.module.css'
+
+import itDepartmentGroup from '../assets/images/it-department-group.jpg'
 
 const STATS = [
   { value: 'IT', label: 'DEPARTMENT' },
@@ -31,25 +37,30 @@ export default function Home() {
           <div className={s.heroContent}>
             <h1 id="home-title">
               <span className={s.titleLead}>Department of</span>
-              <span className={s.titleAccent}>Information Technology</span>
+              <span className={s.titleAccent}>
+                Information Technology
+              </span>
             </h1>
 
             <p className={s.heroDescription}>
-              The IT Department helps students explore emerging technologies, strengthen their
-              computing skills, and turn creative ideas into practical solutions. Through
-              workshops, collaborative projects, and technical events, students gain real
-              experience, share ideas, and prepare for future careers.
+              The IT Department helps students explore emerging technologies,
+              strengthen their computing skills, and turn creative ideas into
+              practical solutions. Through workshops, collaborative projects,
+              and technical events, students gain real experience, share ideas,
+              and prepare for future careers.
             </p>
 
             <p className={s.heroMotto}>Learn. Connect. Grow.</p>
 
             <div className={s.heroButtons}>
               <Link to="/about" className="btn btn-primary">
-                Explore IT Department <span aria-hidden="true">→</span>
+                Explore IT Department{' '}
+                <span aria-hidden="true">→</span>
               </Link>
 
               <Link to="/sumshodhini" className="btn btn-outline">
-                Explore {SITE.fest} <span aria-hidden="true">→</span>
+                Explore {SITE.fest}{' '}
+                <span aria-hidden="true">→</span>
               </Link>
             </div>
 
@@ -69,9 +80,7 @@ export default function Home() {
                     <dd>
                       <strong>{stat.value}</strong>
 
-                      <span aria-hidden="true">
-                        {stat.label}
-                      </span>
+                      <span aria-hidden="true">{stat.label}</span>
                     </dd>
                   </div>
                 </div>
@@ -93,12 +102,13 @@ export default function Home() {
       >
         <div className="container">
           <h2 id="it-group-photo-title">
-            IT Department <span className="text-primary">Group Photo</span>
+            IT Department{' '}
+            <span className="text-primary">Group Photo</span>
           </h2>
 
-          <ImageWithFallback
-            imageKey="gallery/gallery-5"
-            alt="IT Department students and faculty together in a group photo"
+          <img
+            src={itDepartmentGroup}
+            alt="IT Department faculty and students at the group event"
             className={s.groupPhoto}
             loading="lazy"
           />
@@ -168,7 +178,7 @@ export default function Home() {
                   to="/about"
                   className="btn btn-primary"
                 >
-                  Discover the IT Department{' '}
+                  Explore IT association{' '}
                   <span aria-hidden="true">→</span>
                 </Link>
               </div>
@@ -219,8 +229,8 @@ export default function Home() {
 
               <p>
                 {SITE.fest} is the annual event of the IT
-                branch, bringing together technical workshops and
-                engaging student events in a two-day
+                branch, bringing together technical workshops
+                and engaging student events in a two-day
                 technology-focused experience.
               </p>
 
@@ -268,7 +278,7 @@ export default function Home() {
         </div>
       </section>
 
-      {/* TESTIMONIALS: second-last homepage section */}
+      {/* TESTIMONIALS */}
       <Testimonials />
 
       {/* CALL TO ACTION */}

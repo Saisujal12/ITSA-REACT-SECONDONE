@@ -1,7 +1,7 @@
 import { useMemo, useRef } from 'react'
-import { LOGO, SITE } from '../../data/site'
+import { LOGO } from '../../data/site'
 import { EVENTS } from '../../data/events'
-import ImageWithFallback from '../ui/ImageWithFallback'
+import idCardLogo from '../../assets/images/sumshodhini/id-card-logo.png'
 import { useTilt3d } from '../../hooks/useTilt3d'
 import s from './IdCard3D.module.css'
 
@@ -9,8 +9,7 @@ const WORKSHOP_TITLE =
   EVENTS.find((event) => event.id === 'llm')?.title.replace(
     'Prompt, ',
     'Prompt,\n',
-  ) ??
-  'Industry-Driven AI Workshop'
+  ) ?? 'Industry-Driven AI Workshop'
 
 const CODE39 = {
   '0': 'nnnwwnwnn',
@@ -84,7 +83,7 @@ function Barcode({ value }) {
   }
 
   const totalWidth = modules.reduce(
-    (sum, item) => sum + item.width,
+    (sum, module) => sum + module.width,
     0,
   )
 
@@ -99,19 +98,22 @@ function Barcode({ value }) {
       aria-label={`Barcode for ${normalized}`}
     >
       {modules.map((module, index) => {
-        const rect = module.isBar ? (
+        const currentX = x
+        x += module.width
+
+        if (!module.isBar) {
+          return null
+        }
+
+        return (
           <rect
-            key={`${module.width}-${index}`}
-            x={x}
+            key={`${index}-${currentX}`}
+            x={currentX}
             y="0"
             width={module.width}
             height="42"
           />
-        ) : null
-
-        x += module.width
-
-        return rect
+        )
       })}
     </svg>
   )
@@ -129,8 +131,7 @@ export default function IdCard3D({
   useTilt3d(sceneRef, cardRef, s.isHovering)
 
   const resolvedRegistrationId = useMemo(
-    () =>
-      String(registrationId || 'ITDEPT-2026-001').toUpperCase(),
+    () => String(registrationId || 'ITDEPT-2026-001').toUpperCase(),
     [registrationId],
   )
 
@@ -147,31 +148,23 @@ export default function IdCard3D({
           className={s.card}
           aria-hidden="true"
         >
+          {/* Clear event logo and title */}
           <div className={s.header}>
-            <div className={s.eventTitle}>
-              <strong>SUMSHODHINI {SITE.year}</strong>
-              <span>KITSW</span>
-            </div>
-
-            <ImageWithFallback
-              imageKey="sumshodhini/id-card-logo"
+            <img
               className={s.headerLogo}
-              width="64"
-              height="66"
-              alt={`${SITE.festUpper} ${SITE.year} ID card logo`}
-              loading="lazy"
-              fallback={
-                <img
-                  className={s.headerLogoFallback}
-                  src={LOGO.src}
-                  width="64"
-                  height="66"
-                  alt="IT Department logo"
-                />
-              }
+              src={idCardLogo}
+              alt=""
             />
+
+            <div className={s.headerTitle}>
+              <strong>SUMSHODHINI ’26</strong>
+              <span>
+                30<sup>th</sup> – 31<sup>st</sup> October 2026
+              </span>
+            </div>
           </div>
 
+          {/* Department identity */}
           <div className={s.identity}>
             <div className={s.logoBox}>
               <img
@@ -190,6 +183,7 @@ export default function IdCard3D({
             </div>
           </div>
 
+          {/* Workshop and registration details */}
           <div className={s.details}>
             <div className={`${s.detail} ${s.detailWorkshop}`}>
               <span>Workshop</span>
@@ -207,13 +201,9 @@ export default function IdCard3D({
                 <strong>{resolvedRegistrationId}</strong>
               </div>
             </div>
-
-            <div className={s.detail}>
-              <span>Validity</span>
-              <strong>{validity}</strong>
-            </div>
           </div>
 
+          {/* Footer */}
           <div className={s.bottom}>
             <div className={s.bottomBrand}>
               <small>VALIDITY</small>
