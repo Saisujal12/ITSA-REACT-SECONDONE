@@ -21,31 +21,47 @@ const GRID_LAYOUTS = {
 function RoleCard({ card, wide }) {
   const Icon = card.icon
   const person = getPerson(card.person)
-  const isFacultyCard = card.person === 'hod' || card.person?.startsWith('facultyCoordinator')
+  const isFacultyCard =
+    card.person === 'hod' ||
+    card.person?.startsWith('facultyCoordinator')
   const showPhoto = Boolean(person?.photo)
 
   return (
-    <article className={cx(s.teamCard, wide && s.teamCardWide, showPhoto && s.teamCardHasPhoto)}>
+    <article
+      className={cx(
+        s.teamCard,
+        wide && s.teamCardWide,
+        showPhoto && s.teamCardHasPhoto,
+      )}
+    >
       <div className={s.teamCardTop}>
         <Icon aria-hidden="true" />
       </div>
+
       {showPhoto && (
         <div className={s.rolePhoto}>
           <ImageWithFallback
             imageKey={person.photo}
-            alt={person.name ? `${person.name} — ${card.title}` : `${card.title} photo`}
+            alt={
+              person.name
+                ? `${person.name} — ${card.title}`
+                : `${card.title} photo`
+            }
             sizes="(max-width: 700px) 100vw, 25vw"
             fallback={<span aria-hidden="true">PHOTO</span>}
           />
         </div>
       )}
+
       <div className={s.teamCardContent}>
         {!isFacultyCard && <h4>{card.title}</h4>}
+
         {person?.name && (
           <strong className={cx(s.teamCardName, nameStyles.teamCardName)}>
             {person.name}
           </strong>
         )}
+
         {person?.designation && (
           <span className={nameStyles.teamCardDesignation}>
             {person.designation}
@@ -69,9 +85,12 @@ function MemberCard({ member }) {
           fallback={<span aria-hidden="true">PHOTO</span>}
         />
       </div>
+
       <div className={s.teamMemberInfo}>
         <span>{member.label}</span>
-        <h4 data-placeholder={member.name ? undefined : ''}>{displayName}</h4>
+        <h4 data-placeholder={member.name ? undefined : ''}>
+          {displayName}
+        </h4>
         <p>{member.description}</p>
       </div>
     </article>

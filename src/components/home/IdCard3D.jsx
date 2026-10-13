@@ -60,9 +60,7 @@ const CODE39 = {
 }
 
 function Barcode({ value }) {
-  const normalized = String(
-  value || 'ITDEPT-2026-001',
-  )
+  const normalized = String(value || 'ITDEPT-2026-001')
     .toUpperCase()
     .replace(/[^0-9A-Z .$/+%-]/g, '-')
 
@@ -70,17 +68,14 @@ function Barcode({ value }) {
   const modules = []
 
   for (const character of encoded) {
-    const pattern =
-      CODE39[character] || CODE39['-']
+    const pattern = CODE39[character] || CODE39['-']
 
-    pattern.split('').forEach(
-      (width, index) => {
-        modules.push({
-          isBar: index % 2 === 0,
-          width: width === 'w' ? 3 : 1,
-        })
-      },
-    )
+    pattern.split('').forEach((width, index) => {
+      modules.push({
+        isBar: index % 2 === 0,
+        width: width === 'w' ? 3 : 1,
+      })
+    })
 
     modules.push({
       isBar: false,
@@ -131,18 +126,11 @@ export default function IdCard3D({
   const sceneRef = useRef(null)
   const cardRef = useRef(null)
 
-  useTilt3d(
-    sceneRef,
-    cardRef,
-    s.isHovering,
-  )
+  useTilt3d(sceneRef, cardRef, s.isHovering)
 
   const resolvedRegistrationId = useMemo(
     () =>
-      String(
-        registrationId ||
-          'ITDEPT-2026-001',
-      ).toUpperCase(),
+      String(registrationId || 'ITDEPT-2026-001').toUpperCase(),
     [registrationId],
   )
 
@@ -166,11 +154,11 @@ export default function IdCard3D({
             </div>
 
             <ImageWithFallback
-              imageKey="sumshodhini/sumshodhini-logo-512"
+              imageKey="sumshodhini/id-card-logo"
               className={s.headerLogo}
               width="64"
               height="66"
-              alt={`${SITE.festUpper} ${SITE.year} logo`}
+              alt={`${SITE.festUpper} ${SITE.year} ID card logo`}
               loading="lazy"
               fallback={
                 <img
@@ -195,10 +183,7 @@ export default function IdCard3D({
             </div>
 
             <div className={s.associationName}>
-              <strong>
-                Information Technology
-              </strong>
-
+              <strong>Information Technology</strong>
               <span>
                 Kakatiya Institute of Technology and Science
               </span>
@@ -219,9 +204,7 @@ export default function IdCard3D({
 
               <div className={`${s.detail} ${s.detailNumber}`}>
                 <span>ID Card Number</span>
-                <strong>
-                  {resolvedRegistrationId}
-                </strong>
+                <strong>{resolvedRegistrationId}</strong>
               </div>
             </div>
 
@@ -233,22 +216,13 @@ export default function IdCard3D({
 
           <div className={s.bottom}>
             <div className={s.bottomBrand}>
-              <span>
-                {SITE.shortName} · {SITE.year}
-              </span>
-
               <small>VALIDITY</small>
               <strong>{validity}</strong>
             </div>
 
             <div className={s.barcodeWrap}>
-              <Barcode
-                value={resolvedRegistrationId}
-              />
-
-              <span>
-                {resolvedRegistrationId}
-              </span>
+              <Barcode value={resolvedRegistrationId} />
+              <span>{resolvedRegistrationId}</span>
             </div>
           </div>
         </div>

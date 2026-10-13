@@ -18,7 +18,7 @@ Recommended QR dimensions: square, at least 800×800 px, PNG/WebP, with a suffic
 
 ## SUMSHODHINI logo
 
-`src/assets/images/sumshodhini/sumshodhini-logo-512.webp` → `src/pages/Sumshodhini.jsx` (`sumshodhini/sumshodhini-logo-512`)
+`src/assets/images/sumshodhini/id-card-logo.png` → `src/pages/Home.jsx`, `src/pages/Sumshodhini.jsx`, `src/components/sumshodhini/MobileOrbitCard.jsx`, and `src/components/home/IdCard3D.jsx` (`sumshodhini/id-card-logo`)
 
 Recommended: 512×512 px or larger; transparent PNG/WebP is suitable for the light circular container.
 

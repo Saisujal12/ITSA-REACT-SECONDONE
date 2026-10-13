@@ -12,7 +12,10 @@ export default function RegistrationView({ event, from }) {
   const feeKnown = hasVerifiedFee(event)
 
   return (
-    <section className={s.registrationFormView} aria-labelledby="register-form-title">
+    <section
+      className={s.registrationFormView}
+      aria-labelledby="register-form-title"
+    >
       <Link to={back.to} className={s.backLink}>
         <span aria-hidden="true">←</span>
         {back.label}
@@ -23,6 +26,7 @@ export default function RegistrationView({ event, from }) {
           <span className={s.selectedDayLabel}>{day.label}</span>
           <h1 id="register-form-title">{event.title}</h1>
         </div>
+
         <span className={cx(s.selectedDayStatus, !feeKnown && s.pending)}>
           <span aria-hidden="true" />
           {feeKnown ? 'REGISTRATION OPEN' : 'FEE TO BE ANNOUNCED'}

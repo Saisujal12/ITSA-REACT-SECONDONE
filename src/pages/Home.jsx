@@ -188,7 +188,7 @@ export default function Home() {
               <div>
                 <div className={s.festLogoCircle}>
                   <ImageWithFallback
-                    imageKey="sumshodhini/sumshodhini-logo-512"
+                    imageKey="sumshodhini/id-card-logo"
                     alt={`${SITE.festUpper} ${SITE.year} logo`}
                     className={s.festLogoMark}
                     loading="lazy"
