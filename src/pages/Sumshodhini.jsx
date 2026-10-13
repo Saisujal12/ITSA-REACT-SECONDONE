@@ -113,20 +113,14 @@ export default function Sumshodhini() {
         <div className={s.samHeroInner}>
           <div className={s.samTitleArea}>
             <div className={s.samTitleReveal}>
-              <div className={s.samTitleTopLine} aria-hidden="true">
-                <span />
-                <small>{SITE.college}</small>
-                <span />
-              </div>
-              <h1 id="sam-title">
-                <span className={s.samTitleMain}>{SITE.festUpper}</span>
-                <span className={s.samTitleAccent}>’26</span>
+              <h1 id="sam-title" className={s.samTitleImageWrap}>
+                <ImageWithFallback
+                  imageKey="sumshodhini/sumshodhini-title"
+                  className={s.samTitleImage}
+                  alt={`${SITE.fest} 2026, October 30–31`}
+                  loading="eager"
+                />
               </h1>
-              <div className={s.samTitleBottom} aria-hidden="true">
-                <span className={s.samTitleRule} />
-                <span>{SITE.year}</span>
-                <span className={s.samTitleRule} />
-              </div>
             </div>
           </div>
 
@@ -167,7 +161,7 @@ export default function Sumshodhini() {
                 <div className={s.samCircleGlow} />
                 <div className={s.samCircleInner}>
                   <ImageWithFallback
-                    imageKey="sumshodhini/sumshodhini-logo-512"
+                    imageKey="sumshodhini/id-card-logo"
                     alt={`${SITE.festUpper} ${SITE.year} logo`}
                     className={s.samCircleLogo}
                     loading="eager"

@@ -70,13 +70,14 @@ export const EVENTS = [
     type: 'workshop',
     number: '01',
     category: 'Artificial Intelligence & Intelligent Automation',
-    title: 'Industry-Driven AI: Prompt, Build, Deploy with LLMs and Intelligent Automation',
+    title:
+      'Industry-Driven AI: Prompt, Build, Deploy with LLMs and Intelligent Automation',
     description:
       'Explore industry-driven AI through prompt engineering, building with LLMs, deployment and intelligent automation.',
     icon: Brain,
     date: '2026 · Coming Soon',
     meta: { icon: MapPin, label: 'IT Department' },
-    fee: 1,
+    fee: 500,
     ...openEventDefaults,
     formHeading: 'Register for Industry-Driven AI',
     formDescription:
@@ -94,7 +95,11 @@ export const EVENTS = [
         { label: 'MODE', value: 'On Campus' },
         { label: 'LEVEL', value: 'Beginner Friendly' },
       ],
-      due: { label: 'DUE', value: '2026', note: 'Registration window open' },
+      due: {
+        label: 'DUE',
+        value: '2026',
+        note: 'Registration window open',
+      },
     },
   },
   {
@@ -136,7 +141,8 @@ export const EVENTS = [
     fee: 1,
     ...openEventDefaults,
     formHeading: 'Register for IT Innovation Challenge',
-    formDescription: 'Complete the registration form for the IT Innovation Challenge.',
+    formDescription:
+      'Complete the registration form for the IT Innovation Challenge.',
     poster: 'posters/innovation-poster',
     posterAlt: 'IT Innovation Challenge poster',
     ...getPaymentQr('innovation', 'day2'),
@@ -204,7 +210,7 @@ export const EVENTS = [
     formHeading: 'Register for Tech Connect',
     formDescription: 'Complete the registration form for Tech Connect.',
     poster: 'posters/tech-connect-poster',
-    posterAlt: 'Tech Connect event poster',
+    posterAlt: 'Tech Connect poster',
     ...getPaymentQr('tech-connect', 'day2'),
   },
   {
@@ -216,8 +222,7 @@ export const EVENTS = [
     title: 'Future Forge',
     description:
       'Join this special event and take part in the activities planned for the day.',
-    selectorDescription:
-      'Register for this event and submit your details.',
+    selectorDescription: 'Register for this event and submit your details.',
     icon: Sparkles,
     date: '2026 · TBD',
     meta: { icon: Users, label: 'Students' },
@@ -226,7 +231,7 @@ export const EVENTS = [
     formHeading: 'Register for Future Forge',
     formDescription: 'Complete the registration form for Future Forge.',
     poster: 'posters/future-forge-poster',
-    posterAlt: 'Future Forge event poster',
+    posterAlt: 'Future Forge poster',
     ...getPaymentQr('event6', 'day2'),
   },
   {
@@ -236,8 +241,10 @@ export const EVENTS = [
     number: '07',
     category: 'APP DEVELOPMENT',
     title: 'App Innovators',
-    description: 'Plan and present an app idea designed to solve a practical problem.',
-    selectorDescription: 'Register for App Innovators and submit your event details.',
+    description:
+      'Plan and present an app idea designed to solve a practical problem.',
+    selectorDescription:
+      'Register for App Innovators and submit your event details.',
     icon: CodeXml,
     date: '2026 · TBD',
     meta: { icon: Users, label: 'Students' },
@@ -256,8 +263,10 @@ export const EVENTS = [
     number: '08',
     category: 'DATA CHALLENGE',
     title: 'Data Quest',
-    description: 'Explore a data challenge and turn useful findings into a clear solution.',
-    selectorDescription: 'Register for Data Quest and submit your event details.',
+    description:
+      'Explore a data challenge and turn useful findings into a clear solution.',
+    selectorDescription:
+      'Register for Data Quest and submit your event details.',
     icon: Lightbulb,
     date: '2026 · TBD',
     meta: { icon: Users, label: 'Students' },
@@ -266,7 +275,7 @@ export const EVENTS = [
     formHeading: 'Register for Data Quest',
     formDescription: 'Complete the registration form for Data Quest.',
     poster: 'posters/event8-poster',
-    posterAlt: 'Data Quest event poster',
+    posterAlt: 'Data Quest poster',
     ...getPaymentQr('event8', 'day2'),
   },
   {
@@ -276,8 +285,10 @@ export const EVENTS = [
     number: '09',
     category: 'DESIGN CHALLENGE',
     title: 'Pixel Perfect',
-    description: 'Create and present a thoughtful digital design for a real-world use case.',
-    selectorDescription: 'Register for Pixel Perfect and submit your event details.',
+    description:
+      'Create and present a thoughtful digital design for a real-world use case.',
+    selectorDescription:
+      'Register for Pixel Perfect and submit your event details.',
     icon: Palette,
     date: '2026 · TBD',
     meta: { icon: Users, label: 'Students' },
@@ -286,7 +297,7 @@ export const EVENTS = [
     formHeading: 'Register for Pixel Perfect',
     formDescription: 'Complete the registration form for Pixel Perfect.',
     poster: 'posters/event9-poster',
-    posterAlt: 'Pixel Perfect event poster',
+    posterAlt: 'Pixel Perfect poster',
     ...getPaymentQr('event9', 'day2'),
   },
   {
@@ -296,8 +307,10 @@ export const EVENTS = [
     number: '10',
     category: 'TECH QUIZ',
     title: 'Tech Trivia',
-    description: 'Test your technology knowledge in a fast-paced team quiz.',
-    selectorDescription: 'Register for Tech Trivia and submit your event details.',
+    description:
+      'Test your technology knowledge in a fast-paced team quiz.',
+    selectorDescription:
+      'Register for Tech Trivia and submit your event details.',
     icon: Trophy,
     date: '2026 · TBD',
     meta: { icon: Users, label: 'Students' },
@@ -306,22 +319,26 @@ export const EVENTS = [
     formHeading: 'Register for Tech Trivia',
     formDescription: 'Complete the registration form for Tech Trivia.',
     poster: 'posters/event10-poster',
-    posterAlt: 'Tech Trivia event poster',
+    posterAlt: 'Tech Trivia poster',
     ...getPaymentQr('event10', 'day2'),
   },
 ]
 
 export const DAY1_DEFAULT_EVENT_ID = 'llm'
 
-export const getEvent = (id) => EVENTS.find((event) => event.id === id) ?? null
+export const getEvent = (id) =>
+  EVENTS.find((event) => event.id === id) ?? null
 
-export const eventsByDay = (day) => EVENTS.filter((event) => event.day === day)
+export const eventsByDay = (day) =>
+  EVENTS.filter((event) => event.day === day)
 
-export const getDay = (key) => REGISTRATION_DAYS[key] ?? null
+export const getDay = (key) =>
+  REGISTRATION_DAYS[key] ?? null
 
 export const hasVerifiedFee = (event) =>
-  typeof event?.fee === 'number' && Number.isFinite(event.fee) && event.fee > 0
+  typeof event?.fee === 'number' &&
+  Number.isFinite(event.fee) &&
+  event.fee > 0
 
-export const formatFee = (fee) => `₹${fee.toLocaleString('en-IN')}`
-
-
+export const formatFee = (fee) =>
+  `₹${fee.toLocaleString('en-IN')}`

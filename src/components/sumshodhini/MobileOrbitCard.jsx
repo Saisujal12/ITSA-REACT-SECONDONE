@@ -14,7 +14,7 @@ export default function MobileOrbitCard() {
 
       <div className={s.samMobileOrbitCore}>
         <ImageWithFallback
-          imageKey="sumshodhini/sumshodhini-logo-512"
+          imageKey="sumshodhini/id-card-logo"
           alt="SUMSHODHINI 2026 logo"
           className={s.samMobileLogo}
           loading="eager"

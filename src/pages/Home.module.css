@@ -5,7 +5,7 @@
   width: 100%;
   overflow: hidden;
   background: var(--bg-main);
-  padding: 12px 0 45px;
+  padding: 36px 0 45px;
 }
 
 .hero::before,
@@ -38,11 +38,9 @@
   width: var(--container);
   margin: 0 auto;
   display: grid;
-  grid-template-columns:
-    minmax(0, 1.75fr)
-    minmax(340px, 0.65fr);
+  grid-template-columns: minmax(0, 1fr) minmax(280px, 0.42fr);
   align-items: center;
-  gap: 25px;
+  gap: clamp(18px, 2.5vw, 36px);
 }
 
 .hero-content {
@@ -55,7 +53,7 @@
   max-width: 100%;
   margin: 0;
   text-align: left;
-  font-size: clamp(48px, 4.1vw, 72px);
+  font-size: clamp(38px, 4vw, 72px);
   font-weight: 900;
   line-height: 0.98;
   letter-spacing: -0.045em;
@@ -75,9 +73,7 @@
 
 .hero-description {
   max-width: 610px;
-  margin-left: 0;
-  margin-right: 0;
-  margin-top: 20px;
+  margin: 20px 0 0;
   font-size: 15px;
   line-height: 1.75;
   text-align: left;
@@ -173,11 +169,7 @@
   overflow: hidden;
   padding: 40px;
   border-radius: var(--radius-large);
-  background: linear-gradient(
-    145deg,
-    #92172f,
-    #731124
-  );
+  background: linear-gradient(145deg, #92172f, #731124);
   box-shadow: var(--shadow-medium);
   color: white;
   text-align: center;
@@ -187,9 +179,7 @@
   width: 230px;
   height: auto;
   margin: 0 auto 24px;
-  filter: drop-shadow(
-    0 12px 30px rgba(0, 0, 0, 0.25)
-  );
+  filter: drop-shadow(0 12px 30px rgba(0, 0, 0, 0.25));
 }
 
 .fest-logo-circle {
@@ -285,8 +275,7 @@
 
 .grid-4 {
   display: grid;
-  grid-template-columns:
-    repeat(4, minmax(0, 1fr));
+  grid-template-columns: repeat(4, minmax(0, 1fr));
   gap: 22px;
 }
 
@@ -322,11 +311,7 @@
   padding: 60px;
   text-align: center;
   border-radius: var(--radius-medium);
-  background: linear-gradient(
-    135deg,
-    #92172f,
-    #731124
-  );
+  background: linear-gradient(135deg, #92172f, #731124);
   box-shadow: var(--shadow-small);
   color: white;
 }
@@ -353,15 +338,17 @@
 }
 
 @media (max-width: 1300px) {
-  .hero h1 {
-    font-size: clamp(38px, 4.1vw, 52px);
+  .hero-container {
+    grid-template-columns: minmax(0, 1fr) minmax(280px, 0.4fr);
+    gap: 20px;
   }
 
-  .hero-container {
-    grid-template-columns:
-      minmax(0, 1.25fr)
-      minmax(300px, 0.75fr);
-    gap: 24px;
+  .hero h1 {
+    font-size: clamp(36px, 4vw, 52px);
+  }
+
+  .hero-description {
+    max-width: 560px;
   }
 
   .about-grid {
@@ -371,12 +358,12 @@
 
 @media (max-width: 900px) {
   .hero {
-    padding: 42px 0 60px;
+    padding: 35px 0 45px;
   }
 
   .hero-container {
-    grid-template-columns: 1fr;
-    gap: 25px;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 18px;
     text-align: center;
   }
 
@@ -408,18 +395,17 @@
   }
 
   .grid-4 {
-    grid-template-columns:
-      repeat(2, minmax(0, 1fr));
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 }
 
 @media (max-width: 600px) {
   .hero {
-    padding: 32px 0 50px;
+    padding: 32px 0 40px;
   }
 
   .hero-container {
-    gap: 15px;
+    gap: 12px;
   }
 
   .hero-content {

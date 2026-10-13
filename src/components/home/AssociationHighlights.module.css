@@ -33,7 +33,7 @@
 
 .imageWrap {
   position: relative;
-  min-height: 470px;
+  min-height: 620px;
   overflow: hidden;
   border-radius: var(--radius-large);
   background: #211e1b;
@@ -42,7 +42,7 @@
 
 .image {
   width: 100%;
-  height: 470px;
+  height: 620px;
   display: block;
   object-fit: cover;
   object-position: center;
@@ -175,9 +175,10 @@
 
   .imageWrap,
   .image {
-    min-height: 350px;
-    height: 350px;
+    min-height: 430px;
+    height: 430px;
   }
+
 }
 
 @media (max-width: 520px) {
