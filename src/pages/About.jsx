@@ -269,29 +269,11 @@ export default function About() {
           <span>CONTACT US</span>
           <h2 id="about-cta-title">Join us</h2>
           <p>
-            Anyone who wants to join the association body, contact this number:{' '}
-            <a
-              href="tel:+919182174754"
-              style={{
-                color: 'inherit',
-                fontWeight: 900,
-                textDecoration: 'none',
-                whiteSpace: 'nowrap',
-              }}
-            >
-              +91 9182174754
-            </a>
+            Anyone who wants to join the association body, contact this number: <strong>8179752006</strong>.
           </p>
-          <p>You will be involved in the body activities from your second year.</p>
-          <a
-            href="https://docs.google.com/forms/d/e/1FAIpQLSfktAAXKne4FtAmSGr65tBBjhlpB-uJBXLxhhpBsUcwnoNRfg/viewform?usp=dialog"
-            target="_blank"
-            rel="noopener noreferrer"
-            className={s.ctaButton}
-          >
-            Register Now
-            <ArrowUpRight aria-hidden="true" />
-          </a>
+          <small className={s.ctaNote}>
+            You will be involved in the body activities from your second year.
+          </small>
         </div>
         <div className={s.ctaMark} aria-hidden="true">
           <span>IT</span>
