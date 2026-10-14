@@ -26,10 +26,10 @@ const ABOUT_POINTS = [
   'Develop communication, teamwork, creativity and leadership skills.',
 ]
 
-const WORKSHOP_TICKER_ITEMS = Array.from(
-  { length: 4 },
-  () => 'Register for workshop now!',
-)
+const WORKSHOP_TICKER_ITEMS = [
+  'Register for workshop now!',
+  'CLICK NOW',
+]
 
 export default function Home() {
   useDocumentTitle('IT Department | KITSW', { raw: true })
