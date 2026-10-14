@@ -49,6 +49,91 @@
   padding-top: 8px;
 }
 
+.workshop-ticker {
+  width: 100%;
+  min-height: 54px;
+  display: flex;
+  align-items: center;
+  overflow: hidden;
+  color: #fff;
+  background: var(--primary);
+  border-block: 1px solid rgba(255, 255, 255, 0.2);
+  text-decoration: none;
+  transition: background 0.2s ease;
+}
+
+.workshop-ticker:hover {
+  color: #fff;
+  background: #761226;
+}
+
+.workshop-ticker:focus-visible {
+  outline: 3px solid #fff;
+  outline-offset: -5px;
+}
+
+.workshop-ticker-track {
+  width: max-content;
+  display: flex;
+  flex: none;
+  animation: workshop-ticker-scroll 18s linear infinite;
+}
+
+.workshop-ticker-group {
+  min-width: 100vw;
+  display: flex;
+  flex: none;
+  align-items: center;
+  justify-content: space-around;
+}
+
+.workshop-ticker-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 26px;
+  padding: 0 28px;
+  white-space: nowrap;
+  font-size: clamp(12px, 1.1vw, 14px);
+  font-weight: 900;
+  line-height: 52px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.workshop-ticker-item::after {
+  content: "✦";
+  display: inline-block;
+  color: #fff;
+  font-size: 12px;
+  line-height: 1;
+  animation: workshop-star-blink 1.1s ease-in-out infinite;
+}
+
+.workshop-ticker-item:nth-child(even)::after {
+  animation-delay: 0.45s;
+}
+
+@keyframes workshop-ticker-scroll {
+  from {
+    transform: translateX(0);
+  }
+
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+@keyframes workshop-star-blink {
+  0%,
+  100% {
+    opacity: 0.2;
+  }
+
+  50% {
+    opacity: 1;
+  }
+}
+
 .hero h1 {
   max-width: 100%;
   margin: 0;
@@ -444,6 +529,22 @@
     max-width: none;
   }
 
+  .workshop-ticker {
+    min-height: 48px;
+  }
+
+  .workshop-ticker-track {
+    animation-duration: 14s;
+  }
+
+  .workshop-ticker-item {
+    gap: 18px;
+    padding: 0 18px;
+    font-size: 11px;
+    line-height: 46px;
+    letter-spacing: 0.06em;
+  }
+
   .hero h1 {
     max-width: 100%;
     font-size: clamp(20px, 6.8vw, 40px);
@@ -507,5 +608,15 @@
 
   .cta {
     padding: 44px 24px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .workshop-ticker-track {
+    animation: none;
+  }
+
+  .workshop-ticker-item::after {
+    animation: none;
   }
 }

@@ -33,12 +33,19 @@ export default function Sponsor() {
             <h3 className={s.sponsorName}>
               MANU OVERSEAS
             </h3>
+
+            <p className={s.sponsorCaption}>
+              Empower Your Ambitions, Ignite Your Path
+            </p>
           </a>
 
           {/* Enagic */}
-          <div
+          <a
             className={s.sponsorCard}
-            aria-label="Enagic sponsor"
+            href="https://enagic.co.in/"
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label="Visit the Enagic India website (opens in a new tab)"
           >
             <div className={s.logoContainer}>
               <img
@@ -53,9 +60,9 @@ export default function Sponsor() {
             </h3>
 
             <p className={s.sponsorCaption}>
-              change your water change your life
+              Change Your Water, Change Your Life
             </p>
-          </div>
+          </a>
         </div>
       </div>
     </section>

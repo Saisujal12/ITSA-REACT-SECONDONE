@@ -26,11 +26,34 @@ const ABOUT_POINTS = [
   'Develop communication, teamwork, creativity and leadership skills.',
 ]
 
+const WORKSHOP_TICKER_ITEMS = [
+  'Register for workshop now!',
+  'CLICK NOW',
+]
+
 export default function Home() {
   useDocumentTitle('IT Department | KITSW', { raw: true })
 
   return (
     <>
+      <a
+        className={s.workshopTicker}
+        href="https://kitsw-itsa.vercel.app/register?event=llm&from=workshops"
+        aria-label="Register for workshop now"
+      >
+        <span className={s.workshopTickerTrack} aria-hidden="true">
+          {[0, 1].map((group) => (
+            <span className={s.workshopTickerGroup} key={group}>
+              {WORKSHOP_TICKER_ITEMS.map((label, index) => (
+                <span className={s.workshopTickerItem} key={`${group}-${index}`}>
+                  {label}
+                </span>
+              ))}
+            </span>
+          ))}
+        </span>
+      </a>
+
       {/* HERO */}
       <section className={s.hero} aria-labelledby="home-title">
         <div className={s.heroContainer}>

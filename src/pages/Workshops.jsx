@@ -14,6 +14,7 @@ import {
 
 import { useDocumentTitle } from '../hooks/useDocumentTitle'
 import { registrationPath } from '../utils/registrationRoute'
+import ImageWithFallback from '../components/ui/ImageWithFallback'
 
 import s from './Workshops.module.css'
 
@@ -111,16 +112,14 @@ export default function Workshops() {
             </div>
 
             <a
-              className={s.heroCardGif}
-              href="https://dribbble.com/shots/2956148-Drinking-coffee-animation"
-              target="_blank"
-              rel="noopener noreferrer"
-              aria-label="View the original coding animation by Philip Ardeljan on Dribbble"
+              className={s.heroPoster}
+              href="https://kitsw-itsa.vercel.app/register?event=llm&from=workshops"
+              aria-label="Register for the Industry-Driven AI workshop"
             >
-              <img
-                src="https://cdn.dribbble.com/userupload/41838863/file/original-e19956eb5b7f3d9b292ef0786e34a17a.gif"
-                alt="Animated person coding at a laptop and taking a coffee break"
-                loading="lazy"
+              <ImageWithFallback
+                imageKey={CURRENT.poster}
+                alt={CURRENT.posterAlt}
+                loading="eager"
               />
             </a>
           </div>
