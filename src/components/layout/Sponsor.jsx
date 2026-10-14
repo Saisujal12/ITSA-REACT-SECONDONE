@@ -33,6 +33,10 @@ export default function Sponsor() {
             <h3 className={s.sponsorName}>
               MANU OVERSEAS
             </h3>
+
+            <p className={s.sponsorCaption}>
+              Empower Your Ambitions, Ignite Your Path
+            </p>
           </a>
 
           {/* Enagic */}
@@ -56,7 +60,7 @@ export default function Sponsor() {
             </h3>
 
             <p className={s.sponsorCaption}>
-              change your water change your life
+              Change Your Water, Change Your Life
             </p>
           </a>
         </div>

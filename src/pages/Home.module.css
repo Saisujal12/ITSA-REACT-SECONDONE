@@ -49,52 +49,69 @@
   padding-top: 8px;
 }
 
-.workshop-registration {
-  width: fit-content;
+.workshop-ticker {
+  width: 100%;
   min-height: 46px;
-  margin: 0 0 20px;
-  padding: 11px 15px 11px 19px;
-  display: inline-flex;
+  display: flex;
   align-items: center;
-  justify-content: center;
-  gap: 14px;
-  border: 1px solid var(--primary);
-  border-radius: 999px;
+  overflow: hidden;
   color: #fff;
   background: var(--primary);
-  box-shadow: 0 10px 24px rgba(146, 23, 47, 0.2);
-  font-size: 12px;
-  font-weight: 900;
-  line-height: 1.2;
-  letter-spacing: 0.055em;
-  text-transform: uppercase;
-  transition: transform 0.25s ease, box-shadow 0.25s ease, background 0.25s ease;
+  border-block: 1px solid rgba(255, 255, 255, 0.2);
+  text-decoration: none;
+  transition: background 0.2s ease;
 }
 
-.workshop-registration:hover {
+.workshop-ticker:hover {
   color: #fff;
   background: #761226;
-  box-shadow: 0 14px 30px rgba(146, 23, 47, 0.28);
-  transform: translateY(-2px);
 }
 
-.workshop-registration:focus-visible {
-  outline: 3px solid rgba(146, 23, 47, 0.25);
-  outline-offset: 4px;
+.workshop-ticker:focus-visible {
+  outline: 3px solid #fff;
+  outline-offset: -5px;
 }
 
-.workshop-registration-arrow {
-  width: 24px;
-  height: 24px;
+.workshop-ticker-track {
+  width: max-content;
+  display: flex;
+  flex: none;
+  animation: workshop-ticker-scroll 24s linear infinite;
+}
+
+.workshop-ticker-group {
+  display: flex;
+  flex: none;
+  align-items: center;
+}
+
+.workshop-ticker-item {
   display: inline-flex;
   align-items: center;
-  justify-content: center;
-  flex: 0 0 24px;
-  border-radius: 50%;
-  color: var(--primary);
-  background: #fff;
-  font-size: 16px;
-  line-height: 1;
+  gap: 26px;
+  padding: 0 28px;
+  white-space: nowrap;
+  font-size: clamp(12px, 1.1vw, 14px);
+  font-weight: 900;
+  line-height: 44px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.workshop-ticker-item::after {
+  content: "✦";
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 10px;
+}
+
+@keyframes workshop-ticker-scroll {
+  from {
+    transform: translateX(0);
+  }
+
+  to {
+    transform: translateX(-50%);
+  }
 }
 
 .hero h1 {
@@ -451,11 +468,6 @@
     padding-top: 0;
   }
 
-  .workshop-registration {
-    margin-right: auto;
-    margin-left: auto;
-  }
-
   .hero h1 {
     font-size: clamp(36px, 5.8vw, 52px);
     text-align: center;
@@ -497,20 +509,20 @@
     max-width: none;
   }
 
-  .workshop-registration {
-    width: 100%;
-    min-height: 52px;
-    margin-bottom: 22px;
-    padding: 12px 14px 12px 20px;
-    justify-content: space-between;
-    font-size: 12px;
-    letter-spacing: 0.04em;
+  .workshop-ticker {
+    min-height: 42px;
   }
 
-  .workshop-registration-arrow {
-    width: 28px;
-    height: 28px;
-    flex-basis: 28px;
+  .workshop-ticker-track {
+    animation-duration: 18s;
+  }
+
+  .workshop-ticker-item {
+    gap: 18px;
+    padding: 0 18px;
+    font-size: 11px;
+    line-height: 40px;
+    letter-spacing: 0.06em;
   }
 
   .hero h1 {
@@ -576,5 +588,11 @@
 
   .cta {
     padding: 44px 24px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .workshop-ticker-track {
+    animation: none;
   }
 }
