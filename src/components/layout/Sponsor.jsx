@@ -36,9 +36,12 @@ export default function Sponsor() {
           </a>
 
           {/* Enagic */}
-          <div
+          <a
             className={s.sponsorCard}
-            aria-label="Enagic sponsor"
+            href="https://enagic.co.in/"
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label="Visit the Enagic India website (opens in a new tab)"
           >
             <div className={s.logoContainer}>
               <img
@@ -55,7 +58,7 @@ export default function Sponsor() {
             <p className={s.sponsorCaption}>
               change your water change your life
             </p>
-          </div>
+          </a>
         </div>
       </div>
     </section>
