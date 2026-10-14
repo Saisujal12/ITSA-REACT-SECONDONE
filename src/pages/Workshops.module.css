@@ -91,55 +91,24 @@
   line-height: 1.85;
 }
 
-.workshop-hero-card {
-  container-type: inline-size;
-  min-height: 290px;
-  padding: 34px;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  border-radius: 24px;
-  color: white;
-  background: radial-gradient(circle at 60% 20%,#56343a,#281a1d 65%,#191415);
-  box-shadow: 0 30px 70px rgba(45,24,28,.20);
-}
-
-.hero-card-label {
-  font-size: 9px;
-  font-weight: 900;
-  letter-spacing: .2em;
-  color: #d8b978;
-}
-
-.workshop-hero-card strong {
+.hero-card-gif {
   display: block;
-  color: #fff;
+  width: min(100%, 420px);
+  width: min(100%, 500px);
+  justify-self: center;
+  align-self: center;
+  overflow: hidden;
+  border-radius: 28px;
+  box-shadow: 0 18px 46px rgba(40, 30, 25, .12);
 }
 
-.workshop-hero-card strong {
-  margin-top: 35px;
-  font-family: Georgia,"Times New Roman",serif;
-  font-size: clamp(24px, 4.1cqi, 46px);
-  font-size: clamp(30px, 4.5cqi, 42px);
-  line-height: .92;
-  letter-spacing: -.055em;
-  white-space: pre-line;
-  white-space: pre;
-}
-
-.hero-card-meta {
-  display: flex;
-  gap: 20px;
-  flex-wrap: wrap;
-  color: rgba(255,255,255,.65);
-  font-size: 8px;
-  font-weight: 900;
-  letter-spacing: .12em;
-}
-
-.hero-card-meta svg {
-  color: #d8b978;
-  margin-right: 6px;
+.hero-card-gif img {
+  display: block;
+  width: 100%;
+  height: auto;
+  max-height: 420px;
+  max-height: 500px;
+  object-fit: contain;
 }
 
 .workshop-current {
@@ -534,8 +503,8 @@
   .current-side {
     grid-column: 1;
     height: auto;
-    display: grid;
-    grid-template-columns: minmax(0, 1fr) minmax(200px, 260px);
+    display: flex;
+    flex-direction: column;
     align-items: stretch;
   }
   .workshop-cta {
@@ -556,11 +525,35 @@
   .workshop-hero-grid {
     margin-top: 25px;
   }
-  .workshop-hero-card {
-    min-height: 240px;
+
+  .workshop-hero-grid > * {
+    min-width: 0;
   }
-  .workshop-hero-card strong {
-    font-size: clamp(17px, 5.6cqi, 34px);
+
+  .workshop-hero h1 {
+    width: 100%;
+    font-size: clamp(34px, 10vw, 58px);
+    line-height: 0.9;
+    letter-spacing: -0.065em;
+    overflow-wrap: anywhere;
+  }
+
+  .workshop-hero p {
+    width: 100%;
+    font-size: 14px;
+    line-height: 1.75;
+    overflow-wrap: anywhere;
+  }
+
+  .hero-card-gif {
+    width: min(100%, 320px);
+    width: min(100%, 370px);
+    border-radius: 22px;
+  }
+
+  .hero-card-gif img {
+    max-height: 320px;
+    max-height: 370px;
   }
   .workshop-current {
     padding-top: 70px;

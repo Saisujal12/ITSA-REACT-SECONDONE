@@ -203,9 +203,14 @@
   }
 
   .developerCredit {
-    font-size: clamp(8.5px, 2.8vw, 10px);
-    letter-spacing: -0.025em;
-    white-space: nowrap;
+    padding-right: 4px;
+    padding-left: 4px;
+    font-size: clamp(10px, 3vw, 12px);
+    line-height: 1.55;
+    letter-spacing: 0;
+    white-space: normal;
+    overflow-wrap: anywhere;
+    text-wrap: pretty;
   }
 
   .bottom {

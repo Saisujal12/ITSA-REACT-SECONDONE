@@ -1193,6 +1193,27 @@
   line-height: 1.6;
 }
 
+.cta-content .cta-contact {
+  margin: 32px 0 0;
+  color: rgba(255, 255, 255, 0.72);
+  font-size: 13px;
+  line-height: 1.6;
+}
+
+.cta-contact a {
+  color: inherit;
+  text-decoration: underline;
+  text-decoration-color: rgba(255, 255, 255, 0.42);
+  text-underline-offset: 3px;
+  transition: color 0.2s ease, text-decoration-color 0.2s ease;
+}
+
+.cta-contact a:hover,
+.cta-contact a:focus-visible {
+  color: #ffffff;
+  text-decoration-color: #ffffff;
+}
+
 .cta-mark {
   position: absolute;
   z-index: 2;
@@ -1469,6 +1490,7 @@
   .cta-content h2 {
     font-size: clamp(45px, 13vw, 68px);
   }
+
   .cta-mark {
     right: 20px;
     bottom: 30px;

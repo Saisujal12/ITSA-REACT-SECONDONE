@@ -210,36 +210,40 @@ a.sponsorCard:hover {
   }
 
   .sponsorGrid {
-    grid-template-columns: minmax(0, 1fr);
-
-    max-width: 320px;
-
-    gap: 20px;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    max-width: 440px;
+    gap: 10px;
   }
 
   .sponsorCard {
-    padding: 20px 16px;
+    padding: 13px 8px;
   }
 
   .logoContainer {
-    height: 150px;
+    height: 92px;
+    margin-bottom: 8px;
   }
 
   .manuLogo {
-    max-height: 130px;
+    width: min(100%, 92px);
+    max-height: 82px;
   }
 
   .enagicLogo {
-    width: 145px;
-    height: 145px;
+    width: 78px;
+    height: 78px;
   }
 
   .sponsorName {
-    font-size: 20px;
+    font-size: clamp(11px, 3.2vw, 14px);
+    line-height: 1.2;
+    letter-spacing: 0;
   }
 
   .sponsorCaption {
-    font-size: 13px;
+    margin-top: 5px;
+    font-size: clamp(8px, 2.4vw, 10px);
+    line-height: 1.35;
   }
 }
 

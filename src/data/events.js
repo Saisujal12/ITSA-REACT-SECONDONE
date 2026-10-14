@@ -88,7 +88,7 @@ export const EVENTS = [
       description:
         'A hands-on workshop exploring industry-driven AI, prompt engineering, building and deploying solutions with Large Language Models, and intelligent automation.',
       facts: [
-        { label: 'DATE', value: 'Coming Soon' },
+        { label: 'DATE', value: 'Oct 30th, 2026' },
         { label: 'MODE', value: 'On Campus' },
         { label: 'LEVEL', value: 'Beginner Friendly' },
       ],

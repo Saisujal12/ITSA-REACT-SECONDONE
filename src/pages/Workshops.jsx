@@ -1,10 +1,7 @@
-import { useEffect, useState } from 'react'
 import { Link } from 'react-router'
 import {
   ArrowRight,
-  Calendar,
   Check,
-  Circle,
   SquareArrowOutUpRight,
 } from 'lucide-react'
 
@@ -17,7 +14,6 @@ import {
 
 import { useDocumentTitle } from '../hooks/useDocumentTitle'
 import { registrationPath } from '../utils/registrationRoute'
-import { fetchPublicRegistrationCount } from '../services/registrations'
 
 import s from './Workshops.module.css'
 
@@ -25,26 +21,6 @@ const CURRENT = getEvent('llm')
 
 export default function Workshops() {
   useDocumentTitle('Workshops')
-  const [registrationCount, setRegistrationCount] = useState(0)
-
-  useEffect(() => {
-    let active = true
-    const loadCount = async () => {
-      try {
-        const result = await fetchPublicRegistrationCount('llm')
-        if (active) setRegistrationCount(Math.min(100, Math.max(0, Number(result.count) || 0)))
-      } catch {
-        // Keep the public counter at zero until the count endpoint is available.
-      }
-    }
-
-    loadCount()
-    const interval = window.setInterval(loadCount, 30_000)
-    return () => {
-      active = false
-      window.clearInterval(interval)
-    }
-  }, [])
 
   const hasSamples =
     PREVIOUS_WORKSHOPS.some(
@@ -134,42 +110,19 @@ export default function Workshops() {
               </p>
             </div>
 
-            <div className={s.workshopHeroCard}>
-              <span
-                className={s.heroCardLabel}
-              >
-                CURRENT WORKSHOP
-              </span>
-
-              <strong>
-                {workshop.titleLead}
-                <br />
-                {workshop.titleStrong}
-              </strong>
-
-              <div
-                className={s.heroCardMeta}
-              >
-                <span>
-                  <Calendar
-                    size="1.2em"
-                    aria-hidden="true"
-                  />
-
-                  {SITE.year}
-                </span>
-
-                <span>
-                  <Circle
-                    size="1em"
-                    fill="currentColor"
-                    aria-hidden="true"
-                  />
-
-                  Registration Open
-                </span>
-              </div>
-            </div>
+            <a
+              className={s.heroCardGif}
+              href="https://dribbble.com/shots/2956148-Drinking-coffee-animation"
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="View the original coding animation by Philip Ardeljan on Dribbble"
+            >
+              <img
+                src="https://cdn.dribbble.com/userupload/41838863/file/original-e19956eb5b7f3d9b292ef0786e34a17a.gif"
+                alt="Animated person coding at a laptop and taking a coffee break"
+                loading="lazy"
+              />
+            </a>
           </div>
         </div>
       </section>
@@ -228,11 +181,6 @@ export default function Workshops() {
           </div>
 
           <div className={s.currentSide}>
-            <div className={s.registrationCount} aria-live="polite">
-              <span>No. of workshop registrations till now</span>
-              <strong>{registrationCount}</strong>
-            </div>
-
             <div className={s.dueTab}>
               <span>
                 {workshop.due.label}

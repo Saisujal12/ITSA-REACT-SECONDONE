@@ -45,7 +45,7 @@ const closeButtonStyle = {
   boxShadow: '0 4px 24px rgba(0, 0, 0, 0.65)',
 }
 
-export default function PosterPanel({ event, day }) {
+export default function PosterPanel({ event, day, status, statusPending = false }) {
   const isWorkshop = event.type === 'workshop'
   const [isPreviewOpen, setIsPreviewOpen] = useState(false)
   const [isHovered, setIsHovered] = useState(false)
@@ -254,6 +254,12 @@ export default function PosterPanel({ event, day }) {
           <div className={s.posterCaption}>
             <span>{isWorkshop ? 'WORKSHOP' : 'EVENT'}</span>
             <strong>{event.title}</strong>
+            <span
+              className={`${s.posterRegistrationStatus} ${statusPending ? s.posterRegistrationStatusPending : ''}`}
+            >
+              <span className={s.posterRegistrationDot} aria-hidden="true" />
+              {status}
+            </span>
           </div>
         </div>
       </aside>

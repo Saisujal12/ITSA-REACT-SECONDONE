@@ -2054,12 +2054,33 @@
   .sam-card-5 { --orbit-x: -122px; --orbit-y: -40px; }
 }
 
+/* Mobile logo color treatment: swap the outer field and center fill. */
+@media (max-width: 760px) {
+  .sam-mobile-orbit-card {
+    /* Use the former center fill around the outside of the logo. */
+    background: rgba(255, 255, 255, 0.62);
+  }
+
+  .sam-mobile-orbit-core {
+    /* Warm cream fill behind the logo. */
+    background: radial-gradient(
+      circle at 50% 45%,
+      #fffdf8 0%,
+      #f1ece3 58%,
+      #e9dfd0 100%
+    );
+    border-color: rgba(182, 138, 69, 0.3);
+    backdrop-filter: none;
+  }
+}
+
 .sam-mobile-logo {
   width: 84%;
   height: 84%;
   display: block;
   border-radius: 50%;
   object-fit: contain;
-  mix-blend-mode: screen;
+  /* Keep the dark mark and its original colors visible on the cream center. */
+  mix-blend-mode: normal;
   filter: drop-shadow(0 3px 8px rgba(0, 0, 0, 0.2));
 }
