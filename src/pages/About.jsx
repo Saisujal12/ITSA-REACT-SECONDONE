@@ -277,6 +277,10 @@ export default function About() {
             Join the Association
             <ArrowUpRight aria-hidden="true" />
           </a>
+          <p className={s.ctaContact}>
+            For any queries or doubts, call{' '}
+            <a href="tel:+919182174754">+91 9182174754</a>.
+          </p>
           <small className={s.ctaNote}>
             Note: You will be involved in the body activities from your second year.
           </small>

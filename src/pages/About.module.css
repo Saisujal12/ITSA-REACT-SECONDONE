@@ -1193,6 +1193,27 @@
   line-height: 1.6;
 }
 
+.cta-content .cta-contact {
+  margin: 32px 0 0;
+  color: rgba(255, 255, 255, 0.72);
+  font-size: 13px;
+  line-height: 1.6;
+}
+
+.cta-contact a {
+  color: inherit;
+  text-decoration: underline;
+  text-decoration-color: rgba(255, 255, 255, 0.42);
+  text-underline-offset: 3px;
+  transition: color 0.2s ease, text-decoration-color 0.2s ease;
+}
+
+.cta-contact a:hover,
+.cta-contact a:focus-visible {
+  color: #ffffff;
+  text-decoration-color: #ffffff;
+}
+
 .cta-mark {
   position: absolute;
   z-index: 2;
@@ -1469,6 +1490,7 @@
   .cta-content h2 {
     font-size: clamp(45px, 13vw, 68px);
   }
+
   .cta-mark {
     right: 20px;
     bottom: 30px;
@@ -2169,17 +2191,17 @@
 
 @media (max-width: 700px) {
   .team-group .team-card-has-photo {
-    grid-template-columns: minmax(0, 1fr) 84px;
-    min-height: 230px;
+    grid-template-columns: minmax(0, 1fr) 108px;
+    min-height: 244px;
     padding: 16px;
     column-gap: 12px;
   }
 
-  .team-group .team-card-has-photo .rolePhoto { width: 76px; height: 76px; border-radius: 14px; }
-  .team-group-hod .team-card-has-photo { grid-template-columns: minmax(0, 1fr) 92px; min-height: 200px; padding: 16px; }
-  .team-group-hod .team-card-has-photo .rolePhoto { width: 86px; height: 86px; }
-  .team-group-faculty .team-card-has-photo { grid-template-columns: minmax(0, 1fr) 92px; min-height: 190px; padding: 16px; }
-  .team-group-faculty .team-card-has-photo .rolePhoto { width: 86px; height: 86px; }
+  .team-group .team-card-has-photo .rolePhoto { width: 100px; height: 100px; border-radius: 16px; }
+  .team-group-hod .team-card-has-photo { grid-template-columns: minmax(0, 1fr) 116px; min-height: 220px; padding: 16px; }
+  .team-group-hod .team-card-has-photo .rolePhoto { width: 108px; height: 108px; }
+  .team-group-faculty .team-card-has-photo { grid-template-columns: minmax(0, 1fr) 116px; min-height: 210px; padding: 16px; }
+  .team-group-faculty .team-card-has-photo .rolePhoto { width: 108px; height: 108px; }
   .team-group-hod .team-card-has-photo .rolePhoto,
   .team-group-faculty .team-card-has-photo .rolePhoto {
     grid-column: 2;
@@ -2232,14 +2254,26 @@
 
 @media (max-width: 420px) {
   .team-group .team-card-has-photo {
-    grid-template-columns: minmax(0, 1fr) 70px;
+    grid-template-columns: minmax(0, 1fr) 96px;
+    min-height: 224px;
     padding: 13px;
     column-gap: 9px;
   }
 
   .team-group .team-card-has-photo .rolePhoto {
-    width: 64px;
-    height: 64px;
+    width: 88px;
+    height: 88px;
+  }
+
+  .team-group-hod .team-card-has-photo,
+  .team-group-faculty .team-card-has-photo {
+    grid-template-columns: minmax(0, 1fr) 102px;
+  }
+
+  .team-group-hod .team-card-has-photo .rolePhoto,
+  .team-group-faculty .team-card-has-photo .rolePhoto {
+    width: 94px;
+    height: 94px;
   }
 }
 

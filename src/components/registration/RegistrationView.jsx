@@ -1,7 +1,6 @@
 import { Link } from 'react-router'
 import { getDay, hasVerifiedFee } from '../../data/events'
 import { backTarget } from '../../utils/registrationRoute'
-import { cx } from '../../utils/cx'
 import PosterPanel from './PosterPanel'
 import RegistrationForm from './RegistrationForm'
 import s from '../../pages/Register.module.css'
@@ -21,20 +20,17 @@ export default function RegistrationView({ event, from }) {
         {back.label}
       </Link>
 
-      <div className={s.selectedDayBanner}>
-        <div>
-          <span className={s.selectedDayLabel}>{day.label}</span>
-          <h1 id="register-form-title">{event.title}</h1>
-        </div>
-
-        <span className={cx(s.selectedDayStatus, !feeKnown && s.pending)}>
-          <span aria-hidden="true" />
-          {feeKnown ? 'REGISTRATION OPEN' : 'FEE TO BE ANNOUNCED'}
-        </span>
-      </div>
+      <h1 id="register-form-title" className="visually-hidden">
+        Register for {event.title}
+      </h1>
 
       <div className={s.directRegistrationLayout}>
-        <PosterPanel event={event} day={day} />
+        <PosterPanel
+          event={event}
+          day={day}
+          status={feeKnown ? 'REGISTRATION OPEN' : 'FEE TO BE ANNOUNCED'}
+          statusPending={!feeKnown}
+        />
         <RegistrationForm key={event.id} event={event} day={day} />
       </div>
     </section>

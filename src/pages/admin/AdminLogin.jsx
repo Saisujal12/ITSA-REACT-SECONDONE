@@ -12,23 +12,22 @@ import {
   ShieldHalf,
   User,
 } from "lucide-react";
+
 import { useDocumentTitle } from "../../hooks/useDocumentTitle";
 import { checkAdmin, loginAdmin } from "../../services/admin";
 import { cx } from "../../utils/cx";
 import s from "./Admin.module.css";
 
 const EVENTS = [
-  { id: "llm", label: "Workshop" },
-  { id: "code-build", label: "Event 1" },
-  { id: "innovation", label: "Event 2" },
-  { id: "cyber-quest", label: "Event 3" },
-  { id: "design-deploy", label: "Event 4" },
-  { id: "tech-connect", label: "Event 5" },
-  { id: "event6", label: "Event 6" },
-  { id: "event7", label: "Event 7" },
-  { id: "event8", label: "Event 8" },
-  { id: "event9", label: "Event 9" },
-  { id: "event10", label: "Event 10" },
+  { id: "llm", label: "Industry-Driven AI Workshop" },
+  { id: "code-build", label: "PPT Presentation" },
+  { id: "innovation", label: "Techthon" },
+  { id: "cyber-quest", label: "Technomyst" },
+  { id: "design-deploy", label: "AlgoCodex & AI" },
+  { id: "tech-connect", label: "Glitch & Giggles" },
+  { id: "event6", label: "AI TRINITY" },
+  { id: "event7", label: "NEXORA" },
+  { id: "event8", label: "INFUSION" },
 ];
 
 export default function AdminLogin() {
@@ -36,15 +35,20 @@ export default function AdminLogin() {
 
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
+
   const [username, setUsername] = useState("admin");
   const [password, setPassword] = useState("");
   const [eventId, setEventId] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [checkingSession, setCheckingSession] = useState(true);
+
   const [status, setStatus] = useState(() =>
     searchParams.get("expired")
-      ? { tone: "error", message: "Your session expired. Please sign in again." }
+      ? {
+          tone: "error",
+          message: "Your session expired. Please sign in again.",
+        }
       : null,
   );
 
@@ -61,7 +65,9 @@ export default function AdminLogin() {
         // A missing session is expected on the login page.
       })
       .finally(() => {
-        if (active) setCheckingSession(false);
+        if (active) {
+          setCheckingSession(false);
+        }
       });
 
     return () => {
@@ -75,7 +81,8 @@ export default function AdminLogin() {
     if (!username.trim() || !password || !eventId) {
       setStatus({
         tone: "error",
-        message: "Enter the username and password, and select a workshop or event.",
+        message:
+          "Enter the username and password, and select a workshop or event.",
       });
       return;
     }
@@ -89,7 +96,9 @@ export default function AdminLogin() {
     } catch (error) {
       setStatus({
         tone: "error",
-        message: error?.message || "Unable to sign in. Check your details and try again.",
+        message:
+          error?.message ||
+          "Unable to sign in. Check your details and try again.",
       });
     } finally {
       setSubmitting(false);
@@ -99,14 +108,24 @@ export default function AdminLogin() {
   if (checkingSession) {
     return (
       <main className={s.loginPage}>
-        <section className={s.loginCard} aria-label="Checking admin session">
+        <section
+          className={s.loginCard}
+          aria-label="Checking admin session"
+        >
           <div className={s.loginIcon}>
             <ShieldHalf aria-hidden="true" />
           </div>
+
           <p className={s.loginTitle}>IT Department</p>
           <h1>Admin sign in</h1>
-          <p className={s.loginDescription}>Checking your session…</p>
-          <LoaderCircle className={s.loginSpinner} aria-label="Loading" />
+          <p className={s.loginDescription}>
+            Checking your session…
+          </p>
+
+          <LoaderCircle
+            className={s.loginSpinner}
+            aria-label="Loading"
+          />
         </section>
       </main>
     );
@@ -114,7 +133,10 @@ export default function AdminLogin() {
 
   return (
     <main className={s.loginPage}>
-      <section className={s.loginCard} style={{ position: "relative" }}>
+      <section
+        className={s.loginCard}
+        style={{ position: "relative" }}
+      >
         <Link
           className={s.backHome}
           to="/admin"
@@ -132,21 +154,32 @@ export default function AdminLogin() {
         <div className={s.loginIcon}>
           <ShieldHalf aria-hidden="true" />
         </div>
+
         <p className={s.loginTitle}>IT Department</p>
         <h1>Admin sign in</h1>
+
         <p className={s.loginDescription}>
-          Use the admin username and the unique password for the selected workshop or event.
+          Use the admin username and the unique password for
+          the selected workshop or event.
         </p>
 
-        <form className={s.loginForm} onSubmit={handleSubmit}>
+        <form
+          className={s.loginForm}
+          onSubmit={handleSubmit}
+        >
+          {/* USERNAME */}
           <label className={s.field}>
             <span className={s.fieldLabel}>Username</span>
+
             <span className={s.fieldInput}>
               <User aria-hidden="true" />
+
               <input
                 autoComplete="username"
                 name="username"
-                onChange={(event) => setUsername(event.target.value)}
+                onChange={(event) =>
+                  setUsername(event.target.value)
+                }
                 placeholder="Enter username"
                 required
                 value={username}
@@ -154,26 +187,38 @@ export default function AdminLogin() {
             </span>
           </label>
 
+          {/* EVENT SELECTION */}
           <label className={s.field}>
-            <span className={s.fieldLabel}>Workshop or event</span>
+            <span className={s.fieldLabel}>
+              Workshop or event
+            </span>
+
             <span className={s.fieldInput}>
               <CalendarDays aria-hidden="true" />
+
               <select
                 className={s.eventSelect}
                 name="eventId"
-                onChange={(event) => setEventId(event.target.value)}
+                onChange={(event) =>
+                  setEventId(event.target.value)
+                }
                 required
                 value={eventId}
               >
                 <option disabled value="">
                   Select workshop or event
                 </option>
+
                 {EVENTS.map((item) => (
-                  <option key={item.id} value={item.id}>
+                  <option
+                    key={item.id}
+                    value={item.id}
+                  >
                     {item.label}
                   </option>
                 ))}
               </select>
+
               <ChevronDown
                 aria-hidden="true"
                 className={s.selectChevron}
@@ -181,25 +226,46 @@ export default function AdminLogin() {
             </span>
           </label>
 
+          {/* PASSWORD */}
           <label className={s.field}>
             <span className={s.fieldLabel}>Password</span>
-            <span className={cx(s.fieldInput, s.passwordInput)}>
+
+            <span
+              className={cx(
+                s.fieldInput,
+                s.passwordInput,
+              )}
+            >
               <Lock aria-hidden="true" />
+
               <input
                 autoComplete="current-password"
                 name="password"
-                onChange={(event) => setPassword(event.target.value)}
+                onChange={(event) =>
+                  setPassword(event.target.value)
+                }
                 placeholder="Enter password"
                 required
                 type={showPassword ? "text" : "password"}
                 value={password}
               />
+
               <button
-                aria-label={showPassword ? "Hide password" : "Show password"}
+                aria-label={
+                  showPassword
+                    ? "Hide password"
+                    : "Show password"
+                }
                 aria-pressed={showPassword}
                 className={s.passwordToggle}
-                onClick={() => setShowPassword((visible) => !visible)}
-                title={showPassword ? "Hide password" : "Show password"}
+                onClick={() =>
+                  setShowPassword((visible) => !visible)
+                }
+                title={
+                  showPassword
+                    ? "Hide password"
+                    : "Show password"
+                }
                 type="button"
               >
                 {showPassword ? (
@@ -211,18 +277,25 @@ export default function AdminLogin() {
             </span>
           </label>
 
+          {/* STATUS MESSAGE */}
           {status && (
             <p
               className={cx(
                 s.loginStatus,
-                status.tone === "success" && s.loginStatusSuccess,
+                status.tone === "success" &&
+                  s.loginStatusSuccess,
               )}
-              role={status.tone === "error" ? "alert" : "status"}
+              role={
+                status.tone === "error"
+                  ? "alert"
+                  : "status"
+              }
             >
               {status.message}
             </p>
           )}
 
+          {/* SUBMIT */}
           <button
             className={cx(s.button, s.loginButton)}
             disabled={submitting}
@@ -230,7 +303,10 @@ export default function AdminLogin() {
           >
             {submitting ? (
               <>
-                <LoaderCircle className={s.loginSpinner} aria-hidden="true" />
+                <LoaderCircle
+                  className={s.loginSpinner}
+                  aria-hidden="true"
+                />
                 Signing in…
               </>
             ) : (

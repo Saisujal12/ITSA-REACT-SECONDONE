@@ -708,6 +708,41 @@
   letter-spacing: -0.035em;
 }
 
+.poster-caption .poster-registration-status {
+  width: fit-content;
+  margin-top: 13px;
+  padding: 8px 12px;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  border: 1px solid rgba(232, 201, 120, 0.32);
+  border-radius: 999px;
+  color: var(--r-gold-light);
+  background: rgba(255, 255, 255, 0.035);
+  font-family: var(--font-sans);
+  font-size: 8px;
+  font-weight: 900;
+  letter-spacing: 0.13em;
+}
+
+.poster-registration-dot {
+  width: 7px;
+  height: 7px;
+  flex: 0 0 7px;
+  border-radius: 50%;
+  background: #79b879;
+  box-shadow: 0 0 0 4px rgba(121, 184, 121, 0.12);
+}
+
+.poster-caption .poster-registration-status-pending {
+  color: var(--r-gold-light);
+}
+
+.poster-registration-status-pending .poster-registration-dot {
+  background: var(--r-gold-light);
+  box-shadow: 0 0 0 4px rgba(232, 201, 120, 0.12);
+}
+
 /* Form card */
 
 .registration-form-card {
