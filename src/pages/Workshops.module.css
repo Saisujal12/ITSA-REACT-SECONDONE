@@ -91,23 +91,32 @@
   line-height: 1.85;
 }
 
-.hero-card-gif {
+.hero-poster {
   display: block;
-  width: min(100%, 420px);
   width: min(100%, 500px);
   justify-self: center;
   align-self: center;
   overflow: hidden;
-  border-radius: 28px;
+  border: 1px solid rgba(148, 24, 47, .16);
+  border-radius: 18px;
   box-shadow: 0 18px 46px rgba(40, 30, 25, .12);
+  transition: transform .3s ease, box-shadow .3s ease;
 }
 
-.hero-card-gif img {
+.hero-poster:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 24px 58px rgba(40, 30, 25, .18);
+}
+
+.hero-poster:focus-visible {
+  outline: 3px solid var(--w-red);
+  outline-offset: 5px;
+}
+
+.hero-poster img {
   display: block;
   width: 100%;
   height: auto;
-  max-height: 420px;
-  max-height: 500px;
   object-fit: contain;
 }
 
@@ -545,15 +554,9 @@
     overflow-wrap: anywhere;
   }
 
-  .hero-card-gif {
-    width: min(100%, 320px);
+  .hero-poster {
     width: min(100%, 370px);
-    border-radius: 22px;
-  }
-
-  .hero-card-gif img {
-    max-height: 320px;
-    max-height: 370px;
+    border-radius: 14px;
   }
   .workshop-current {
     padding-top: 70px;
