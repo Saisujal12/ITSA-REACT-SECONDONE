@@ -29,6 +29,14 @@ export default function Home() {
       <section className={s.hero} aria-labelledby="home-title">
         <div className={s.heroContainer}>
           <div className={s.heroContent}>
+            <a
+              className={s.workshopRegistration}
+              href="https://kitsw-itsa.vercel.app/register?event=llm&from=workshops"
+            >
+              <span>Register for Workshop Now</span>
+              <span className={s.workshopRegistrationArrow} aria-hidden="true">→</span>
+            </a>
+
             <h1 id="home-title">
               <span className={s.titleLead}>Department of</span>
               <span className={s.titleAccent}>Information Technology</span>
