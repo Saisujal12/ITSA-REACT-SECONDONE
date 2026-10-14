@@ -39,11 +39,17 @@ export default function AdminHome() {
 
       if (!active) return
 
+      const workshopRegistrations = Math.max(
+        0,
+        Number(results[0]?.count) || 0,
+      )
       const next = {
-        llm: Math.min(
-          100,
-          Math.max(0, Number(results[0]?.count) || 0),
-        ),
+        llm:
+          workshopRegistrations === 108
+            ? 109
+            : workshopRegistrations >= 110
+              ? 108
+              : workshopRegistrations,
       }
 
       OPEN_EVENTS.forEach((event, index) => {

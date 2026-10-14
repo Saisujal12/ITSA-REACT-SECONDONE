@@ -16,7 +16,7 @@ import itDepartmentGroup from '../assets/images/it-department-group.jpg'
 const STATS = [
   { value: 'IT', label: 'DEPARTMENT' },
   { value: '25', label: 'FACULTIES' },
-  { value: '32', label: 'STUDENT ASSOCIATION MEMBERS' },
+  { value: '35', label: 'STUDENT ASSOCIATION MEMBERS' },
 ]
 
 const ABOUT_POINTS = [

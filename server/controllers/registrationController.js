@@ -50,10 +50,7 @@ async function getCachedRegistrationCount(eventId) {
   // Start only one Google Sheets read for this event.
   const request = getRegistrationRows(eventId)
     .then((registrations) => {
-      const count =
-        eventId === "llm"
-          ? Math.min(registrations.length, 100)
-          : registrations.length;
+      const count = registrations.length;
 
       registrationCountCache.set(eventId, {
         count,
@@ -130,7 +127,7 @@ export async function getPublicRegistrationCount(req, res) {
         success: true,
         eventId,
         count,
-        limit: eventId === "llm" ? 100 : null,
+        limit: eventId === "llm" ? 108 : null,
       });
   } catch (error) {
     console.error(
@@ -548,6 +545,7 @@ export async function createRegistration(
         await appendRegistration(
           registration,
         );
+      registrationCountCache.delete(eventId);
     } catch (appendError) {
       try {
         await deletePaymentScreenshot(uploadedScreenshot?.id);
