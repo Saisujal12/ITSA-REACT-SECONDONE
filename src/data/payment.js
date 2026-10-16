@@ -5,7 +5,7 @@
  * QR images are uploaded, the registration UI shows an explicit placeholder
  * and never presents a fake payment code as usable.
  */
-export const PAYMENT_SUPPORT_PHONE = '+91 XXXXXXXXXX'
+export const PAYMENT_SUPPORT_PHONE = '+91 6304412730'
 
 export const PAYMENT_QR_CONFIG = {
   llm: {
