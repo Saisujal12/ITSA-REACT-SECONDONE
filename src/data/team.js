@@ -129,7 +129,7 @@ export const EXECUTIVE_MEMBERS = numberedMembers(
     'Kola Varshith',
     'K. Tejasri',
     'Reddy malla varsha',
-    'Aditya',
+    'S. Aditya',
     'G.Akhil',
     'Md. Muqeeth',
     'M. Hyndavi',
