@@ -1,0 +1,47 @@
+.page {
+  width: min(820px, calc(100% - 40px));
+  margin: 0 auto;
+  padding: clamp(40px, 7vw, 80px) 0;
+  color: #292321;
+  line-height: 1.8;
+  overflow-wrap: anywhere;
+}
+
+.page header {
+  padding-bottom: 28px;
+  border-bottom: 1px solid #d8cec4;
+}
+
+.eyebrow {
+  color: var(--primary);
+  font-weight: 700;
+  font-size: 12px;
+  letter-spacing: 0.1em;
+}
+
+.page h1 {
+  font-family: var(--font-serif);
+  font-size: clamp(36px, 7vw, 60px);
+  line-height: 1.15;
+  margin: 16px 0;
+}
+
+.page section {
+  margin-top: 32px;
+}
+
+.page h2 {
+  font-size: 22px;
+  line-height: 1.4;
+  margin-bottom: 12px;
+}
+
+.page p + p {
+  margin-top: 12px;
+}
+
+.page a {
+  color: var(--primary);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}

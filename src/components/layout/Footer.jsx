@@ -125,7 +125,7 @@ export default function Footer() {
             © {SITE.year} {SITE.name}.
             All rights reserved.
           </p>
-
+          <Link to="/privacy">Privacy Policy</Link>
         </div>
       </div>
     </footer>
