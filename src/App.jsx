@@ -1,4 +1,4 @@
-import { Navigate, createBrowserRouter } from "react-router";
+import { createBrowserRouter } from "react-router";
 import { RouterProvider } from "react-router/dom";
 
 import AdminLayout from "./components/layout/AdminLayout";
@@ -13,6 +13,7 @@ import Home from "./pages/Home";
 import LegacyRedirect from "./pages/LegacyRedirect";
 import NotFound from "./pages/NotFound";
 import Register from "./pages/Register";
+import Privacy from "./pages/Privacy";
 import RouteError from "./pages/RouteError";
 import Sumshodhini from "./pages/Sumshodhini";
 import Workshops from "./pages/Workshops";
@@ -198,6 +199,10 @@ const router = createBrowserRouter([
             path: "contact",
 
             Component: Contact,
+          },
+          {
+            path: "privacy",
+            Component: Privacy,
           },
 
           /*
