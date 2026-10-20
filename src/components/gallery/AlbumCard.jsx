@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { createPortal } from 'react-dom'
-import { ArrowLeft, ArrowRight, Camera, FolderOpen, X } from 'lucide-react'
+import { ArrowLeft, ArrowRight, Camera, Flower2, FolderOpen, X } from 'lucide-react'
 import { useCarousel } from '../../hooks/useCarousel'
 import { resolveImage } from '../../utils/assets'
 import { cx } from '../../utils/cx'
@@ -36,14 +36,33 @@ export default function AlbumCard({ album, reverse }) {
   }, [lightboxOpen, photos.length])
 
   return (
-    <article className={cx(s.eventPhotoCard, reverse && s.eventPhotoCardReverse)} aria-labelledby={titleId}>
+    <article
+      className={cx(
+        s.eventPhotoCard,
+        reverse && s.eventPhotoCardReverse,
+        album.id === 'bathukamma-2026' && s.bathukammaEventCard,
+      )}
+      aria-labelledby={titleId}
+    >
       <div className={s.eventPhotoFrame}>
         {photos.length === 0 ? (
-          <div className={s.photoPending}>
-            <Camera aria-hidden="true" />
-            <strong>PHOTOS TO BE ADDED</strong>
-            <span>Photos from this event will appear here once they are uploaded.</span>
-          </div>
+          album.id === 'bathukamma-2026' ? (
+            <div className={cx(s.photoPending, s.bathukammaVisual)}>
+              <div className={s.bathukammaFlower} aria-hidden="true">
+                <Flower2 />
+              </div>
+              <span className={s.bathukammaVisualEyebrow}>A TELANGANA FESTIVAL</span>
+              <strong>Bathukamma</strong>
+              <span className={s.bathukammaVisualYear}>2026 · CULTURE · COMMUNITY</span>
+              <span className={s.bathukammaPhotoNote}>Event photos coming soon</span>
+            </div>
+          ) : (
+            <div className={s.photoPending}>
+              <Camera aria-hidden="true" />
+              <strong>PHOTOS TO BE ADDED</strong>
+              <span>Photos from this event will appear here once they are uploaded.</span>
+            </div>
+          )
         ) : (
           <div
             {...regionProps}
@@ -92,7 +111,12 @@ export default function AlbumCard({ album, reverse }) {
         <h3 id={titleId}>{album.title}</h3>
         <p>{album.description}</p>
         {album.driveUrl && (
-          <a href={album.driveUrl} target="_blank" rel="noopener noreferrer" className={s.eventDriveLink}>
+          <a
+            href={album.driveUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            className={s.eventDriveLink}
+          >
             <FolderOpen size={14} aria-hidden="true" />
             {album.driveLabel}
             <ArrowRight size={14} aria-hidden="true" />

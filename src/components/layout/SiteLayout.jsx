@@ -1,6 +1,7 @@
 import { useEffect, useRef } from 'react'
 import { Outlet, ScrollRestoration, useLocation } from 'react-router'
 import { useReveal } from '../../hooks/useReveal'
+import ITBuddy from '../home/ITBuddy'
 import Footer from './Footer'
 import Navbar from './Navbar'
 import Sponsor from './Sponsor'
@@ -36,6 +37,7 @@ export default function SiteLayout() {
       </main>
       {showSponsor && <Sponsor />}
       <Footer />
+      <ITBuddy />
       <ScrollRestoration />
     </>
   )
