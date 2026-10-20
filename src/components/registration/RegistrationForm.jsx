@@ -47,6 +47,14 @@ const FIELD_ORDER = [
 
 const MAX_SCREENSHOT_BYTES = 8 * 1024 * 1024
 
+function notifyMascot(mood, message) {
+  window.dispatchEvent(
+    new CustomEvent('itsa:mascot-reaction', {
+      detail: { mood, message },
+    }),
+  )
+}
+
 async function preparePaymentScreenshot(file) {
   const image = await createImageBitmap(file)
   const canvas = document.createElement('canvas')
@@ -242,6 +250,10 @@ export default function RegistrationForm({ event, day }) {
     const firstInvalid = fieldOrder.find((name) => nextErrors[name])
 
     if (firstInvalid) {
+      notifyMascot(
+        'sad',
+        'A few details need fixing. Check the highlighted fields and try again.',
+      )
       fieldRefs.current[firstInvalid]?.focus()
       return
     }
@@ -252,6 +264,7 @@ export default function RegistrationForm({ event, day }) {
 
     setStatus('submitting')
     setServerError('')
+    notifyMascot('dance', 'Let’s go! Sending your registration…')
 
     try {
       const response = await submitRegistration(
@@ -290,9 +303,26 @@ export default function RegistrationForm({ event, day }) {
 
       setErrors({})
       setAttempted(false)
+      notifyMascot('smile', `Hooray! You’re registered for ${event.title}! 🎉`)
       setStatus('success')
     } catch (error) {
       if (error.name === 'AbortError') return
+
+      const duplicateTransaction =
+        error?.data?.code === 'TRANSACTION_ID_ALREADY_USED' ||
+        /transaction ID has already been used/i.test(error?.message || '')
+
+      if (duplicateTransaction) {
+        notifyMascot(
+          'angry',
+          'That transaction ID was already used. Please check it carefully.',
+        )
+      } else {
+        notifyMascot(
+          'sad',
+          'Registration could not be sent. Please check your details and try again.',
+        )
+      }
 
       setServerError(
         error.status >= 500
