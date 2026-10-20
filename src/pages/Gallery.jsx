@@ -65,6 +65,12 @@ export default function Gallery() {
             <div className={s.recentEventsIntro}>
               <p>{section.intro}</p>
 
+              {section.id === 'recent-events' && (
+                <span className={s.galleryAlbumCount}>
+                  {String(section.albums.length).padStart(2, '0')} EVENT ALBUMS
+                </span>
+              )}
+
               {section.driveUrl && (
                 <a
                   href={section.driveUrl}

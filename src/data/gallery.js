@@ -26,6 +26,20 @@ export const GALLERY_SECTIONS = [
     driveUrl: null,
     albums: [
       {
+        id: 'bathukamma-2026',
+        date: '2026',
+        category: 'FESTIVAL',
+        title: 'Bathukamma Event 2026',
+        description:
+          'A celebration of Telangana’s vibrant Bathukamma festival, bringing the IT Department community together through culture, flowers and festive spirit.',
+        photos: [
+          { image: 'gallery/bathukamma-2026-1', alt: 'Bathukamma Event 2026' },
+          { image: 'gallery/bathukamma-2026-2', alt: 'Bathukamma Event 2026' },
+        ],
+        driveLabel: 'VIEW EVENT PHOTOS',
+        driveUrl: 'https://drive.google.com/drive/folders/1Ovt5WSIKrgSrnVO9xinJvgYedRo428hk',
+      },
+      {
         id: 'guest-lecture-ai',
         date: '16 SEP 2026',
         category: 'GUEST LECTURE',
