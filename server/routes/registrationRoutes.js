@@ -1,5 +1,6 @@
 
 import express from "express";
+import { startAbstractUpload, uploadAbstractChunk } from '../controllers/abstractUploadController.js';
 
 import {
   createRegistration,
@@ -17,6 +18,8 @@ const router = express.Router();
 // email, and Google Sheets logic remain unchanged.
 
 router.post("/", createRegistration);
+router.post('/abstract-uploads', startAbstractUpload);
+router.post('/abstract-uploads/chunk', uploadAbstractChunk);
 router.get("/counts/:eventId", getPublicRegistrationCount);
 
 export default router;

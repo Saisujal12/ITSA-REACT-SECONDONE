@@ -1,6 +1,6 @@
 export const PPT_EVENT_ID = 'code-build'
 export const PPT_TEAM_FEE = 200
-export const PPT_ABSTRACT_MAX_LENGTH = 10000
+export const PPT_ABSTRACT_MAX_BYTES = 10 * 1024 * 1024
 
 const text = (value) => typeof value === 'string' ? value.trim() : ''
 const NAME = /^\p{L}[\p{L}\p{M} .'-]*$/u
@@ -12,6 +12,8 @@ export function normalizePptDetails(values = {}) {
       ? text(values.teamMemberName).replace(/\s+/g, ' ') : '',
     topicTitle: text(values?.topicTitle),
     topicAbstract: text(values?.topicAbstract),
+    abstractDocument: values?.abstractDocument && typeof values.abstractDocument === 'object'
+      ? { receipt: text(values.abstractDocument.receipt), fileName: text(values.abstractDocument.fileName) } : null,
     paymentMethod: text(values?.paymentMethod),
   }
 }
@@ -30,8 +32,8 @@ export function validatePptDetails(values, { year, amount = PPT_TEAM_FEE } = {})
   if (!details.topicTitle || details.topicTitle.length > 200) {
     errors.topicTitle = 'Enter your presentation topic (up to 200 characters).'
   }
-  if (!details.topicAbstract || details.topicAbstract.length > PPT_ABSTRACT_MAX_LENGTH) {
-    errors.topicAbstract = 'Enter your topic abstract (up to 10,000 characters).'
+  if (!details.abstractDocument?.receipt || details.abstractDocument.receipt.length > 8192) {
+    errors.topicAbstract = 'Upload your topic abstract as a PDF or DOCX document (up to 10 MB).'
   }
   if (!['cash', 'online'].includes(details.paymentMethod)) {
     errors.paymentMethod = 'Choose cash or online payment.'

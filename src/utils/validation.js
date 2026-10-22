@@ -30,6 +30,7 @@ export const EMPTY_REGISTRATION = {
   teamMemberName: '',
   topicTitle: '',
   topicAbstract: '',
+  abstractDocument: null,
   paymentMethod: '',
 }
 

@@ -114,7 +114,7 @@ export const EVENTS = [
     fee: PPT_TEAM_FEE,
     ...openEventDefaults,
     formHeading: 'Register for PPT Presentation',
-    formDescription: 'Showcase your ideas, creativity and knowledge on 31 October 2026. Build confidence, critical thinking and communication skills while sharing innovative thoughts. Register solo or with one teammate for ₹200 per team, then enter your topic and abstract below.',
+    formDescription: 'Showcase your ideas, creativity and knowledge on 31 October 2026. Build confidence, critical thinking and communication skills while sharing innovative thoughts. Register solo or with one teammate for ₹200 per team, enter your topic and upload your abstract as a PDF or DOCX document.',
     coordinators: [
       { name: 'G. Varshith', phone: '6305737322' },
       { name: 'P. Sindhuja', phone: '7993088577' },

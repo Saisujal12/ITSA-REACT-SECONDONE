@@ -5,6 +5,7 @@ import { Readable } from "node:stream";
 import { storePptFiles } from "../services/pptFiles.js";
 import { PPT_EVENT_ID } from "../../shared/pptRegistration.js";
 import { ensurePptSheet, pptSheetValues, pptDetailsFromRow } from "../services/pptSheet.js";
+import { createAbstractUploads } from "../services/abstractUploads.js";
 
 /*
 |--------------------------------------------------------------------------
@@ -348,7 +349,13 @@ const sheets =
 // Drive can use a personal Gmail OAuth token while Sheets continues using the
 // service account. OAuth is selected when all three GOOGLE_DRIVE_OAUTH_* vars
 // are present in server/.env.
-const drive = google.drive({ version: "v3", auth: createDriveAuth() });
+const driveAuth = createDriveAuth();
+const drive = google.drive({ version: "v3", auth: driveAuth });
+export const abstractUploads = createAbstractUploads({
+  drive, auth: driveAuth,
+  getParentId: () => process.env.PAYMENT_SCREENSHOT_FOLDER_ID?.trim(),
+  getSecret: () => process.env.ADMIN_SESSION_SECRET || process.env.GOOGLE_DRIVE_OAUTH_CLIENT_SECRET,
+});
 
 /*
 |--------------------------------------------------------------------------
@@ -648,7 +655,7 @@ export async function appendRegistration(
         spreadsheetId,
 
         range:
-          `${SHEET_NAME}!A:${eventId === PPT_EVENT_ID ? "T" : "O"}`,
+          `${SHEET_NAME}!A:${eventId === PPT_EVENT_ID ? "V" : "O"}`,
 
         valueInputOption:
           "RAW",
@@ -728,7 +735,7 @@ export async function getRegistrationRows(
         spreadsheetId,
 
         range:
-          `${SHEET_NAME}!A2:${eventId === PPT_EVENT_ID ? "T" : "O"}`,
+          `${SHEET_NAME}!A2:${eventId === PPT_EVENT_ID ? "V" : "O"}`,
       },
     );
 
@@ -901,7 +908,7 @@ export async function updateRegistrationStatus(
         spreadsheetId,
 
         range:
-          `${SHEET_NAME}!A${rowNumber}:${eventId === PPT_EVENT_ID ? "T" : "O"}${rowNumber}`,
+          `${SHEET_NAME}!A${rowNumber}:${eventId === PPT_EVENT_ID ? "V" : "O"}${rowNumber}`,
       },
     );
 

@@ -1,7 +1,6 @@
 import { BookOpen, FileText, ReceiptText, User, Users } from 'lucide-react'
-import { PPT_ABSTRACT_MAX_LENGTH } from '../../../shared/pptRegistration'
 
-export default function PptDetailsFields({ Field, register, values, errors }) {
+export default function PptDetailsFields({ Field, register, values, errors, onAbstractFile, abstractInputRef, abstractProgress, abstractUploading }) {
   return (
     <>
       <Field id="reg-participantCount" number="08" label="NUMBER OF PARTICIPANTS" icon={Users} error={errors.participantCount} hint="₹200 per team, whether you register solo or with one teammate.">
@@ -21,8 +20,8 @@ export default function PptDetailsFields({ Field, register, values, errors }) {
       <Field id="reg-topicTitle" number="10" label="PRESENTATION TOPIC" icon={BookOpen} error={errors.topicTitle}>
         {(aria) => <input {...register('topicTitle')} {...aria} placeholder="Title of your presentation" maxLength={200} required />}
       </Field>
-      <Field id="reg-topicAbstract" number="11" label="TOPIC ABSTRACT" icon={FileText} error={errors.topicAbstract} hint="Briefly describe your topic, key ideas and what your audience will learn. Up to 10,000 characters.">
-        {(aria) => <textarea {...register('topicAbstract')} {...aria} rows={7} maxLength={PPT_ABSTRACT_MAX_LENGTH} placeholder="Type your abstract here…" required />}
+      <Field id="reg-topicAbstract" number="11" label="UPLOAD TOPIC ABSTRACT" icon={FileText} error={errors.topicAbstract} hint={abstractUploading ? `Uploading document… ${abstractProgress}%` : values.abstractDocument ? `${values.abstractDocument.fileName} — ready to submit. Choose another file to replace it.` : 'Upload your own PDF or DOCX document. Maximum 10 MB.'}>
+        {(aria) => <input {...aria} id="reg-topicAbstract" type="file" accept=".pdf,.docx,application/pdf,application/vnd.openxmlformats-officedocument.wordprocessingml.document" ref={(element) => { abstractInputRef.current = element; register('topicAbstract').ref(element) }} onChange={(event) => onAbstractFile(event.target.files?.[0])} required />}
       </Field>
       <Field id="reg-paymentMethod" number="12" label="AMOUNT PAID IN" icon={ReceiptText} error={errors.paymentMethod} hint="All registrations remain pending until an organizer verifies payment.">
         {(aria) => (

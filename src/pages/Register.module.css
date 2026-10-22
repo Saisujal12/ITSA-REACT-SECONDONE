@@ -930,6 +930,22 @@
   font-size: 13px;
 }
 
+.input-wrapper input[type="file"] {
+  min-height: 0;
+  padding: 14px 0;
+}
+
+.input-wrapper input[type="file"]::file-selector-button {
+  margin-right: 10px;
+  padding: 10px 12px;
+  border: 0;
+  border-radius: 8px;
+  background: var(--r-red);
+  color: #fff;
+  font: inherit;
+  cursor: pointer;
+}
+
 .input-wrapper textarea {
   resize: vertical;
   padding: 18px 0;

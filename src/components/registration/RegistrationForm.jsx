@@ -18,7 +18,7 @@ import {
 import { hasVerifiedFee } from '../../data/events'
 import { PAYMENT_SUPPORT_PHONE } from '../../data/payment'
 import { LOGO, SITE } from '../../data/site'
-import { submitRegistration } from '../../services/registrations'
+import { submitRegistration, uploadAbstractDocument } from '../../services/registrations'
 import { cx } from '../../utils/cx'
 import {
   COLLEGE_OPTIONS,
@@ -30,7 +30,7 @@ import {
 import StatusMessage from '../ui/StatusMessage'
 import PaymentPanel from './PaymentPanel'
 import PptDetailsFields from './PptDetailsFields'
-import { PPT_EVENT_ID } from '../../../shared/pptRegistration'
+import { PPT_EVENT_ID, PPT_ABSTRACT_MAX_BYTES } from '../../../shared/pptRegistration'
 import s from '../../pages/Register.module.css'
 
 const FIELD_ORDER = [
@@ -144,13 +144,43 @@ export default function RegistrationForm({ event, day }) {
   const feedbackRef = useRef(null)
   const abortRef = useRef(null)
   const screenshotInputRef = useRef(null)
+  const abstractInputRef = useRef(null)
+  const abstractAbortRef = useRef(null)
+  const [abstractUploading, setAbstractUploading] = useState(false)
+  const [abstractProgress, setAbstractProgress] = useState(0)
 
   const feeKnown = hasVerifiedFee(event)
   const isPpt = event.id === PPT_EVENT_ID
   const isCash = isPpt && values.paymentMethod === 'cash'
   const submitting = status === 'submitting'
 
-  useEffect(() => () => abortRef.current?.abort(), [])
+  useEffect(() => () => { abortRef.current?.abort(); abstractAbortRef.current?.abort() }, [])
+
+  async function handleAbstractFile(file) {
+    abstractAbortRef.current?.abort()
+    if (status === 'success' || status === 'error') setStatus('idle')
+    setValues((current) => ({ ...current, abstractDocument: null, topicAbstract: '' }))
+    setAbstractProgress(0)
+    setAbstractUploading(false)
+    if (!file || !/\.(pdf|docx)$/i.test(file.name) || !file.size || file.size > PPT_ABSTRACT_MAX_BYTES) {
+      setErrors((current) => ({ ...current, topicAbstract: 'Choose a PDF or DOCX document up to 10 MB.' }))
+      return
+    }
+    const controller = new AbortController()
+    abstractAbortRef.current = controller
+    setAbstractUploading(true)
+    setErrors((current) => ({ ...current, topicAbstract: undefined }))
+    try {
+      const document = await uploadAbstractDocument(file, { signal: controller.signal, onProgress: setAbstractProgress })
+      if (controller.signal.aborted) return
+      setValues((current) => ({ ...current, abstractDocument: document }))
+      setErrors((current) => ({ ...current, topicAbstract: undefined }))
+    } catch (error) {
+      if (!controller.signal.aborted) setErrors((current) => ({ ...current, topicAbstract: error.message || 'Document upload failed. Please choose it again.' }))
+    } finally {
+      if (abstractAbortRef.current === controller) setAbstractUploading(false)
+    }
+  }
 
   useEffect(() => {
     if (status === 'success' || status === 'error') {
@@ -239,7 +269,7 @@ export default function RegistrationForm({ event, day }) {
   async function handleSubmit(submitEvent) {
     submitEvent.preventDefault()
 
-    if (submitting || !feeKnown) return
+    if (submitting || abstractUploading || !feeKnown) return
 
     setAttempted(true)
 
@@ -306,6 +336,7 @@ export default function RegistrationForm({ event, day }) {
       })
 
       setValues(EMPTY_REGISTRATION)
+      if (abstractInputRef.current) abstractInputRef.current.value = ''
       setPaymentScreenshot(null)
       setScreenshotError('')
       if (screenshotInputRef.current) {
@@ -613,7 +644,7 @@ export default function RegistrationForm({ event, day }) {
             )}
           </Field>
 
-          {isPpt && <PptDetailsFields Field={Field} register={register} values={values} errors={errors} />}
+          {isPpt && <PptDetailsFields Field={Field} register={register} values={values} errors={errors} onAbstractFile={handleAbstractFile} abstractInputRef={abstractInputRef} abstractProgress={abstractProgress} abstractUploading={abstractUploading} />}
 
           {event.type === 'workshop' && (
             <fieldset
@@ -846,7 +877,7 @@ export default function RegistrationForm({ event, day }) {
         <button
           type="submit"
           className={cx(s.submitBtn, submitting && s.loading)}
-          disabled={!feeKnown || submitting}
+          disabled={!feeKnown || submitting || abstractUploading}
           aria-busy={submitting}
         >
           <span>

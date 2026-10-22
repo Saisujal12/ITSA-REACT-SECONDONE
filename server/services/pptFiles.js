@@ -38,6 +38,10 @@ export async function storePptFiles({ registration, details, screenshot }, { dri
   })
   const folderId = folder.data.id
   try {
+    const document = await drive.files.copy({ fileId: details.abstractDocument.fileId, supportsAllDrives: true,
+      requestBody: { name: details.abstractDocument.fileName, parents: [folderId] }, fields: 'id' })
+    const abstractUrl = `https://drive.google.com/file/d/${document.data.id}/view`
+    details.topicAbstract = abstractUrl
     const file = (name, mimeType, bytes) => drive.files.create({
       supportsAllDrives: true,
       requestBody: { name, mimeType, parents: [folderId] },
@@ -50,7 +54,7 @@ export async function storePptFiles({ registration, details, screenshot }, { dri
       const extension = { 'image/jpeg': 'jpg', 'image/png': 'png', 'image/webp': 'webp' }[screenshot.mimeType]
       await file(`Payment screenshot.${extension}`, screenshot.mimeType, Buffer.from(screenshot.base64, 'base64'))
     }
-    return { id: folderId, url: folder.data.webViewLink || `https://drive.google.com/drive/folders/${folderId}` }
+    return { id: folderId, url: folder.data.webViewLink || `https://drive.google.com/drive/folders/${folderId}`, abstractUrl }
   } catch (error) {
     try { await drive.files.delete({ fileId: folderId, supportsAllDrives: true }) }
     catch { console.error('Could not remove incomplete PPT registration folder:', folderId) }

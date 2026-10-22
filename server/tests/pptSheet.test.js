@@ -27,12 +27,12 @@ beforeEach(reset)
 const details = { participantCount: '2', teamMemberName: 'Second Student', topicTitle: '=Topic',
   topicAbstract: 'First paragraph.\n\nSecond paragraph.', paymentMethod: 'online' }
 
-test('PPT migration adds P:T headers while preserving all old registration data', async () => {
+test('PPT migration adds P:V headers while preserving all old registration data', async () => {
   rows = [['IT-old', 'Existing Student', ...Array(12).fill('unchanged'), 'https://drive.google.com/drive/folders/old']]
   const before = structuredClone(rows)
   assert.deepEqual(await ensure(), [...BASE, ...PPT_EXTRA_HEADERS])
   assert.deepEqual(rows, before)
-  assert.deepEqual(updates.map((input) => input.range), ['Registrations!P1', 'Registrations!Q1', 'Registrations!R1', 'Registrations!S1', 'Registrations!T1'])
+  assert.deepEqual(updates.map((input) => input.range), ['Registrations!P1', 'Registrations!Q1', 'Registrations!R1', 'Registrations!S1', 'Registrations!T1', 'Registrations!U1', 'Registrations!V1'])
 })
 
 test('fully migrated sheets need no further header writes', async () => {
@@ -46,7 +46,7 @@ test('legacy 14-column sheets gain screenshot and PPT headers without clearing d
   rows = [['IT-old', 'Student']]
   await ensure()
   assert.equal(updates[0].range, 'Registrations!O1')
-  assert.equal(updates.length, 6)
+  assert.equal(updates.length, 8)
 })
 
 test('migration refuses custom columns or unlabeled data instead of overwriting', async () => {
@@ -69,14 +69,16 @@ test('empty PPT tabs receive a complete header, headerless tabs with data are re
   assert.equal(updates.length, 0)
 })
 
-test('PPT append writes all fields into A:T as RAW values and preserves the existing A:O mapping', async () => {
+test('PPT append fills both team-size and abstract columns in A:V as RAW values', async () => {
   headers = [...BASE, ...PPT_EXTRA_HEADERS]
   await appendRegistration({ eventId: 'code-build', registrationId: 'IT-test', name: 'First Student',
     pptDetails: details, year: '2nd', paymentScreenshotUrl: 'https://drive.google.com/drive/folders/folder' })
-  assert.equal(appends[0].range, 'Registrations!A:T')
+  assert.equal(appends[0].range, 'Registrations!A:V')
   assert.equal(appends[0].valueInputOption, 'RAW')
   const row = appends[0].requestBody.values[0]
-  assert.equal(row.length, 20)
+  assert.equal(row.length, 22)
+  assert.equal(row[20], details.participantCount)
+  assert.equal(row[21], details.topicAbstract)
   assert.equal(row[1], 'First Student')
   assert.equal(row[14], 'https://drive.google.com/drive/folders/folder')
   assert.deepEqual(pptDetailsFromRow(row), details)

@@ -4,17 +4,20 @@ export const PPT_EXTRA_HEADERS = [
   'Presentation Topic',
   'Topic Abstract',
   'Payment Method',
+  'Team size',
+  'Topic abstract',
 ]
 
 export function pptSheetValues(details) {
   return [details?.participantCount || '', details?.teamMemberName || '',
-    details?.topicTitle || '', details?.topicAbstract || '', details?.paymentMethod || '']
+    details?.topicTitle || '', details?.topicAbstract || '', details?.paymentMethod || '',
+    details?.participantCount || '', details?.topicAbstract || '']
 }
 
 export function pptDetailsFromRow(row) {
   return {
-    participantCount: row[15] || '', teamMemberName: row[16] || '',
-    topicTitle: row[17] || '', topicAbstract: row[18] || '', paymentMethod: row[19] || '',
+    participantCount: row[20] || row[15] || '', teamMemberName: row[16] || '',
+    topicTitle: row[17] || '', topicAbstract: row[21] || row[18] || '', paymentMethod: row[19] || '',
   }
 }
 
@@ -22,20 +25,20 @@ export function pptDetailsFromRow(row) {
 export async function ensurePptSheet({ sheets, spreadsheetId, sheetName, baseHeaders }) {
   const headers = [...baseHeaders, ...PPT_EXTRA_HEADERS]
   const api = sheets.spreadsheets.values
-  const { data } = await api.get({ spreadsheetId, range: `${sheetName}!A1:T1` })
+  const { data } = await api.get({ spreadsheetId, range: `${sheetName}!A1:V1` })
   const existing = data.values?.[0] || []
   const fail = () => {
-    const error = new Error('The PPT sheet has unexpected columns. Keep the existing A:O columns in place and leave P:T empty, or use the configured PPT column names.')
+    const error = new Error('The PPT sheet has unexpected columns. Keep A:T in their existing order, with Team size in U and Topic abstract in V.')
     error.code = 'GOOGLE_SHEET_SCHEMA_MISMATCH'
     throw error
   }
   if (headers.every((header, index) => existing[index] === header)) return headers
 
-  const populatedRows = await api.get({ spreadsheetId, range: `${sheetName}!A2:T` })
+  const populatedRows = await api.get({ spreadsheetId, range: `${sheetName}!A2:V` })
   const rows = populatedRows.data.values || []
   if (!existing.some((value) => String(value || '').trim())) {
     if (rows.some((row) => row.some((value) => String(value || '').trim()))) fail()
-    await api.update({ spreadsheetId, range: `${sheetName}!A1:T1`,
+    await api.update({ spreadsheetId, range: `${sheetName}!A1:V1`,
       valueInputOption: 'RAW', requestBody: { values: [headers] } })
     return headers
   }

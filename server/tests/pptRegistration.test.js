@@ -5,15 +5,16 @@ import { storePptFiles } from '../services/pptFiles.js'
 
 const details = {
   participantCount: '2', teamMemberName: 'Second Student',
-  topicTitle: 'AI in education', topicAbstract: 'How AI can support learning and teaching.', paymentMethod: 'online',
+  topicTitle: 'AI in education', topicAbstract: '', abstractDocument: {receipt: 'valid-test-document', fileName: 'abstract.pdf'}, paymentMethod: 'online',
 }
 const calls = { reserve: [], commit: [], release: [], append: [], upload: [], delete: [] }
 let failAppend = false
 mock.module(new URL('../config/googleSheets.js', import.meta.url).href, {
   namedExports: {
     getRegistrationRows: async () => [],
+    abstractUploads: { verify: async (document) => { if (document?.receipt !== 'valid-test-document') throw new Error('Invalid upload'); return {fileId: 'uploaded-abstract', fileName: 'abstract.pdf', url: 'https://drive.google.com/file/d/uploaded-abstract/view'} } },
     uploadPaymentScreenshot: async (value) => { calls.upload.push(value); return { id: 'receipt', url: 'https://drive.google.com/file/d/receipt/view' } },
-    uploadPptRegistrationFiles: async (value) => { calls.upload.push(value); return { id: 'team-folder', url: 'https://drive.google.com/drive/folders/team-folder' } },
+    uploadPptRegistrationFiles: async (value) => { calls.upload.push(value); return { id: 'team-folder', url: 'https://drive.google.com/drive/folders/team-folder', abstractUrl: 'https://drive.google.com/file/d/copied-abstract/view' } },
     deletePaymentScreenshot: async (id) => { calls.delete.push(id) },
     appendRegistration: async (value) => { calls.append.push(value); if (failAppend) throw new Error('Sheet unavailable'); return value },
   },
@@ -54,8 +55,8 @@ test('solo normalization discards a hidden teammate and enforces the same team f
   assert.ok(validatePptDetails({ ...details, participantCount: '3' }, { year: '2nd' }).participantCount)
 })
 
-test('incomplete or oversized abstracts and missing teammate/year are rejected before storage', async () => {
-  for (const change of [{ teamMemberName: '' }, { topicTitle: '' }, { topicAbstract: '' }, { topicAbstract: 'x'.repeat(10001) }, { paymentMethod: 'other' }]) {
+test('missing abstract documents and missing teammate/year are rejected before storage', async () => {
+  for (const change of [{ teamMemberName: '' }, { topicTitle: '' }, { abstractDocument: null }, { abstractDocument: {receipt: ''} }, { paymentMethod: 'other' }]) {
     assert.equal((await submit(body({ pptDetails: { ...details, ...change } }))).statusCode, 400)
   }
   assert.equal((await submit(body({ year: '' }))).statusCode, 400)
@@ -69,7 +70,7 @@ test('online team stores the Drive folder link and preserves payment deduplicati
   assert.equal(response.statusCode, 201)
   assert.equal(calls.append[0].amount, 200)
   assert.equal(calls.append[0].year, '2nd')
-  assert.deepEqual(calls.append[0].pptDetails, details)
+  assert.equal(calls.append[0].pptDetails.topicAbstract, 'https://drive.google.com/file/d/copied-abstract/view')
   assert.equal(calls.append[0].paymentScreenshotUrl, 'https://drive.google.com/drive/folders/team-folder')
   assert.equal(calls.upload[0].details.teamMemberName, 'Second Student')
   assert.ok(calls.upload[0].screenshot)
@@ -114,6 +115,7 @@ test('workshop registration continues to use its existing screenshot path', asyn
 test('Drive folder contains readable team details, abstract and receipt without public permissions', async () => {
   const files = []
   const drive = { files: {
+    copy: async () => ({data: {id: 'copied-abstract'}}),
     create: async (input) => {
       if (input.media) {
         const chunks = []; for await (const chunk of input.media.body) chunks.push(Buffer.from(chunk))
@@ -128,7 +130,7 @@ test('Drive folder contains readable team details, abstract and receipt without 
   assert.equal(files.length, 2)
   assert.match(files[0].contents, /Participant 2: Second Student/)
   assert.match(files[0].contents, /AI in education/)
-  assert.match(files[0].contents, /How AI can support learning/)
+  assert.match(files[0].contents, /https:\/\/drive.google.com\/file\/d\/copied-abstract\/view/)
   assert.equal(files[1].metadata.mimeType, 'image/png')
   assert.deepEqual(files[0].metadata.parents, ['folder-id'])
 })
@@ -136,6 +138,7 @@ test('Drive folder contains readable team details, abstract and receipt without 
 test('Drive upload failure removes the incomplete folder and propagates the failure', async () => {
   const removed = []
   const drive = { files: {
+    copy: async () => ({data: {id: 'copied-abstract'}}),
     create: async (input) => { if (input.media) throw new Error('Upload failed'); return { data: { id: 'incomplete' } } },
     delete: async ({ fileId }) => { removed.push(fileId) },
   } }

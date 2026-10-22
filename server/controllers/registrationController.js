@@ -4,6 +4,7 @@ import {
   getRegistrationRows,
   uploadPaymentScreenshot,
   uploadPptRegistrationFiles,
+  abstractUploads,
 } from "../config/googleSheets.js";
 import { randomUUID } from "node:crypto";
 import { PPT_EVENT_ID, PPT_TEAM_FEE, normalizePptDetails, validatePptDetails } from "../../shared/pptRegistration.js";
@@ -540,6 +541,15 @@ export async function createRegistration(
     |--------------------------------------------------------------------------
     */
 
+    if (isPpt) {
+      try {
+        presentation.abstractDocument = await abstractUploads.verify(presentation.abstractDocument);
+        presentation.topicAbstract = presentation.abstractDocument.url;
+      } catch {
+        return res.status(400).json({ success: false, message: 'The abstract document is unavailable. Please upload it again.' });
+      }
+    }
+
     if (!isCash) await reserveTransactionId(
       registration.transactionId,
       registration.registrationId,
@@ -560,6 +570,7 @@ export async function createRegistration(
         base64: screenshotMatch[2],
       });
       registration.paymentScreenshotUrl = uploadedScreenshot.url;
+      if (isPpt) registration.pptDetails.topicAbstract = uploadedScreenshot.abstractUrl;
       savedRegistration =
         await appendRegistration(
           registration,
@@ -583,6 +594,11 @@ export async function createRegistration(
         );
       }
       throw appendError;
+    }
+
+    if (isPpt) {
+      try { await deletePaymentScreenshot(presentation.abstractDocument.fileId); }
+      catch { console.error('Temporary abstract upload cleanup failed. Registration was saved.'); }
     }
 
     try {
@@ -665,7 +681,7 @@ export async function createRegistration(
   } catch (error) {
     console.error(
       "Registration error:",
-      error,
+      { code: error.code || error.response?.status || 'unknown', message: error.message },
     );
 
     /*
