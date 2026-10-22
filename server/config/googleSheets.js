@@ -1,5 +1,6 @@
 import "dotenv/config";
 import { google } from "googleapis";
+import { getAdminEvent } from "./adminEvents.js";
 import { Readable } from "node:stream";
 
 /*
@@ -907,6 +908,10 @@ export async function updateRegistrationStatus(
   const row =
     rows[0];
 
+  // The sheet stores event registrations in separate spreadsheets, so the
+  // signed admin event is the authoritative source for the event name/fee.
+  const eventConfig = getAdminEvent(eventId);
+
   const currentStatus =
     String(
       row[11] ||
@@ -956,6 +961,10 @@ export async function updateRegistrationStatus(
     rowNumber,
 
     eventId,
+
+    event: eventConfig?.name || eventId,
+
+    amount: eventConfig?.fee ?? null,
 
     registrationId:
       row[0] || "",

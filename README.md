@@ -16,25 +16,24 @@ npm run preview    # serve the production build
 ```
 
 The site calls the backend at `/api/...`. In development and preview, Vite
-proxies `/api` to `http://127.0.0.1:5000` (see `vite.config.js`), which keeps
-the admin session cookie first-party. Start the backend separately:
+proxies `/api` to `http://127.0.0.1:5050` (see `vite.config.js`), which keeps
+the admin session cookie first-party. Start the backend in a second terminal
+from the project root:
 
 ```bash
-cd ../IT-Association-/backend
-npm install
-npm run dev        # needs its .env and Google service-account file
+npm run server     # needs server/.env and Google service-account credentials
 ```
 
-> macOS: the AirPlay Receiver also listens on port 5000. If the backend fails
-> to start or the proxy reaches AirPlay, disable AirPlay Receiver or run the
-> backend on another port (`PORT=5050`) and set `DEV_API_PROXY_TARGET`.
+The backend uses port `5050` by default. If you set a different `PORT` in
+`server/.env`, set `DEV_API_PROXY_TARGET` to the same port in the root `.env`.
+Port `5000` is redirected to `5050` because macOS AirPlay may occupy it.
 
 ### Environment (`.env`, see `.env.example`)
 
 | Variable | Purpose |
 | --- | --- |
 | `VITE_API_URL` | Backend base URL used by the browser. Empty = same-origin `/api` (recommended). |
-| `DEV_API_PROXY_TARGET` | Where the dev/preview server proxies `/api`. Default `http://127.0.0.1:5000`. |
+| `DEV_API_PROXY_TARGET` | Where the dev/preview server proxies `/api`. Default `http://127.0.0.1:5050`. |
 
 ### Deployment
 

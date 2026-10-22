@@ -450,8 +450,15 @@ export async function changeRegistrationStatus(
         status ===
         "VERIFIED"
       ) {
+        const selectedEvent = getAdminEvent(eventId);
+
         await sendRegistrationSuccessEmail(
-          registration,
+          {
+            ...registration,
+            eventId,
+            event: registration.event || selectedEvent?.name || eventId,
+            amount: registration.amount ?? selectedEvent?.fee ?? null,
+          },
         );
       } else {
         await sendRegistrationRejectedEmail(

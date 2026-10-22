@@ -1,5 +1,6 @@
 import "dotenv/config";
 import nodemailer from "nodemailer";
+import { getAdminEvent } from "../config/adminEvents.js";
 
 /*
 |--------------------------------------------------------------------------
@@ -389,6 +390,18 @@ const emailStyles = `
 function buildDetailsTable(
   registration
 ) {
+  const configuredEvent = getAdminEvent(registration.eventId);
+  const eventName =
+    registration.event ||
+    registration.eventName ||
+    configuredEvent?.name ||
+    registration.eventId ||
+    "Event name unavailable";
+  const eventAmount =
+    registration.amount ??
+    configuredEvent?.fee ??
+    null;
+
   return `
     <table class="details">
 
@@ -447,7 +460,7 @@ function buildDetailsTable(
         <td>Event</td>
         <td>
           ${escapeHtml(
-            registration.event
+            eventName
           )}
         </td>
       </tr>
@@ -455,9 +468,9 @@ function buildDetailsTable(
       <tr>
         <td>Amount</td>
         <td>
-          ₹${escapeHtml(
-            registration.amount
-          )}
+          ${eventAmount !== undefined && eventAmount !== null && eventAmount !== ""
+            ? `₹${escapeHtml(eventAmount)}`
+            : "—"}
         </td>
       </tr>
 
@@ -654,8 +667,23 @@ export async function sendRegistrationSuccessEmail(
     );
   }
 
+  const configuredEvent = getAdminEvent(registration.eventId);
+  const verifiedRegistration = {
+    ...registration,
+    event:
+      registration.event ||
+      registration.eventName ||
+      configuredEvent?.name ||
+      registration.eventId ||
+      "Event name unavailable",
+    amount:
+      registration.amount ??
+      configuredEvent?.fee ??
+      null,
+  };
+
   const subject =
-    `Registration Verified - ${registration.event}`;
+    `Registration Verified - ${verifiedRegistration.event}`;
 
   const html = `
 <!DOCTYPE html>
@@ -713,7 +741,7 @@ export async function sendRegistrationSuccessEmail(
       </div>
 
       ${buildDetailsTable(
-        registration
+        verifiedRegistration
       )}
 
       <p>
@@ -757,7 +785,7 @@ Registration ID:
 ${registration.registrationId}
 
 Event:
-${registration.event}
+${verifiedRegistration.event}
 
 Status:
 VERIFIED

@@ -59,7 +59,7 @@ export default defineConfig(
           "/api": {
             target:
               env.DEV_API_PROXY_TARGET ||
-              "http://127.0.0.1:5000",
+              "http://127.0.0.1:5050",
 
             changeOrigin: true,
 
@@ -79,7 +79,7 @@ export default defineConfig(
           "/api": {
             target:
               env.DEV_API_PROXY_TARGET ||
-              "http://127.0.0.1:5000",
+              "http://127.0.0.1:5050",
 
             changeOrigin: true,
 

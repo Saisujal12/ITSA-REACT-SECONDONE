@@ -131,7 +131,7 @@ export default function PosterPanel({ event, day, status, statusPending = false 
         placeItems: 'center',
         width: '100vw',
         height: '100vh',
-        height: '100dvh',
+        minHeight: '100dvh',
         margin: 0,
         padding: 0,
         background: 'rgba(20, 16, 17, 0.9)',

@@ -185,8 +185,12 @@ app.use((req, res) => {
 // Central error handler
 // --------------------------------------------------
 
-app.use((error, req, res) => {
+app.use((error, req, res, next) => {
   console.error("API error:", error);
+
+  if (res.headersSent) {
+    return next(error);
+  }
 
   if (
     error?.message?.startsWith(
