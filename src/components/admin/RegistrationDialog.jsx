@@ -83,11 +83,11 @@ export default function RegistrationDialog({ registration, onClose, onUpdateStat
             key={key}
             className={cx(s.detailItem, key === 'transactionId' && cx(s.fullWidth, s.transaction))}
           >
-            <dt>{label}</dt>
+            <dt>{key === 'paymentScreenshotUrl' && registration.eventId === 'code-build' ? 'Team details, abstract and payment' : label}</dt>
             <dd>
               {key === 'paymentScreenshotUrl' && registration[key] ? (
                 <a href={registration[key]} target="_blank" rel="noreferrer">
-                  View payment screenshot
+                  {registration.eventId === 'code-build' ? 'View team details, abstract and payment' : 'View payment screenshot'}
                 </a>
               ) : key === 'amount' && registration[key] ? (
                 `₹${registration[key]}`

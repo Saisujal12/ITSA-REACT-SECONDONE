@@ -29,6 +29,8 @@ import {
 } from '../../utils/validation'
 import StatusMessage from '../ui/StatusMessage'
 import PaymentPanel from './PaymentPanel'
+import PptDetailsFields from './PptDetailsFields'
+import { PPT_EVENT_ID } from '../../../shared/pptRegistration'
 import s from '../../pages/Register.module.css'
 
 const FIELD_ORDER = [
@@ -40,6 +42,11 @@ const FIELD_ORDER = [
   'email',
   'phone',
   'year',
+  'participantCount',
+  'teamMemberName',
+  'topicTitle',
+  'topicAbstract',
+  'paymentMethod',
   'mealPreference',
   'paymentScreenshot',
   'transactionId',
@@ -139,6 +146,8 @@ export default function RegistrationForm({ event, day }) {
   const screenshotInputRef = useRef(null)
 
   const feeKnown = hasVerifiedFee(event)
+  const isPpt = event.id === PPT_EVENT_ID
+  const isCash = isPpt && values.paymentMethod === 'cash'
   const submitting = status === 'submitting'
 
   useEffect(() => () => abortRef.current?.abort(), [])
@@ -164,9 +173,10 @@ export default function RegistrationForm({ event, day }) {
       return
     }
 
-    if (file.size > MAX_SCREENSHOT_BYTES) {
+    const screenshotLimit = isPpt ? 10 * 1024 * 1024 : MAX_SCREENSHOT_BYTES
+    if (file.size > screenshotLimit) {
       setPaymentScreenshot(null)
-      setScreenshotError('The image must be 8 MB or smaller.')
+      setScreenshotError(`The image must be ${isPpt ? 10 : 8} MB or smaller.`)
       return
     }
 
@@ -235,7 +245,7 @@ export default function RegistrationForm({ event, day }) {
 
     const nextErrors = validateRegistration(values, event)
 
-    if (!paymentScreenshot) {
+    if (!isCash && !paymentScreenshot) {
       nextErrors.paymentScreenshot =
         'Please upload your payment screenshot.'
     }
@@ -283,6 +293,7 @@ export default function RegistrationForm({ event, day }) {
           amount: event.fee,
           transactionId: clean.transactionId,
           paymentScreenshot,
+          ...(isPpt ? { pptDetails: clean.pptDetails } : {}),
         },
         { signal: controller.signal },
       )
@@ -360,6 +371,14 @@ export default function RegistrationForm({ event, day }) {
 
         <h2>{event.formHeading}</h2>
         <p>{event.formDescription}</p>
+        {event.coordinators && (
+          <div className={s.eventCoordinators}>
+            <strong>Event coordinators</strong>
+            {event.coordinators.map((person) => (
+              <a key={person.phone} href={`tel:+91${person.phone}`}>{person.name} · +91 {person.phone}</a>
+            ))}
+          </div>
+        )}
       </div>
 
       <form
@@ -371,7 +390,7 @@ export default function RegistrationForm({ event, day }) {
           <Field
             id="reg-name"
             number="01"
-            label="STUDENT NAME"
+            label={isPpt ? 'YOUR NAME / FIRST PARTICIPANT' : 'STUDENT NAME'}
             icon={User}
             error={errors.name}
           >
@@ -443,7 +462,7 @@ export default function RegistrationForm({ event, day }) {
               <Field
                 id="reg-branch"
                 number="04"
-                label="BRANCH"
+                label={isPpt ? 'CLASS / BRANCH' : 'BRANCH'}
                 icon={BookUser}
                 error={errors.branch}
               >
@@ -452,7 +471,7 @@ export default function RegistrationForm({ event, day }) {
                     {...register('branch')}
                     {...aria}
                     type="text"
-                    placeholder="Your branch"
+                    placeholder={isPpt ? 'Your class / branch' : 'Your branch'}
                     autoComplete="off"
                     maxLength={60}
                     required
@@ -487,7 +506,7 @@ export default function RegistrationForm({ event, day }) {
               <Field
                 id="reg-branch"
                 number="04"
-                label="BRANCH"
+                label={isPpt ? 'CLASS / BRANCH' : 'BRANCH'}
                 icon={BookUser}
                 error={errors.branch}
               >
@@ -496,7 +515,7 @@ export default function RegistrationForm({ event, day }) {
                     {...register('branch')}
                     {...aria}
                     type="text"
-                    placeholder="Your branch"
+                    placeholder={isPpt ? 'Your class / branch' : 'Your branch'}
                     autoComplete="off"
                     maxLength={60}
                     required
@@ -594,6 +613,8 @@ export default function RegistrationForm({ event, day }) {
             )}
           </Field>
 
+          {isPpt && <PptDetailsFields Field={Field} register={register} values={values} errors={errors} />}
+
           {event.type === 'workshop' && (
             <fieldset
               className={s.mealPreferenceFieldset}
@@ -653,8 +674,13 @@ export default function RegistrationForm({ event, day }) {
           )}
         </div>
 
-        <PaymentPanel event={event} day={day} />
+        {isCash ? (
+          <StatusMessage tone="info" title="Cash payment · ₹200 per team">
+            Give your payment to an event coordinator and keep your registration ID. Your registration remains pending until the coordinator confirms receipt. No UTR or screenshot is needed for cash.
+          </StatusMessage>
+        ) : <PaymentPanel event={event} day={day} />}
 
+        {!isCash && <>
         <div
           className={cx(
             s.formGroup,
@@ -663,7 +689,7 @@ export default function RegistrationForm({ event, day }) {
           )}
         >
           <label htmlFor="reg-paymentScreenshot">
-            <span>{event.type === 'workshop' ? '09' : '08'}</span>
+            <span>{isPpt ? '13' : event.type === 'workshop' ? '09' : '08'}</span>
             UPLOAD PAYMENT SCREENSHOT
           </label>
 
@@ -735,7 +761,7 @@ export default function RegistrationForm({ event, day }) {
               </span>
 
               <span className={s.screenshotFormatTag}>
-                JPG · PNG · WEBP <b>MAX 8 MB</b>
+                JPG · PNG · WEBP <b>MAX {isPpt ? 10 : 8} MB</b>
               </span>
             </div>
           </div>
@@ -784,7 +810,7 @@ export default function RegistrationForm({ event, day }) {
         <div className={s.utrGroup}>
           <Field
             id="reg-transactionId"
-            number={event.type === 'workshop' ? '10' : '09'}
+            number={isPpt ? '14' : event.type === 'workshop' ? '10' : '09'}
             label="PAYMENT UTR / TRANSACTION ID"
             icon={ReceiptText}
             error={errors.transactionId}
@@ -803,6 +829,8 @@ export default function RegistrationForm({ event, day }) {
             )}
           </Field>
         </div>
+
+        </>}
 
         {!feeKnown && (
           <StatusMessage

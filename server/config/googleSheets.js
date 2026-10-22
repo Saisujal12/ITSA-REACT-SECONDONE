@@ -2,6 +2,7 @@ import "dotenv/config";
 import { google } from "googleapis";
 import { getAdminEvent } from "./adminEvents.js";
 import { Readable } from "node:stream";
+import { storePptFiles } from "../services/pptFiles.js";
 
 /*
 |--------------------------------------------------------------------------
@@ -558,6 +559,13 @@ export async function deletePaymentScreenshot(fileId) {
   if (fileId) {
     await drive.files.delete({ fileId, supportsAllDrives: true });
   }
+}
+
+export function uploadPptRegistrationFiles(input) {
+  return storePptFiles(input, {
+    drive,
+    parentId: process.env.PAYMENT_SCREENSHOT_FOLDER_ID?.trim(),
+  });
 }
 
 /*

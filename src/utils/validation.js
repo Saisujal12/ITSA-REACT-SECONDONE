@@ -1,3 +1,5 @@
+import { PPT_EVENT_ID, normalizePptDetails, validatePptDetails } from '../../shared/pptRegistration'
+
 const EMAIL = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
 const PHONE = /^\d{10}$/
 const NAME = /^\p{L}[\p{L}\p{M} .'-]*$/u
@@ -24,6 +26,11 @@ export const EMPTY_REGISTRATION = {
   phone: '',
   mealPreference: '',
   transactionId: '',
+  participantCount: '',
+  teamMemberName: '',
+  topicTitle: '',
+  topicAbstract: '',
+  paymentMethod: '',
 }
 
 export function normalizeRegistration(values) {
@@ -38,6 +45,7 @@ export function normalizeRegistration(values) {
     phone: values.phone.replace(/\D/g, '').slice(0, 10),
     mealPreference: values.mealPreference || '',
     transactionId: values.transactionId.trim(),
+    pptDetails: normalizePptDetails(values),
   }
 }
 
@@ -97,13 +105,18 @@ export function validateRegistration(values, event) {
     errors.year = 'Please select your year of study.'
   }
 
-  if (!v.transactionId) {
+  const isCash = event?.id === PPT_EVENT_ID && v.pptDetails.paymentMethod === 'cash'
+  if (event?.id === PPT_EVENT_ID) {
+    Object.assign(errors, validatePptDetails(values, { year: v.year }))
+  }
+
+  if (!isCash && !v.transactionId) {
     errors.transactionId = 'Please enter your UTR / transaction ID.'
-  } else if (
+  } else if (!isCash && (
     v.transactionId.length < 4 ||
     v.transactionId.length > 50 ||
     !TRANSACTION_ID.test(v.transactionId)
-  ) {
+  )) {
     errors.transactionId = 'Please enter a valid transaction ID.'
   }
 

@@ -14,9 +14,9 @@ export const PAYMENT_QR_CONFIG = {
     qrFallbackText: 'WORKSHOP QR — UPLOAD REAL QR IMAGE',
   },
   'code-build': {
-    qr: 'qr/code-build-2026',
-    qrAlt: 'Code & Build payment QR code placeholder',
-    qrFallbackText: 'CODE & BUILD QR — UPLOAD REAL QR IMAGE',
+    qr: 'qr/ppt-presentation-2026',
+    qrAlt: 'PPT Presentation payment QR for Gullepelli Varshith',
+    qrFallbackText: 'PPT PRESENTATION PAYMENT QR UNAVAILABLE',
   },
   innovation: {
     qr: 'qr/innovation-2026',

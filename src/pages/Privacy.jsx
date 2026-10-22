@@ -9,7 +9,7 @@ export default function Privacy() {
       <header>
         <p className={s.eyebrow}>IT ASSOCIATION · KITS WARANGAL</p>
         <h1>Privacy Policy</h1>
-        <p>Last updated: 17 October 2026</p>
+        <p>Last updated: 22 October 2026</p>
       </header>
 
       <section>
@@ -20,10 +20,12 @@ export default function Privacy() {
         <h2>Information we collect and why</h2>
         <p>When you register, we collect the details you submit, such as your name, college, roll number, year, branch, email address, phone number, event selection, meal preference where requested, payment transaction reference and payment screenshot. We also create a registration ID, timestamps and registration status.</p>
         <p>These details support registration, payment verification, event administration, duplicate-payment-reference checks and registration-related emails. Upload only the payment evidence needed for verification; conceal unrelated balances or transactions. Do not submit passwords, PINs or one-time passwords.</p>
+        <p>PPT Presentation registrations also collect the team size, a second participant’s name when applicable, the payment method, presentation topic and typed abstract. Make sure your teammate knows their name is being submitted.</p>
       </section>
       <section>
         <h2>Google Drive, Google Sheets and Google account access</h2>
         <p>Registration records and payment references are stored using Google Sheets, and payment screenshots are uploaded to Google Drive. Registration records include a link to the uploaded screenshot.</p>
+        <p>For PPT Presentation teams, the record links to a Google Drive folder containing the team details and abstract, plus a payment screenshot for online payments. Cash payments require organizer verification.</p>
         <p>The screenshot integration asks an organizer to authorize a Google account using the drive.file permission, which allows access to files created by or specifically shared with this app. Its purpose is to create the screenshot folder and upload or manage payment evidence. Participants do not need to grant access to their own Google Drive to register.</p>
         <p>Google authorization credentials are used by the server to maintain this connection. They are not requested from participants or displayed as part of registration.</p>
       </section>
