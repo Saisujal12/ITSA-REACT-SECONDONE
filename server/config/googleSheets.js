@@ -3,6 +3,8 @@ import { google } from "googleapis";
 import { getAdminEvent } from "./adminEvents.js";
 import { Readable } from "node:stream";
 import { storePptFiles } from "../services/pptFiles.js";
+import { PPT_EVENT_ID } from "../../shared/pptRegistration.js";
+import { ensurePptSheet, pptSheetValues, pptDetailsFromRow } from "../services/pptSheet.js";
 
 /*
 |--------------------------------------------------------------------------
@@ -363,6 +365,9 @@ export async function ensureRegistrationSheet(
     );
 
   try {
+    if (eventId === PPT_EVENT_ID) {
+      return await ensurePptSheet({ sheets, spreadsheetId, sheetName: SHEET_NAME, baseHeaders: HEADERS });
+    }
     const response =
       await sheets.spreadsheets.values.get(
         {
@@ -633,6 +638,7 @@ export async function appendRegistration(
       "",
 
       registration.paymentScreenshotUrl || "",
+      ...(eventId === PPT_EVENT_ID ? pptSheetValues(registration.pptDetails) : []),
     ],
   ];
 
@@ -642,7 +648,7 @@ export async function appendRegistration(
         spreadsheetId,
 
         range:
-          `${SHEET_NAME}!A:O`,
+          `${SHEET_NAME}!A:${eventId === PPT_EVENT_ID ? "T" : "O"}`,
 
         valueInputOption:
           "RAW",
@@ -722,7 +728,7 @@ export async function getRegistrationRows(
         spreadsheetId,
 
         range:
-          `${SHEET_NAME}!A2:O`,
+          `${SHEET_NAME}!A2:${eventId === PPT_EVENT_ID ? "T" : "O"}`,
       },
     );
 
@@ -740,6 +746,8 @@ export async function getRegistrationRows(
           index + 2,
 
         eventId,
+
+        ...(eventId === PPT_EVENT_ID ? { pptDetails: pptDetailsFromRow(row) } : {}),
 
         registrationId:
           row[0] || "",
@@ -893,7 +901,7 @@ export async function updateRegistrationStatus(
         spreadsheetId,
 
         range:
-          `${SHEET_NAME}!A${rowNumber}:O${rowNumber}`,
+          `${SHEET_NAME}!A${rowNumber}:${eventId === PPT_EVENT_ID ? "T" : "O"}${rowNumber}`,
       },
     );
 
@@ -971,6 +979,8 @@ export async function updateRegistrationStatus(
     eventId,
 
     event: eventConfig?.name || eventId,
+
+    ...(eventId === PPT_EVENT_ID ? { pptDetails: pptDetailsFromRow(row) } : {}),
 
     amount: eventConfig?.fee ?? null,
 

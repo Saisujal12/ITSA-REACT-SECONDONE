@@ -69,6 +69,7 @@ test('online team stores the Drive folder link and preserves payment deduplicati
   assert.equal(response.statusCode, 201)
   assert.equal(calls.append[0].amount, 200)
   assert.equal(calls.append[0].year, '2nd')
+  assert.deepEqual(calls.append[0].pptDetails, details)
   assert.equal(calls.append[0].paymentScreenshotUrl, 'https://drive.google.com/drive/folders/team-folder')
   assert.equal(calls.upload[0].details.teamMemberName, 'Second Student')
   assert.ok(calls.upload[0].screenshot)

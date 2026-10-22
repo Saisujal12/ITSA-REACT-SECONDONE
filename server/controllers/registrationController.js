@@ -520,6 +520,7 @@ export async function createRegistration(
           : "",
 
       amount: isPpt ? PPT_TEAM_FEE : amount,
+      ...(isPpt ? { pptDetails: presentation } : {}),
 
       transactionId:
         normalizedTransactionId,

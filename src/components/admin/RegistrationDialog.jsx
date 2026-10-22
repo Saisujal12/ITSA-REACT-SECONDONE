@@ -99,6 +99,23 @@ export default function RegistrationDialog({ registration, onClose, onUpdateStat
         ))}
       </dl>
 
+      {registration.eventId === 'code-build' && registration.pptDetails?.participantCount && (
+        <dl className={s.details}>
+          {[
+            ['participantCount', 'Number of participants'],
+            ['teamMemberName', 'Second participant'],
+            ['topicTitle', 'Presentation topic'],
+            ['topicAbstract', 'Topic abstract'],
+            ['paymentMethod', 'Payment method'],
+          ].map(([key, label]) => (
+            <div key={key} className={cx(s.detailItem, key === 'topicAbstract' && s.fullWidth)}>
+              <dt>{label}</dt>
+              <dd style={{ whiteSpace: 'pre-wrap', overflowWrap: 'anywhere' }}>{registration.pptDetails[key] || '—'}</dd>
+            </div>
+          ))}
+        </dl>
+      )}
+
       {error && (
         <p className={s.dialogError} role="alert">
           {error}

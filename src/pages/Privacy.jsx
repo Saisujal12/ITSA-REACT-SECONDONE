@@ -25,7 +25,7 @@ export default function Privacy() {
       <section>
         <h2>Google Drive, Google Sheets and Google account access</h2>
         <p>Registration records and payment references are stored using Google Sheets, and payment screenshots are uploaded to Google Drive. Registration records include a link to the uploaded screenshot.</p>
-        <p>For PPT Presentation teams, the record links to a Google Drive folder containing the team details and abstract, plus a payment screenshot for online payments. Cash payments require organizer verification.</p>
+        <p>For PPT Presentation teams, team size, participant names, topic, abstract and payment method are stored in the registration spreadsheet. The record also links to a Google Drive folder containing the team details and abstract, plus a payment screenshot for online payments. Cash payments require organizer verification.</p>
         <p>The screenshot integration asks an organizer to authorize a Google account using the drive.file permission, which allows access to files created by or specifically shared with this app. Its purpose is to create the screenshot folder and upload or manage payment evidence. Participants do not need to grant access to their own Google Drive to register.</p>
         <p>Google authorization credentials are used by the server to maintain this connection. They are not requested from participants or displayed as part of registration.</p>
       </section>
