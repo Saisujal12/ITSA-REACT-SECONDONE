@@ -1,4 +1,4 @@
-import { BookOpen, FileText, ReceiptText, User, Users } from 'lucide-react'
+import { BookOpen, FileText, User, Users } from 'lucide-react'
 
 export default function PptDetailsFields({ Field, register, values, errors, onAbstractFile, abstractInputRef, abstractProgress, abstractUploading }) {
   return (
@@ -22,15 +22,6 @@ export default function PptDetailsFields({ Field, register, values, errors, onAb
       </Field>
       <Field id="reg-topicAbstract" number="11" label="UPLOAD TOPIC ABSTRACT" icon={FileText} error={errors.topicAbstract} hint={abstractUploading ? `Uploading document… ${abstractProgress}%` : values.abstractDocument ? `${values.abstractDocument.fileName} — ready to submit. Choose another file to replace it.` : 'Upload your own PDF or DOCX document. Maximum 10 MB.'}>
         {(aria) => <input {...aria} id="reg-topicAbstract" type="file" accept=".pdf,.docx,application/pdf,application/vnd.openxmlformats-officedocument.wordprocessingml.document" ref={(element) => { abstractInputRef.current = element; register('topicAbstract').ref(element) }} onChange={(event) => onAbstractFile(event.target.files?.[0])} required />}
-      </Field>
-      <Field id="reg-paymentMethod" number="12" label="AMOUNT PAID IN" icon={ReceiptText} error={errors.paymentMethod} hint="All registrations remain pending until an organizer verifies payment.">
-        {(aria) => (
-          <select {...register('paymentMethod')} {...aria} required>
-            <option value="" disabled>Select payment method</option>
-            <option value="cash">Cash</option>
-            <option value="online">Online</option>
-          </select>
-        )}
       </Field>
     </>
   )

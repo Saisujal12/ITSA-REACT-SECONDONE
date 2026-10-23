@@ -866,6 +866,10 @@
   width: 100%;
 }
 
+.payment-mode-field {
+  margin-top: 22px;
+}
+
 .form-group label {
   display: flex;
   align-items: center;

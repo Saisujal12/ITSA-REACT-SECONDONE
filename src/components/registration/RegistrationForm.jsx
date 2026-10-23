@@ -151,7 +151,7 @@ export default function RegistrationForm({ event, day }) {
 
   const feeKnown = hasVerifiedFee(event)
   const isPpt = event.id === PPT_EVENT_ID
-  const isCash = isPpt && values.paymentMethod === 'cash'
+  const isCash = values.paymentMethod === 'cash'
   const submitting = status === 'submitting'
 
   useEffect(() => () => { abortRef.current?.abort(); abstractAbortRef.current?.abort() }, [])
@@ -275,9 +275,10 @@ export default function RegistrationForm({ event, day }) {
 
     const nextErrors = validateRegistration(values, event)
 
-    if (!isCash && !paymentScreenshot) {
-      nextErrors.paymentScreenshot =
-        'Please upload your payment screenshot.'
+    if (!paymentScreenshot) {
+      nextErrors.paymentScreenshot = isCash
+        ? 'Please upload the receipt challan given by the event coordinator.'
+        : 'Please upload your payment screenshot.'
     }
 
     setScreenshotError(nextErrors.paymentScreenshot || '')
@@ -321,6 +322,7 @@ export default function RegistrationForm({ event, day }) {
           year: clean.year,
           mealPreference: clean.mealPreference,
           amount: event.fee,
+          paymentMethod: clean.paymentMethod,
           transactionId: clean.transactionId,
           paymentScreenshot,
           ...(isPpt ? { pptDetails: clean.pptDetails } : {}),
@@ -404,9 +406,12 @@ export default function RegistrationForm({ event, day }) {
         <p>{event.formDescription}</p>
         {event.coordinators && (
           <div className={s.eventCoordinators}>
-            <strong>Event coordinators</strong>
+            <strong>Event Coordinators</strong>
             {event.coordinators.map((person) => (
-              <a key={person.phone} href={`tel:+91${person.phone}`}>{person.name} · +91 {person.phone}</a>
+              person.phone
+            
+                ? <a key={`${person.name}-${person.phone}`} href={`tel:+91${person.phone}`}>{person.name} : +91 {person.phone}</a>
+                : <span key={person.name}>{person.name}</span>
             ))}
           </div>
         )}
@@ -705,13 +710,22 @@ export default function RegistrationForm({ event, day }) {
           )}
         </div>
 
+        <div className={s.paymentModeField}>
+          <Field id="reg-paymentMethod" number={isPpt ? '12' : event.type === 'workshop' ? '08' : '07'} label="PAYMENT MODE" icon={ReceiptText} error={errors.paymentMethod} hint="All registrations remain pending until an organizer verifies payment.">
+            {(aria) => <select {...register('paymentMethod')} {...aria} required>
+              <option value="" disabled>Select payment mode</option>
+              <option value="cash">Cash</option>
+              <option value="online">Online</option>
+            </select>}
+          </Field>
+        </div>
+
         {isCash ? (
-          <StatusMessage tone="info" title="Cash payment · ₹200 per team">
-            Give your payment to an event coordinator and keep your registration ID. Your registration remains pending until the coordinator confirms receipt. No UTR or screenshot is needed for cash.
+          <StatusMessage tone="info" title="Cash payment selected">
+            Upload the receipt challan provided by the event coordinator below. Your registration remains pending until the coordinator confirms receipt. No UTR is needed for cash.
           </StatusMessage>
         ) : <PaymentPanel event={event} day={day} />}
 
-        {!isCash && <>
         <div
           className={cx(
             s.formGroup,
@@ -721,7 +735,7 @@ export default function RegistrationForm({ event, day }) {
         >
           <label htmlFor="reg-paymentScreenshot">
             <span>{isPpt ? '13' : event.type === 'workshop' ? '09' : '08'}</span>
-            UPLOAD PAYMENT SCREENSHOT
+            {isCash ? 'UPLOAD RECEIPT CHALLAN' : 'UPLOAD PAYMENT SCREENSHOT'}
           </label>
 
           <div
@@ -756,7 +770,7 @@ export default function RegistrationForm({ event, day }) {
               }}
               type="file"
               accept="image/jpeg,image/png,image/webp"
-              aria-label="Choose payment screenshot"
+              aria-label={isCash ? 'Choose receipt challan image' : 'Choose payment screenshot'}
               aria-invalid={Boolean(screenshotError)}
               aria-describedby={
                 screenshotError
@@ -779,9 +793,9 @@ export default function RegistrationForm({ event, day }) {
               <span className={s.screenshotDropCopy}>
                 <strong>
                   {isScreenshotDragging
-                    ? 'Release to upload screenshot'
+                    ? 'Release to upload image'
                     : paymentScreenshot?.fileName ||
-                      'Drop payment screenshot here'}
+                      (isCash ? 'Drop receipt challan here' : 'Drop payment screenshot here')}
                 </strong>
 
                 <small>
@@ -801,17 +815,18 @@ export default function RegistrationForm({ event, day }) {
             id="reg-paymentScreenshot-hint"
             className={s.fieldHint}
           >
-            Upload a clear image of the successful payment screen. Your image
-            is optimized automatically.
+            {isCash
+              ? 'Upload a clear image of the receipt challan with the coordinator-issued receipt number. Your image is optimized automatically.'
+              : 'Upload a clear image of the successful payment screen. Your image is optimized automatically.'}
           </small>
 
           {paymentScreenshot && (
             <div className={s.screenshotPreview}>
               <img
                 src={paymentScreenshot.dataUrl}
-                alt="Preview of uploaded payment screenshot"
+                alt={isCash ? 'Preview of uploaded receipt challan' : 'Preview of uploaded payment screenshot'}
               />
-              <span>Payment screenshot ready to upload</span>
+              <span>{isCash ? 'Receipt challan ready to upload' : 'Payment screenshot ready to upload'}</span>
 
               <button
                 type="button"
@@ -838,7 +853,7 @@ export default function RegistrationForm({ event, day }) {
           )}
         </div>
 
-        <div className={s.utrGroup}>
+        {!isCash && <div className={s.utrGroup}>
           <Field
             id="reg-transactionId"
             number={isPpt ? '14' : event.type === 'workshop' ? '10' : '09'}
@@ -859,9 +874,7 @@ export default function RegistrationForm({ event, day }) {
               />
             )}
           </Field>
-        </div>
-
-        </>}
+        </div>}
 
         {!feeKnown && (
           <StatusMessage

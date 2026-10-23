@@ -135,7 +135,9 @@ export const EVENTS = [
     icon: CodeXml,
     date: '2026 · TBD',
     meta: { icon: Trophy, label: 'Challenge' },
-    fee: 1,
+    fee: 49,
+    // Replace these sample coordinator details with the Techthon contact.
+    coordinators: [{ name: 'Md.Shekeel', phone: 'XXXXXXXXXX' }],
     ...openEventDefaults,
     formHeading: 'Register for Techthon',
     formDescription: 'Complete the registration form for Techthon.',
@@ -155,7 +157,12 @@ export const EVENTS = [
     icon: ShieldCheck,
     date: '2026 · TBD',
     meta: { icon: Lock, label: 'Challenge' },
-    fee: 1,
+    fee: 70,
+    // Replace these sample coordinator details with the Technomyst contact.
+    coordinators: [
+      { name: 'M.Hyndavi', phone: 'XXXXXXXXXX' },
+      { name: 'P.Sri Vaishnavi', phone: 'XXXXXXXXXX' },
+    ],
     ...openEventDefaults,
     formHeading: 'Register for Technomyst',
     formDescription: 'Complete the registration form for Technomyst.',
@@ -176,6 +183,8 @@ export const EVENTS = [
     date: '2026 · TBD',
     meta: { icon: Users, label: 'Students' },
     fee: 1,
+    // Replace these sample coordinator details with the event contact.
+    coordinators: [{ name: '+91 XXXXXXXXXX' }],
     ...openEventDefaults,
     formHeading: 'Register for AlgoCodex & AI 🤖⌨️📃',
     formDescription: 'Complete the registration form for AlgoCodex & AI.',
@@ -196,6 +205,8 @@ export const EVENTS = [
     date: '2026 · TBD',
     meta: { icon: Users, label: 'Students' },
     fee: 1,
+    // Replace these sample coordinator details with the event contact.
+    coordinators: [{ name: '+91 XXXXXXXXXX' }],
     ...openEventDefaults,
     formHeading: 'Register for Glitch & Giggles',
     formDescription: 'Complete the registration form for Glitch & Giggles.',
@@ -216,6 +227,8 @@ export const EVENTS = [
     date: '2026 · TBD',
     meta: { icon: Users, label: 'Students' },
     fee: 1,
+    // Replace these sample coordinator details with the event contact.
+    coordinators: [{ name: '+91 XXXXXXXXXX' }],
     ...openEventDefaults,
     formHeading: 'Register for AI TRINITY',
     formDescription: 'Complete the registration form for AI TRINITY.',
@@ -236,6 +249,8 @@ export const EVENTS = [
     date: '2026 · TBD',
     meta: { icon: Users, label: 'Students' },
     fee: 1,
+    // Replace these sample coordinator details with the event contact.
+    coordinators: [{ name: '+91 XXXXXXXXXX' }],
     ...openEventDefaults,
     formHeading: 'Register for NEXORA',
     formDescription: 'Complete the registration form for NEXORA.',
@@ -256,6 +271,11 @@ export const EVENTS = [
     date: '2026 · TBD',
     meta: { icon: Users, label: 'Students' },
     fee: 50,
+    // Replace these sample coordinator details with the INFUSION contact.
+    coordinators: [
+      { name: 'S.Aditya', phone: 'XXXXXXXXXX' },
+      { name: 'R.Varsha', phone: 'XXXXXXXXXX' },
+    ],
     ...openEventDefaults,
     formHeading: 'Register for INFUSION',
     formDescription: 'Complete the registration form for INFUSION.',

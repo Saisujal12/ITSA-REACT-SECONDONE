@@ -113,6 +113,11 @@ function normalizeRegistration(
       item?.transactionId ??
       "",
 
+    paymentMethod:
+      item?.paymentMethod ??
+      item?.pptDetails?.paymentMethod ??
+      "",
+
     paymentScreenshotUrl:
       item?.paymentScreenshotUrl ??
       "",
@@ -1070,7 +1075,7 @@ useEffect(
                     </th>
 
                     <th>
-                      Payment Screenshot
+                      Payment Receipt / Screenshot
                     </th>
 
                     <th>
@@ -1166,7 +1171,11 @@ useEffect(
                               rel="noopener noreferrer"
                               aria-label={`View registration files for ${registration.name || registration.registrationId}`}
                             >
-                              {registration.eventId === 'code-build' ? 'View team files' : 'View screenshot'}
+                              {registration.paymentMethod === 'cash'
+                                ? 'View receipt challan'
+                                : registration.eventId === 'code-build'
+                                  ? 'View team files'
+                                  : 'View screenshot'}
                             </a>
                           ) : (
                             <span>Not uploaded</span>

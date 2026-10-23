@@ -120,6 +120,7 @@ const HEADERS = [
 ];
 
 const LEGACY_HEADERS = HEADERS.slice(0, 14);
+const STANDARD_HEADERS = [...HEADERS, "Payment Method"];
 
 function formatSheetTimestamp(date = new Date()) {
   const parts = Object.fromEntries(
@@ -390,7 +391,7 @@ export async function ensureRegistrationSheet(
       [];
 
     const headersMatch =
-      HEADERS.every(
+      STANDARD_HEADERS.every(
         (
           header,
           index,
@@ -398,7 +399,7 @@ export async function ensureRegistrationSheet(
           existingHeaders[
             index
           ] === header,
-      ) && !String(existingHeaders[15] || "").trim();
+      );
 
     if (!headersMatch) {
       const existingRows = await sheets.spreadsheets.values.get({
@@ -417,21 +418,29 @@ export async function ensureRegistrationSheet(
         await sheets.spreadsheets.values.clear({ spreadsheetId, range: `${SHEET_NAME}!O:O` });
         await sheets.spreadsheets.values.update({
           spreadsheetId,
-          range: `${SHEET_NAME}!A1:O1`,
+          range: `${SHEET_NAME}!A1:P1`,
           valueInputOption: "RAW",
-          requestBody: { values: [HEADERS] },
+          requestBody: { values: [STANDARD_HEADERS] },
         });
-        return HEADERS;
+        return STANDARD_HEADERS;
       }
 
       if (legacyHeadersMatch && !String(existingHeaders[14] || "").trim()) {
         await sheets.spreadsheets.values.update({
           spreadsheetId,
-          range: `${SHEET_NAME}!O1`,
+          range: `${SHEET_NAME}!O1:P1`,
           valueInputOption: "RAW",
-          requestBody: { values: [[HEADERS[14]]] },
+          requestBody: { values: [[HEADERS[14], STANDARD_HEADERS[15]]] },
         });
-        return HEADERS;
+        return STANDARD_HEADERS;
+      }
+
+      if (HEADERS.every((header, index) => existingHeaders[index] === header) && !String(existingHeaders[15] || "").trim()) {
+        await sheets.spreadsheets.values.update({
+          spreadsheetId, range: `${SHEET_NAME}!P1`, valueInputOption: "RAW",
+          requestBody: { values: [[STANDARD_HEADERS[15]]] },
+        });
+        return STANDARD_HEADERS;
       }
 
       if (existingRows.data.values?.length) {
@@ -447,21 +456,21 @@ export async function ensureRegistrationSheet(
           spreadsheetId,
 
           range:
-            `${SHEET_NAME}!A1:O1`,
+            `${SHEET_NAME}!A1:P1`,
 
           valueInputOption:
             "RAW",
 
           requestBody: {
             values: [
-              HEADERS,
+              STANDARD_HEADERS,
             ],
           },
         },
       );
     }
 
-    return HEADERS;
+    return STANDARD_HEADERS;
   } catch (error) {
     /*
      * Give a much clearer error for an invalid
@@ -645,6 +654,7 @@ export async function appendRegistration(
       "",
 
       registration.paymentScreenshotUrl || "",
+      ...(eventId === PPT_EVENT_ID ? [] : [registration.paymentMethod || ""]),
       ...(eventId === PPT_EVENT_ID ? pptSheetValues(registration.pptDetails, registrationHeaders) : []),
     ],
   ];
@@ -655,7 +665,7 @@ export async function appendRegistration(
         spreadsheetId,
 
         range:
-          `${SHEET_NAME}!A:${eventId === PPT_EVENT_ID ? pptLastColumn(registrationHeaders) : "O"}`,
+          `${SHEET_NAME}!A:${eventId === PPT_EVENT_ID ? pptLastColumn(registrationHeaders) : "P"}`,
 
         valueInputOption:
           "RAW",
@@ -735,7 +745,7 @@ export async function getRegistrationRows(
         spreadsheetId,
 
         range:
-          `${SHEET_NAME}!A2:${eventId === PPT_EVENT_ID ? pptLastColumn(registrationHeaders) : "O"}`,
+          `${SHEET_NAME}!A2:${eventId === PPT_EVENT_ID ? pptLastColumn(registrationHeaders) : "P"}`,
       },
     );
 
@@ -755,6 +765,7 @@ export async function getRegistrationRows(
         eventId,
 
         ...(eventId === PPT_EVENT_ID ? { pptDetails: pptDetailsFromRow(row, registrationHeaders) } : {}),
+        ...(eventId === PPT_EVENT_ID ? {} : { paymentMethod: row[15] || "" }),
 
         registrationId:
           row[0] || "",
@@ -909,7 +920,7 @@ export async function updateRegistrationStatus(
         spreadsheetId,
 
         range:
-          `${SHEET_NAME}!A${rowNumber}:${eventId === PPT_EVENT_ID ? pptLastColumn(registrationHeaders) : "O"}${rowNumber}`,
+        `${SHEET_NAME}!A${rowNumber}:${eventId === PPT_EVENT_ID ? pptLastColumn(registrationHeaders) : "P"}${rowNumber}`,
       },
     );
 
@@ -989,6 +1000,7 @@ export async function updateRegistrationStatus(
     event: eventConfig?.name || eventId,
 
     ...(eventId === PPT_EVENT_ID ? { pptDetails: pptDetailsFromRow(row, registrationHeaders) } : {}),
+    ...(eventId === PPT_EVENT_ID ? {} : { paymentMethod: row[15] || "" }),
 
     amount: eventConfig?.fee ?? null,
 

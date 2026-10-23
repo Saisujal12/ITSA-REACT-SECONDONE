@@ -46,6 +46,7 @@ export function normalizeRegistration(values) {
     phone: values.phone.replace(/\D/g, '').slice(0, 10),
     mealPreference: values.mealPreference || '',
     transactionId: values.transactionId.trim(),
+    paymentMethod: values.paymentMethod || '',
     pptDetails: normalizePptDetails(values),
   }
 }
@@ -106,7 +107,10 @@ export function validateRegistration(values, event) {
     errors.year = 'Please select your year of study.'
   }
 
-  const isCash = event?.id === PPT_EVENT_ID && v.pptDetails.paymentMethod === 'cash'
+  if (!['cash', 'online'].includes(v.paymentMethod)) {
+    errors.paymentMethod = 'Choose cash or online payment.'
+  }
+  const isCash = v.paymentMethod === 'cash'
   if (event?.id === PPT_EVENT_ID) {
     Object.assign(errors, validatePptDetails(values, { year: v.year }))
   }

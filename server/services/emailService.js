@@ -398,8 +398,8 @@ function buildDetailsTable(
     registration.eventId ||
     "Event name unavailable";
   const eventAmount =
-    registration.amount ??
     configuredEvent?.fee ??
+    registration.amount ??
     null;
 
   return `
@@ -499,6 +499,9 @@ export async function sendRegistrationPendingEmail(
       "Student email is missing."
     );
   }
+
+  const configuredEvent = getAdminEvent(registration.eventId);
+  const registrationAmount = configuredEvent?.fee ?? registration.amount ?? null;
 
   const name =
     escapeHtml(
@@ -626,7 +629,7 @@ Event:
 ${registration.event}
 
 Amount:
-₹${registration.amount}
+₹${registrationAmount ?? ""}
 
 UTR / Transaction ID:
 ${registration.transactionId}
@@ -677,8 +680,8 @@ export async function sendRegistrationSuccessEmail(
       registration.eventId ||
       "Event name unavailable",
     amount:
-      registration.amount ??
       configuredEvent?.fee ??
+      registration.amount ??
       null,
   };
 

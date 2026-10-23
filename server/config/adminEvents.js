@@ -19,14 +19,14 @@ export const ADMIN_EVENTS = [
     id: "innovation",
     label: "Event 2",
     name: "Techthon",
-    fee: 1,
+    fee: 49,
     passwordHashEnv: "ADMIN_PASSWORD_HASH_INNOVATION",
   },
   {
     id: "cyber-quest",
     label: "Event 3",
     name: "Technomyst",
-    fee: 1,
+    fee: 70,
     passwordHashEnv: "ADMIN_PASSWORD_HASH_CYBER_QUEST",
   },
   {
@@ -61,7 +61,7 @@ export const ADMIN_EVENTS = [
     id: "event8",
     label: "Event 8",
     name: "INFUSION",
-    fee: 1,
+    fee: 50,
     passwordHashEnv: "ADMIN_PASSWORD_HASH_EVENT8",
   },
   {
