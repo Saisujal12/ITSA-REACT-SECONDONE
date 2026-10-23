@@ -918,7 +918,8 @@
 }
 
 .input-wrapper input,
-.input-wrapper select {
+.input-wrapper select,
+.input-wrapper textarea {
   width: 100%;
   min-height: 62px;
   border: 0;
@@ -927,6 +928,47 @@
   color: var(--r-ink);
   font: inherit;
   font-size: 13px;
+}
+
+.input-wrapper input[type="file"] {
+  min-height: 0;
+  padding: 14px 0;
+}
+
+.input-wrapper input[type="file"]::file-selector-button {
+  margin-right: 10px;
+  padding: 10px 12px;
+  border: 0;
+  border-radius: 8px;
+  background: var(--r-red);
+  color: #fff;
+  font: inherit;
+  cursor: pointer;
+}
+
+.input-wrapper textarea {
+  resize: vertical;
+  padding: 18px 0;
+  line-height: 1.65;
+  min-height: 180px;
+}
+
+.event-coordinators {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-top: 20px;
+  padding: 16px;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  background: var(--bg-soft);
+  font-size: 13px;
+}
+
+.event-coordinators a {
+  color: var(--primary);
+  text-decoration: underline;
+  text-underline-offset: 3px;
 }
 
 .input-wrapper select {

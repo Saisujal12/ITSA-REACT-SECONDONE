@@ -2,6 +2,10 @@ import "dotenv/config";
 import { google } from "googleapis";
 import { getAdminEvent } from "./adminEvents.js";
 import { Readable } from "node:stream";
+import { storePptFiles } from "../services/pptFiles.js";
+import { PPT_EVENT_ID } from "../../shared/pptRegistration.js";
+import { ensurePptSheet, pptSheetValues, pptDetailsFromRow, pptLastColumn } from "../services/pptSheet.js";
+import { createAbstractUploads } from "../services/abstractUploads.js";
 
 /*
 |--------------------------------------------------------------------------
@@ -345,7 +349,13 @@ const sheets =
 // Drive can use a personal Gmail OAuth token while Sheets continues using the
 // service account. OAuth is selected when all three GOOGLE_DRIVE_OAUTH_* vars
 // are present in server/.env.
-const drive = google.drive({ version: "v3", auth: createDriveAuth() });
+const driveAuth = createDriveAuth();
+const drive = google.drive({ version: "v3", auth: driveAuth });
+export const abstractUploads = createAbstractUploads({
+  drive, auth: driveAuth,
+  getParentId: () => process.env.PAYMENT_SCREENSHOT_FOLDER_ID?.trim(),
+  getSecret: () => process.env.ADMIN_SESSION_SECRET || process.env.GOOGLE_DRIVE_OAUTH_CLIENT_SECRET,
+});
 
 /*
 |--------------------------------------------------------------------------
@@ -362,6 +372,9 @@ export async function ensureRegistrationSheet(
     );
 
   try {
+    if (eventId === PPT_EVENT_ID) {
+      return await ensurePptSheet({ sheets, spreadsheetId, sheetName: SHEET_NAME, baseHeaders: HEADERS });
+    }
     const response =
       await sheets.spreadsheets.values.get(
         {
@@ -560,6 +573,13 @@ export async function deletePaymentScreenshot(fileId) {
   }
 }
 
+export function uploadPptRegistrationFiles(input) {
+  return storePptFiles(input, {
+    drive,
+    parentId: process.env.PAYMENT_SCREENSHOT_FOLDER_ID?.trim(),
+  });
+}
+
 /*
 |--------------------------------------------------------------------------
 | Append registration
@@ -577,7 +597,7 @@ export async function appendRegistration(
       eventId,
     );
 
-  await ensureRegistrationSheet(
+  const registrationHeaders = await ensureRegistrationSheet(
     eventId,
   );
 
@@ -625,6 +645,7 @@ export async function appendRegistration(
       "",
 
       registration.paymentScreenshotUrl || "",
+      ...(eventId === PPT_EVENT_ID ? pptSheetValues(registration.pptDetails, registrationHeaders) : []),
     ],
   ];
 
@@ -634,7 +655,7 @@ export async function appendRegistration(
         spreadsheetId,
 
         range:
-          `${SHEET_NAME}!A:O`,
+          `${SHEET_NAME}!A:${eventId === PPT_EVENT_ID ? pptLastColumn(registrationHeaders) : "O"}`,
 
         valueInputOption:
           "RAW",
@@ -704,7 +725,7 @@ export async function getRegistrationRows(
       eventId,
     );
 
-  await ensureRegistrationSheet(
+  const registrationHeaders = await ensureRegistrationSheet(
     eventId,
   );
 
@@ -714,7 +735,7 @@ export async function getRegistrationRows(
         spreadsheetId,
 
         range:
-          `${SHEET_NAME}!A2:O`,
+          `${SHEET_NAME}!A2:${eventId === PPT_EVENT_ID ? pptLastColumn(registrationHeaders) : "O"}`,
       },
     );
 
@@ -732,6 +753,8 @@ export async function getRegistrationRows(
           index + 2,
 
         eventId,
+
+        ...(eventId === PPT_EVENT_ID ? { pptDetails: pptDetailsFromRow(row, registrationHeaders) } : {}),
 
         registrationId:
           row[0] || "",
@@ -879,13 +902,14 @@ export async function updateRegistrationStatus(
     throw error;
   }
 
+  const registrationHeaders = eventId === PPT_EVENT_ID ? await ensureRegistrationSheet(eventId) : null;
   const response =
     await sheets.spreadsheets.values.get(
       {
         spreadsheetId,
 
         range:
-          `${SHEET_NAME}!A${rowNumber}:O${rowNumber}`,
+          `${SHEET_NAME}!A${rowNumber}:${eventId === PPT_EVENT_ID ? pptLastColumn(registrationHeaders) : "O"}${rowNumber}`,
       },
     );
 
@@ -963,6 +987,8 @@ export async function updateRegistrationStatus(
     eventId,
 
     event: eventConfig?.name || eventId,
+
+    ...(eventId === PPT_EVENT_ID ? { pptDetails: pptDetailsFromRow(row, registrationHeaders) } : {}),
 
     amount: eventConfig?.fee ?? null,
 

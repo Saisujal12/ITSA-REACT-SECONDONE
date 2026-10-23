@@ -83,11 +83,11 @@ export default function RegistrationDialog({ registration, onClose, onUpdateStat
             key={key}
             className={cx(s.detailItem, key === 'transactionId' && cx(s.fullWidth, s.transaction))}
           >
-            <dt>{label}</dt>
+            <dt>{key === 'paymentScreenshotUrl' && registration.eventId === 'code-build' ? 'Team details, abstract and payment' : label}</dt>
             <dd>
               {key === 'paymentScreenshotUrl' && registration[key] ? (
                 <a href={registration[key]} target="_blank" rel="noreferrer">
-                  View payment screenshot
+                  {registration.eventId === 'code-build' ? 'View team details, abstract and payment' : 'View payment screenshot'}
                 </a>
               ) : key === 'amount' && registration[key] ? (
                 `₹${registration[key]}`
@@ -98,6 +98,27 @@ export default function RegistrationDialog({ registration, onClose, onUpdateStat
           </div>
         ))}
       </dl>
+
+      {registration.eventId === 'code-build' && registration.pptDetails?.participantCount && (
+        <dl className={s.details}>
+          {[
+            ['participantCount', 'Number of participants'],
+            ['teamMemberName', 'Second participant'],
+            ['topicTitle', 'Presentation topic'],
+            ['topicAbstract', 'Topic abstract'],
+            ['paymentMethod', 'Payment method'],
+          ].map(([key, label]) => (
+            <div key={key} className={cx(s.detailItem, key === 'topicAbstract' && s.fullWidth)}>
+              <dt>{label}</dt>
+              <dd style={{ whiteSpace: 'pre-wrap', overflowWrap: 'anywhere' }}>
+                {key === 'topicAbstract' && /^https:\/\/drive\.google\.com\/file\/d\/[\w-]+\/view$/.test(registration.pptDetails[key] || '')
+                  ? <a href={registration.pptDetails[key]} target="_blank" rel="noreferrer">Open abstract document</a>
+                  : registration.pptDetails[key] || '—'}
+              </dd>
+            </div>
+          ))}
+        </dl>
+      )}
 
       {error && (
         <p className={s.dialogError} role="alert">

@@ -18,7 +18,7 @@ import {
 import { hasVerifiedFee } from '../../data/events'
 import { PAYMENT_SUPPORT_PHONE } from '../../data/payment'
 import { LOGO, SITE } from '../../data/site'
-import { submitRegistration } from '../../services/registrations'
+import { submitRegistration, uploadAbstractDocument } from '../../services/registrations'
 import { cx } from '../../utils/cx'
 import {
   COLLEGE_OPTIONS,
@@ -29,6 +29,8 @@ import {
 } from '../../utils/validation'
 import StatusMessage from '../ui/StatusMessage'
 import PaymentPanel from './PaymentPanel'
+import PptDetailsFields from './PptDetailsFields'
+import { PPT_EVENT_ID, PPT_ABSTRACT_MAX_BYTES } from '../../../shared/pptRegistration'
 import s from '../../pages/Register.module.css'
 
 const FIELD_ORDER = [
@@ -40,6 +42,11 @@ const FIELD_ORDER = [
   'email',
   'phone',
   'year',
+  'participantCount',
+  'teamMemberName',
+  'topicTitle',
+  'topicAbstract',
+  'paymentMethod',
   'mealPreference',
   'paymentScreenshot',
   'transactionId',
@@ -137,11 +144,43 @@ export default function RegistrationForm({ event, day }) {
   const feedbackRef = useRef(null)
   const abortRef = useRef(null)
   const screenshotInputRef = useRef(null)
+  const abstractInputRef = useRef(null)
+  const abstractAbortRef = useRef(null)
+  const [abstractUploading, setAbstractUploading] = useState(false)
+  const [abstractProgress, setAbstractProgress] = useState(0)
 
   const feeKnown = hasVerifiedFee(event)
+  const isPpt = event.id === PPT_EVENT_ID
+  const isCash = isPpt && values.paymentMethod === 'cash'
   const submitting = status === 'submitting'
 
-  useEffect(() => () => abortRef.current?.abort(), [])
+  useEffect(() => () => { abortRef.current?.abort(); abstractAbortRef.current?.abort() }, [])
+
+  async function handleAbstractFile(file) {
+    abstractAbortRef.current?.abort()
+    if (status === 'success' || status === 'error') setStatus('idle')
+    setValues((current) => ({ ...current, abstractDocument: null, topicAbstract: '' }))
+    setAbstractProgress(0)
+    setAbstractUploading(false)
+    if (!file || !/\.(pdf|docx)$/i.test(file.name) || !file.size || file.size > PPT_ABSTRACT_MAX_BYTES) {
+      setErrors((current) => ({ ...current, topicAbstract: 'Choose a PDF or DOCX document up to 10 MB.' }))
+      return
+    }
+    const controller = new AbortController()
+    abstractAbortRef.current = controller
+    setAbstractUploading(true)
+    setErrors((current) => ({ ...current, topicAbstract: undefined }))
+    try {
+      const document = await uploadAbstractDocument(file, { signal: controller.signal, onProgress: setAbstractProgress })
+      if (controller.signal.aborted) return
+      setValues((current) => ({ ...current, abstractDocument: document }))
+      setErrors((current) => ({ ...current, topicAbstract: undefined }))
+    } catch (error) {
+      if (!controller.signal.aborted) setErrors((current) => ({ ...current, topicAbstract: error.message || 'Document upload failed. Please choose it again.' }))
+    } finally {
+      if (abstractAbortRef.current === controller) setAbstractUploading(false)
+    }
+  }
 
   useEffect(() => {
     if (status === 'success' || status === 'error') {
@@ -164,9 +203,10 @@ export default function RegistrationForm({ event, day }) {
       return
     }
 
-    if (file.size > MAX_SCREENSHOT_BYTES) {
+    const screenshotLimit = isPpt ? 10 * 1024 * 1024 : MAX_SCREENSHOT_BYTES
+    if (file.size > screenshotLimit) {
       setPaymentScreenshot(null)
-      setScreenshotError('The image must be 8 MB or smaller.')
+      setScreenshotError(`The image must be ${isPpt ? 10 : 8} MB or smaller.`)
       return
     }
 
@@ -229,13 +269,13 @@ export default function RegistrationForm({ event, day }) {
   async function handleSubmit(submitEvent) {
     submitEvent.preventDefault()
 
-    if (submitting || !feeKnown) return
+    if (submitting || abstractUploading || !feeKnown) return
 
     setAttempted(true)
 
     const nextErrors = validateRegistration(values, event)
 
-    if (!paymentScreenshot) {
+    if (!isCash && !paymentScreenshot) {
       nextErrors.paymentScreenshot =
         'Please upload your payment screenshot.'
     }
@@ -283,6 +323,7 @@ export default function RegistrationForm({ event, day }) {
           amount: event.fee,
           transactionId: clean.transactionId,
           paymentScreenshot,
+          ...(isPpt ? { pptDetails: clean.pptDetails } : {}),
         },
         { signal: controller.signal },
       )
@@ -295,6 +336,7 @@ export default function RegistrationForm({ event, day }) {
       })
 
       setValues(EMPTY_REGISTRATION)
+      if (abstractInputRef.current) abstractInputRef.current.value = ''
       setPaymentScreenshot(null)
       setScreenshotError('')
       if (screenshotInputRef.current) {
@@ -360,6 +402,14 @@ export default function RegistrationForm({ event, day }) {
 
         <h2>{event.formHeading}</h2>
         <p>{event.formDescription}</p>
+        {event.coordinators && (
+          <div className={s.eventCoordinators}>
+            <strong>Event coordinators</strong>
+            {event.coordinators.map((person) => (
+              <a key={person.phone} href={`tel:+91${person.phone}`}>{person.name} · +91 {person.phone}</a>
+            ))}
+          </div>
+        )}
       </div>
 
       <form
@@ -371,7 +421,7 @@ export default function RegistrationForm({ event, day }) {
           <Field
             id="reg-name"
             number="01"
-            label="STUDENT NAME"
+            label={isPpt ? 'YOUR NAME / FIRST PARTICIPANT' : 'STUDENT NAME'}
             icon={User}
             error={errors.name}
           >
@@ -443,7 +493,7 @@ export default function RegistrationForm({ event, day }) {
               <Field
                 id="reg-branch"
                 number="04"
-                label="BRANCH"
+                label={isPpt ? 'CLASS / BRANCH' : 'BRANCH'}
                 icon={BookUser}
                 error={errors.branch}
               >
@@ -452,7 +502,7 @@ export default function RegistrationForm({ event, day }) {
                     {...register('branch')}
                     {...aria}
                     type="text"
-                    placeholder="Your branch"
+                    placeholder={isPpt ? 'Your class / branch' : 'Your branch'}
                     autoComplete="off"
                     maxLength={60}
                     required
@@ -487,7 +537,7 @@ export default function RegistrationForm({ event, day }) {
               <Field
                 id="reg-branch"
                 number="04"
-                label="BRANCH"
+                label={isPpt ? 'CLASS / BRANCH' : 'BRANCH'}
                 icon={BookUser}
                 error={errors.branch}
               >
@@ -496,7 +546,7 @@ export default function RegistrationForm({ event, day }) {
                     {...register('branch')}
                     {...aria}
                     type="text"
-                    placeholder="Your branch"
+                    placeholder={isPpt ? 'Your class / branch' : 'Your branch'}
                     autoComplete="off"
                     maxLength={60}
                     required
@@ -594,6 +644,8 @@ export default function RegistrationForm({ event, day }) {
             )}
           </Field>
 
+          {isPpt && <PptDetailsFields Field={Field} register={register} values={values} errors={errors} onAbstractFile={handleAbstractFile} abstractInputRef={abstractInputRef} abstractProgress={abstractProgress} abstractUploading={abstractUploading} />}
+
           {event.type === 'workshop' && (
             <fieldset
               className={s.mealPreferenceFieldset}
@@ -653,8 +705,13 @@ export default function RegistrationForm({ event, day }) {
           )}
         </div>
 
-        <PaymentPanel event={event} day={day} />
+        {isCash ? (
+          <StatusMessage tone="info" title="Cash payment · ₹200 per team">
+            Give your payment to an event coordinator and keep your registration ID. Your registration remains pending until the coordinator confirms receipt. No UTR or screenshot is needed for cash.
+          </StatusMessage>
+        ) : <PaymentPanel event={event} day={day} />}
 
+        {!isCash && <>
         <div
           className={cx(
             s.formGroup,
@@ -663,7 +720,7 @@ export default function RegistrationForm({ event, day }) {
           )}
         >
           <label htmlFor="reg-paymentScreenshot">
-            <span>{event.type === 'workshop' ? '09' : '08'}</span>
+            <span>{isPpt ? '13' : event.type === 'workshop' ? '09' : '08'}</span>
             UPLOAD PAYMENT SCREENSHOT
           </label>
 
@@ -735,7 +792,7 @@ export default function RegistrationForm({ event, day }) {
               </span>
 
               <span className={s.screenshotFormatTag}>
-                JPG · PNG · WEBP <b>MAX 8 MB</b>
+                JPG · PNG · WEBP <b>MAX {isPpt ? 10 : 8} MB</b>
               </span>
             </div>
           </div>
@@ -784,7 +841,7 @@ export default function RegistrationForm({ event, day }) {
         <div className={s.utrGroup}>
           <Field
             id="reg-transactionId"
-            number={event.type === 'workshop' ? '10' : '09'}
+            number={isPpt ? '14' : event.type === 'workshop' ? '10' : '09'}
             label="PAYMENT UTR / TRANSACTION ID"
             icon={ReceiptText}
             error={errors.transactionId}
@@ -804,6 +861,8 @@ export default function RegistrationForm({ event, day }) {
           </Field>
         </div>
 
+        </>}
+
         {!feeKnown && (
           <StatusMessage
             id="reg-fee-notice"
@@ -818,7 +877,7 @@ export default function RegistrationForm({ event, day }) {
         <button
           type="submit"
           className={cx(s.submitBtn, submitting && s.loading)}
-          disabled={!feeKnown || submitting}
+          disabled={!feeKnown || submitting || abstractUploading}
           aria-busy={submitting}
         >
           <span>

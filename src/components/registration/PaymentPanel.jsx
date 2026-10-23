@@ -4,6 +4,7 @@ import { formatFee, hasVerifiedFee } from '../../data/events'
 import ImageWithFallback from '../ui/ImageWithFallback'
 import { resolveImage } from '../../utils/assets'
 import s from '../../pages/Register.module.css'
+import { PPT_EVENT_ID } from '../../../shared/pptRegistration'
 
 export default function PaymentPanel({ event, day }) {
   const feeKnown = hasVerifiedFee(event)
@@ -85,8 +86,7 @@ export default function PaymentPanel({ event, day }) {
           <strong>{event.title}</strong>
 
           <p>
-            Scan the QR code, complete your payment, upload the payment
-            screenshot, and enter the UTR / transaction ID below.
+            {event.id === PPT_EVENT_ID ? 'Pay ₹200 for your team of one or two participants, upload the payment screenshot, and enter your UTR / transaction ID below.' : 'Scan the QR code, complete your payment, upload the payment screenshot, and enter the UTR / transaction ID below.'}
           </p>
 
           <div className={s.paymentFee}>

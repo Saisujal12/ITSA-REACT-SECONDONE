@@ -17,6 +17,7 @@ import {
   Sparkles,
 } from 'lucide-react'
 import { getPaymentQr } from './payment'
+import { PPT_TEAM_FEE } from '../../shared/pptRegistration'
 
 export const REGISTRATION_DAYS = {
   day1: {
@@ -105,15 +106,19 @@ export const EVENTS = [
     number: '01',
     category: 'PRESENTATION',
     title: 'PPT Presentation',
-    description: 'Present your ideas in a clear and engaging presentation.',
-    selectorDescription: 'Register for the PPT Presentation event.',
+    description: 'Showcase innovative ideas, creativity and knowledge at the PPT Presentation Event on 31 October 2026. Present your ideas, share your knowledge and inspire the future.',
+    selectorDescription: 'One or two participants · ₹200 per team · 31 October 2026.',
     icon: Lightbulb,
-    date: '2026 · TBD',
-    meta: { icon: Users, label: 'Students' },
-    fee: 200,
+    date: '31 October 2026',
+    meta: { icon: Users, label: '1–2 participants · ₹200/team' },
+    fee: PPT_TEAM_FEE,
     ...openEventDefaults,
     formHeading: 'Register for PPT Presentation',
-    formDescription: 'Complete the registration form for PPT Presentation.',
+    formDescription: 'Showcase your ideas, creativity and knowledge on 31 October 2026. Build confidence, critical thinking and communication skills while sharing innovative thoughts. Register solo or with one teammate for ₹200 per team, enter your topic and upload your abstract as a PDF or DOCX document.',
+    coordinators: [
+      { name: 'G. Varshith', phone: '6305737322' },
+      { name: 'P. Sindhuja', phone: '7993088577' },
+    ],
     poster: 'posters/code-build-poster',
     posterAlt: 'PPT Presentation event poster',
     ...getPaymentQr('code-build', 'day2'),

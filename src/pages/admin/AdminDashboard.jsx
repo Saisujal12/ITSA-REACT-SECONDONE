@@ -1164,9 +1164,9 @@ useEffect(
                               href={registration.paymentScreenshotUrl}
                               target="_blank"
                               rel="noopener noreferrer"
-                              aria-label={`View payment screenshot for ${registration.name || registration.registrationId}`}
+                              aria-label={`View registration files for ${registration.name || registration.registrationId}`}
                             >
-                              View screenshot
+                              {registration.eventId === 'code-build' ? 'View team files' : 'View screenshot'}
                             </a>
                           ) : (
                             <span>Not uploaded</span>

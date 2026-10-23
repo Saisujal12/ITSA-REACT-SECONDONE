@@ -3,7 +3,11 @@ import {
   appendRegistration,
   getRegistrationRows,
   uploadPaymentScreenshot,
+  uploadPptRegistrationFiles,
+  abstractUploads,
 } from "../config/googleSheets.js";
+import { randomUUID } from "node:crypto";
+import { PPT_EVENT_ID, PPT_TEAM_FEE, normalizePptDetails, validatePptDetails } from "../../shared/pptRegistration.js";
 
 import {
   sendRegistrationPendingEmail,
@@ -169,7 +173,18 @@ export async function createRegistration(
       amount,
       transactionId,
       paymentScreenshot,
+      pptDetails,
     } = req.body;
+
+    const isPpt = eventId === PPT_EVENT_ID;
+    const presentation = isPpt ? normalizePptDetails(pptDetails) : null;
+    const isCash = isPpt && presentation.paymentMethod === "cash";
+    if (isPpt) {
+      const errors = validatePptDetails(pptDetails, { year, amount });
+      if (Object.keys(errors).length) {
+        return res.status(400).json({ success: false, message: Object.values(errors)[0], errors });
+      }
+    }
 
     /*
     |--------------------------------------------------------------------------
@@ -346,7 +361,7 @@ export async function createRegistration(
 
     const normalizedTransactionId =
       normalizeTransactionId(
-        transactionId,
+        isCash ? `CASH-${randomUUID()}` : transactionId,
       );
 
     /*
@@ -382,7 +397,7 @@ export async function createRegistration(
       (screenshotMatch[1] === "image/png" && screenshotBytes.subarray(0, 8).equals(Buffer.from([137, 80, 78, 71, 13, 10, 26, 10]))) ||
       (screenshotMatch[1] === "image/webp" && screenshotBytes.toString("ascii", 0, 4) === "RIFF" && screenshotBytes.toString("ascii", 8, 12) === "WEBP")
     );
-    if (!screenshotSignatureMatches || screenshotBytes.length > 1_500_000) {
+    if (!isCash && (!screenshotSignatureMatches || screenshotBytes.length > 1_500_000)) {
       return res.status(400).json({
         success: false,
         message: "Upload a valid payment screenshot (JPG, PNG, or WebP) under 1.5 MB.",
@@ -480,7 +495,7 @@ export async function createRegistration(
           : "",
 
       year:
-        eventId === "llm"
+        (eventId === "llm" || isPpt)
           ? year
           : "",
 
@@ -505,7 +520,8 @@ export async function createRegistration(
             : "Non-Veg"
           : "",
 
-      amount,
+      amount: isPpt ? PPT_TEAM_FEE : amount,
+      ...(isPpt ? { pptDetails: presentation } : {}),
 
       transactionId:
         normalizedTransactionId,
@@ -525,7 +541,16 @@ export async function createRegistration(
     |--------------------------------------------------------------------------
     */
 
-    await reserveTransactionId(
+    if (isPpt) {
+      try {
+        presentation.abstractDocument = await abstractUploads.verify(presentation.abstractDocument);
+        presentation.topicAbstract = presentation.abstractDocument.url;
+      } catch {
+        return res.status(400).json({ success: false, message: 'The abstract document is unavailable. Please upload it again.' });
+      }
+    }
+
+    if (!isCash) await reserveTransactionId(
       registration.transactionId,
       registration.registrationId,
     );
@@ -534,13 +559,18 @@ export async function createRegistration(
     let uploadedScreenshot;
 
     try {
-      uploadedScreenshot = await uploadPaymentScreenshot({
+      uploadedScreenshot = isPpt ? await uploadPptRegistrationFiles({
+        registration,
+        details: presentation,
+        screenshot: isCash ? null : { mimeType: screenshotMatch[1], base64: screenshotMatch[2] },
+      }) : await uploadPaymentScreenshot({
         registrationId: registration.registrationId,
         fileName: paymentScreenshot.fileName,
         mimeType: screenshotMatch[1],
         base64: screenshotMatch[2],
       });
       registration.paymentScreenshotUrl = uploadedScreenshot.url;
+      if (isPpt) registration.pptDetails.topicAbstract = uploadedScreenshot.abstractUrl;
       savedRegistration =
         await appendRegistration(
           registration,
@@ -553,7 +583,7 @@ export async function createRegistration(
         console.error("Payment screenshot cleanup failed:", cleanupError.message);
       }
       try {
-        await releaseTransactionId(
+        if (!isCash) await releaseTransactionId(
           registration.transactionId,
           registration.registrationId,
         );
@@ -566,8 +596,13 @@ export async function createRegistration(
       throw appendError;
     }
 
+    if (isPpt) {
+      try { await deletePaymentScreenshot(presentation.abstractDocument.fileId); }
+      catch { console.error('Temporary abstract upload cleanup failed. Registration was saved.'); }
+    }
+
     try {
-      await commitTransactionId(
+      if (!isCash) await commitTransactionId(
         registration.transactionId,
         registration.registrationId,
       );
@@ -646,7 +681,7 @@ export async function createRegistration(
   } catch (error) {
     console.error(
       "Registration error:",
-      error,
+      { code: error.code || error.response?.status || 'unknown', message: error.message },
     );
 
     /*
