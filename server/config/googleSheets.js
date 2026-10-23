@@ -4,7 +4,7 @@ import { getAdminEvent } from "./adminEvents.js";
 import { Readable } from "node:stream";
 import { storePptFiles } from "../services/pptFiles.js";
 import { PPT_EVENT_ID } from "../../shared/pptRegistration.js";
-import { ensurePptSheet, pptSheetValues, pptDetailsFromRow } from "../services/pptSheet.js";
+import { ensurePptSheet, pptSheetValues, pptDetailsFromRow, pptLastColumn } from "../services/pptSheet.js";
 import { createAbstractUploads } from "../services/abstractUploads.js";
 
 /*
@@ -597,7 +597,7 @@ export async function appendRegistration(
       eventId,
     );
 
-  await ensureRegistrationSheet(
+  const registrationHeaders = await ensureRegistrationSheet(
     eventId,
   );
 
@@ -645,7 +645,7 @@ export async function appendRegistration(
       "",
 
       registration.paymentScreenshotUrl || "",
-      ...(eventId === PPT_EVENT_ID ? pptSheetValues(registration.pptDetails) : []),
+      ...(eventId === PPT_EVENT_ID ? pptSheetValues(registration.pptDetails, registrationHeaders) : []),
     ],
   ];
 
@@ -655,7 +655,7 @@ export async function appendRegistration(
         spreadsheetId,
 
         range:
-          `${SHEET_NAME}!A:${eventId === PPT_EVENT_ID ? "V" : "O"}`,
+          `${SHEET_NAME}!A:${eventId === PPT_EVENT_ID ? pptLastColumn(registrationHeaders) : "O"}`,
 
         valueInputOption:
           "RAW",
@@ -725,7 +725,7 @@ export async function getRegistrationRows(
       eventId,
     );
 
-  await ensureRegistrationSheet(
+  const registrationHeaders = await ensureRegistrationSheet(
     eventId,
   );
 
@@ -735,7 +735,7 @@ export async function getRegistrationRows(
         spreadsheetId,
 
         range:
-          `${SHEET_NAME}!A2:${eventId === PPT_EVENT_ID ? "V" : "O"}`,
+          `${SHEET_NAME}!A2:${eventId === PPT_EVENT_ID ? pptLastColumn(registrationHeaders) : "O"}`,
       },
     );
 
@@ -754,7 +754,7 @@ export async function getRegistrationRows(
 
         eventId,
 
-        ...(eventId === PPT_EVENT_ID ? { pptDetails: pptDetailsFromRow(row) } : {}),
+        ...(eventId === PPT_EVENT_ID ? { pptDetails: pptDetailsFromRow(row, registrationHeaders) } : {}),
 
         registrationId:
           row[0] || "",
@@ -902,13 +902,14 @@ export async function updateRegistrationStatus(
     throw error;
   }
 
+  const registrationHeaders = eventId === PPT_EVENT_ID ? await ensureRegistrationSheet(eventId) : null;
   const response =
     await sheets.spreadsheets.values.get(
       {
         spreadsheetId,
 
         range:
-          `${SHEET_NAME}!A${rowNumber}:${eventId === PPT_EVENT_ID ? "V" : "O"}${rowNumber}`,
+          `${SHEET_NAME}!A${rowNumber}:${eventId === PPT_EVENT_ID ? pptLastColumn(registrationHeaders) : "O"}${rowNumber}`,
       },
     );
 
@@ -987,7 +988,7 @@ export async function updateRegistrationStatus(
 
     event: eventConfig?.name || eventId,
 
-    ...(eventId === PPT_EVENT_ID ? { pptDetails: pptDetailsFromRow(row) } : {}),
+    ...(eventId === PPT_EVENT_ID ? { pptDetails: pptDetailsFromRow(row, registrationHeaders) } : {}),
 
     amount: eventConfig?.fee ?? null,
 
