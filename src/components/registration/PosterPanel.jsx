@@ -47,6 +47,13 @@ const closeButtonStyle = {
 
 export default function PosterPanel({ event, day, status, statusPending = false }) {
   const isWorkshop = event.type === 'workshop'
+  
+  const isPortraitPoster = ['tech-connect', 'innovation', 'event8'].includes(event.id)
+  const posterAspectRatio = ['tech-connect', 'innovation'].includes(event.id)
+    ? '2 / 3'
+    : isPortraitPoster
+      ? '3 / 4'
+      : '16 / 9'
   const [isPreviewOpen, setIsPreviewOpen] = useState(false)
   const [isHovered, setIsHovered] = useState(false)
   const posterButtonRef = useRef(null)
@@ -80,7 +87,8 @@ export default function PosterPanel({ event, day, status, statusPending = false 
       style={{
         width: '100%',
         minHeight: 0,
-        aspectRatio: '16 / 9',
+        aspectRatio: isPortraitPoster ? '3 / 4' : '16 / 9',
+        aspectRatio: posterAspectRatio,
       }}
     >
       <ImageIcon aria-hidden="true" />
@@ -205,7 +213,7 @@ export default function PosterPanel({ event, day, status, statusPending = false 
         <div
           className={s.posterFrame}
           style={{
-            minHeight: 0,
+            minHeight: isPortraitPoster ? 'auto' : 0,
             transition: 'box-shadow 240ms ease',
           }}
         >
@@ -227,7 +235,8 @@ export default function PosterPanel({ event, day, status, statusPending = false 
             style={{
               minHeight: 0,
               height: 'auto',
-              aspectRatio: '16 / 9',
+              aspectRatio: isPortraitPoster ? '3 / 4' : '16 / 9',
+              aspectRatio: posterAspectRatio,
               padding: 0,
               cursor: 'zoom-in',
               transition: 'transform 240ms ease, box-shadow 240ms ease',

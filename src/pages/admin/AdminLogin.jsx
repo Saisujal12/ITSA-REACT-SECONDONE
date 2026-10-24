@@ -24,7 +24,7 @@ const EVENTS = [
   { id: "innovation", label: "Techthon" },
   { id: "cyber-quest", label: "Technomyst" },
   { id: "design-deploy", label: "AlgoCodex & AI" },
-  { id: "tech-connect", label: "Glitch & Giggles" },
+  { id: "tech-connect", label: "GLITCH AND GIGGLES" },
   { id: "event6", label: "AI TRINITY" },
   { id: "event7", label: "NEXORA" },
   { id: "event8", label: "INFUSION" },

@@ -35,8 +35,8 @@ export const PAYMENT_QR_CONFIG = {
   },
   'tech-connect': {
     qr: 'qr/tech-connect-2026',
-    qrAlt: 'Tech Connect payment QR code placeholder',
-    qrFallbackText: 'TECH CONNECT QR — UPLOAD REAL QR IMAGE',
+    qrAlt: 'GLITCH AND GIGGLES payment QR code placeholder',
+    qrFallbackText: 'GLITCH AND GIGGLES QR — UPLOAD REAL QR IMAGE',
   },
   event6: {
     qr: 'qr/event6-2026',

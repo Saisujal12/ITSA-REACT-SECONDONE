@@ -39,8 +39,8 @@ export const ADMIN_EVENTS = [
   {
     id: "tech-connect",
     label: "Event 5",
-    name: "Glitch & Giggles",
-    fee: 1,
+    name: "GLITCH AND GIGGLES",
+    fee: 70,
     passwordHashEnv: "ADMIN_PASSWORD_HASH_TECH_CONNECT",
   },
   {
