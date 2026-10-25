@@ -48,8 +48,8 @@ const closeButtonStyle = {
 export default function PosterPanel({ event, day, status, statusPending = false }) {
   const isWorkshop = event.type === 'workshop'
   
-  const isPortraitPoster = ['tech-connect', 'innovation', 'event8'].includes(event.id)
-  const posterAspectRatio = ['tech-connect', 'innovation'].includes(event.id)
+  const isPortraitPoster = ['tech-connect', 'innovation', 'event6', 'event8'].includes(event.id)
+  const posterAspectRatio = ['tech-connect', 'innovation', 'event6'].includes(event.id)
     ? '2 / 3'
     : isPortraitPoster
       ? '3 / 4'
@@ -87,7 +87,6 @@ export default function PosterPanel({ event, day, status, statusPending = false 
       style={{
         width: '100%',
         minHeight: 0,
-        aspectRatio: isPortraitPoster ? '3 / 4' : '16 / 9',
         aspectRatio: posterAspectRatio,
       }}
     >
@@ -235,7 +234,6 @@ export default function PosterPanel({ event, day, status, statusPending = false 
             style={{
               minHeight: 0,
               height: 'auto',
-              aspectRatio: isPortraitPoster ? '3 / 4' : '16 / 9',
               aspectRatio: posterAspectRatio,
               padding: 0,
               cursor: 'zoom-in',

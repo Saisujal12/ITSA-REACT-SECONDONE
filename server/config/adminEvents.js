@@ -47,7 +47,7 @@ export const ADMIN_EVENTS = [
     id: "event6",
     label: "Event 6",
     name: "AI TRINITY",
-    fee: 1,
+    fee: 70,
     passwordHashEnv: "ADMIN_PASSWORD_HASH_EVENT6",
   },
   {

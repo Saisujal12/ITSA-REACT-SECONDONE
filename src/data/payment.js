@@ -39,9 +39,9 @@ export const PAYMENT_QR_CONFIG = {
     qrFallbackText: 'GLITCH AND GIGGLES QR — UPLOAD REAL QR IMAGE',
   },
   event6: {
-    qr: 'qr/event6-2026',
-    qrAlt: 'Future Forge payment QR code placeholder',
-    qrFallbackText: 'FUTURE FORGE QR — UPLOAD REAL QR IMAGE',
+    qr: 'qr/ai-trinity-2026',
+    qrAlt: 'AI TRINITY payment QR code placeholder',
+    qrFallbackText: 'AI TRINITY QR — UPLOAD REAL QR IMAGE',
   },
   event7: {
     qr: 'qr/event7-2026',

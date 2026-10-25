@@ -137,7 +137,7 @@ export const EVENTS = [
     meta: { icon: Trophy, label: 'Challenge' },
     fee: 49,
     // Replace these sample coordinator details with the Techthon contact.
-    coordinators: [{ name: 'Md.Shekeel', phone: 'XXXXXXXXXX' }],
+    coordinators: [{ name: 'Md.Shekeel', phone: '9542671213' }],
     ...openEventDefaults,
     formHeading: 'Register for Techthon',
     formDescription: 'Complete the registration form for Techthon.',
@@ -160,8 +160,8 @@ export const EVENTS = [
     fee: 70,
     // Replace these sample coordinator details with the Technomyst contact.
     coordinators: [
-      { name: 'M.Hyndavi', phone: 'XXXXXXXXXX' },
-      { name: 'P.Sri Vaishnavi', phone: 'XXXXXXXXXX' },
+      { name: 'M.Hyndavi', phone: '9059048196' },
+      { name: 'P.Sri Vaishnavi', phone: '7386233604' },
     ],
     ...openEventDefaults,
     formHeading: 'Register for Technomyst',
@@ -224,17 +224,16 @@ export const EVENTS = [
     category: 'SPECIAL EVENT',
     title: 'AI TRINITY',
     description: 'Explore three sides of artificial intelligence at AI TRINITY.',
-    selectorDescription: 'Register for AI TRINITY.',
+    selectorDescription: 'Register for AI TRINITY · ₹70.',
     icon: Sparkles,
     date: '2026 · TBD',
     meta: { icon: Users, label: 'Students' },
-    fee: 1,
-    // Replace these sample coordinator details with the event contact.
-    coordinators: [{ name: '+91 XXXXXXXXXX' }],
+    fee: 70,
+    coordinators: [{ name: 'J. Amulya', phone: '8519899204' }],
     ...openEventDefaults,
     formHeading: 'Register for AI TRINITY',
-    formDescription: 'Complete the registration form for AI TRINITY.',
-    poster: 'posters/future-forge-poster',
+    formDescription: 'Complete the registration form for AI TRINITY. Registration fee: ₹70.',
+    poster: 'posters/ai-trinity-poster',
     posterAlt: 'AI TRINITY event poster',
     ...getPaymentQr('event6', 'day2'),
   },
@@ -275,8 +274,8 @@ export const EVENTS = [
     fee: 50,
     // Replace these sample coordinator details with the INFUSION contact.
     coordinators: [
-      { name: 'S.Aditya', phone: 'XXXXXXXXXX' },
-      { name: 'R.Varsha', phone: 'XXXXXXXXXX' },
+      { name: 'S.Aditya', phone: '8367261027' },
+      { name: 'R.Varsha', phone: '7995991702' },
     ],
     ...openEventDefaults,
     formHeading: 'Register for INFUSION',
