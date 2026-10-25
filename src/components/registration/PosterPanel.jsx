@@ -48,8 +48,8 @@ const closeButtonStyle = {
 export default function PosterPanel({ event, day, status, statusPending = false }) {
   const isWorkshop = event.type === 'workshop'
   
-  const isPortraitPoster = ['tech-connect', 'innovation', 'event6', 'event8'].includes(event.id)
-  const posterAspectRatio = ['tech-connect', 'innovation', 'event6'].includes(event.id)
+  const isPortraitPoster = ['tech-connect', 'innovation', 'design-deploy', 'event6', 'event8'].includes(event.id)
+  const posterAspectRatio = ['tech-connect', 'innovation', 'design-deploy', 'event6'].includes(event.id)
     ? '2 / 3'
     : isPortraitPoster
       ? '3 / 4'

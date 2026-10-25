@@ -137,6 +137,7 @@ export const EVENTS = [
     meta: { icon: Trophy, label: 'Challenge' },
     fee: 49,
     // Replace these sample coordinator details with the Techthon contact.
+    coordinators: [{ name: 'Md.Shekeel', phone: 'XXXXXXXXXX' }],
     coordinators: [{ name: 'Md.Shekeel', phone: '9542671213' }],
     ...openEventDefaults,
     formHeading: 'Register for Techthon',
@@ -158,7 +159,6 @@ export const EVENTS = [
     date: '2026 · TBD',
     meta: { icon: Lock, label: 'Challenge' },
     fee: 70,
-    // Replace these sample coordinator details with the Technomyst contact.
     coordinators: [
       { name: 'M.Hyndavi', phone: '9059048196' },
       { name: 'P.Sri Vaishnavi', phone: '7386233604' },
@@ -182,11 +182,10 @@ export const EVENTS = [
     icon: CodeXml,
     date: '2026 · TBD',
     meta: { icon: Users, label: 'Students' },
-    fee: 1,
-    // Replace these sample coordinator details with the event contact.
-    coordinators: [{ name: '+91 XXXXXXXXXX' }],
+    fee: 70,
+    coordinators: [{ name: 'G. Akhil', phone: '8309067006' }],
     ...openEventDefaults,
-    formHeading: 'Register for AlgoCodex & AI 🤖⌨️📃',
+    formHeading: 'Register for AlgoCodex & AI',
     formDescription: 'Complete the registration form for AlgoCodex & AI.',
     poster: 'posters/design-deploy-poster',
     posterAlt: 'AlgoCodex & AI event poster',
@@ -224,14 +223,20 @@ export const EVENTS = [
     category: 'SPECIAL EVENT',
     title: 'AI TRINITY',
     description: 'Explore three sides of artificial intelligence at AI TRINITY.',
+    selectorDescription: 'Register for AI TRINITY.',
     selectorDescription: 'Register for AI TRINITY · ₹70.',
     icon: Sparkles,
     date: '2026 · TBD',
     meta: { icon: Users, label: 'Students' },
+    fee: 1,
+    // Replace these sample coordinator details with the event contact.
+    coordinators: [{ name: '+91 XXXXXXXXXX' }],
     fee: 70,
     coordinators: [{ name: 'J. Amulya', phone: '8519899204' }],
     ...openEventDefaults,
     formHeading: 'Register for AI TRINITY',
+    formDescription: 'Complete the registration form for AI TRINITY.',
+    poster: 'posters/future-forge-poster',
     formDescription: 'Complete the registration form for AI TRINITY. Registration fee: ₹70.',
     poster: 'posters/ai-trinity-poster',
     posterAlt: 'AI TRINITY event poster',
@@ -272,7 +277,6 @@ export const EVENTS = [
     date: '2026 · TBD',
     meta: { icon: Users, label: 'Students' },
     fee: 50,
-    // Replace these sample coordinator details with the INFUSION contact.
     coordinators: [
       { name: 'S.Aditya', phone: '8367261027' },
       { name: 'R.Varsha', phone: '7995991702' },

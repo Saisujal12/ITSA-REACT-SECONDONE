@@ -33,7 +33,7 @@ export const ADMIN_EVENTS = [
     id: "design-deploy",
     label: "Event 4",
     name: "AlgoCodex & AI",
-    fee: 1,
+    fee: 70,
     passwordHashEnv: "ADMIN_PASSWORD_HASH_DESIGN_DEPLOY",
   },
   {
