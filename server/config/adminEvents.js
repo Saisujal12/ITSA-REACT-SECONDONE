@@ -54,7 +54,7 @@ export const ADMIN_EVENTS = [
     id: "event7",
     label: "Event 7",
     name: "NEXORA",
-    fee: 1,
+    fee: 70,
     passwordHashEnv: "ADMIN_PASSWORD_HASH_EVENT7",
   },
   {

@@ -47,9 +47,10 @@ const closeButtonStyle = {
 
 export default function PosterPanel({ event, day, status, statusPending = false }) {
   const isWorkshop = event.type === 'workshop'
+  const isNexora = event.id === 'event7'
   
-  const isPortraitPoster = ['tech-connect', 'innovation', 'design-deploy', 'event6', 'event8'].includes(event.id)
-  const posterAspectRatio = ['tech-connect', 'innovation', 'design-deploy', 'event6'].includes(event.id)
+  const isPortraitPoster = ['tech-connect', 'innovation', 'design-deploy', 'cyber-quest', 'event6', 'event7', 'event8'].includes(event.id)
+  const posterAspectRatio = ['tech-connect', 'innovation', 'design-deploy', 'cyber-quest', 'event6', 'event7'].includes(event.id)
     ? '2 / 3'
     : isPortraitPoster
       ? '3 / 4'
@@ -189,6 +190,7 @@ export default function PosterPanel({ event, day, status, statusPending = false 
           @media (min-width: 1201px) {
             .${s.directRegistrationLayout} {
               grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) !important;
+              grid-template-columns: ${isNexora ? 'minmax(0, 1.15fr) minmax(0, 0.85fr)' : 'minmax(0, 1fr) minmax(0, 1fr)'} !important;
               gap: 28px !important;
             }
           }
