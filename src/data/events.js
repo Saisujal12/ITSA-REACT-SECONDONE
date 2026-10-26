@@ -251,7 +251,7 @@ export const EVENTS = [
     meta: { icon: Users, label: 'Students' },
     fee: 70,
     coordinators: [
-      { name: 'Tejasri', phone: '80744922181' },
+      { name: 'Tejasri', phone: '8074922181' },
       { name: 'K. Sathwik', phone: '9492792166' },
     ],
     ...openEventDefaults,
@@ -276,7 +276,7 @@ export const EVENTS = [
     fee: 50,
     coordinators: [
       { name: 'S.Aditya', phone: '8367261027' },
-      { name: 'R.Varsha', phone: '7995991702' },
+      { name: 'Ganesh', phone: '7995991702' },
     ],
     ...openEventDefaults,
     formHeading: 'Register for INFUSION',
